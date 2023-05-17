@@ -28,8 +28,23 @@ export const MainContainer = (props: IMainContainer) => {
   const url = getBaseUrl() + `/${ROUTE_PARTS.NEW_MESSAGE}?${ROUTE_QUERY_PARAMS.LOCALE}={locale}`;
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const [newMessageClicked, setNewMessageClicked] = React.useState(false);
+
+  React.useEffect(() => {
+    document.addEventListener("keydown", escFunction, false);
+  }, []);
+
+  const escFunction = (event: any) => {
+    if (event.keyCode === 27 || event.key === "Escape") {
+      if (newMessageClicked) {
+        document.getElementById("newMessageButtonId")?.focus();
+        setNewMessageClicked(false);
+      }
+    }
+  };
 
   const onNewMessage = () => {
+    setNewMessageClicked(true);
     let taskInfo: microsoftTeams.TaskInfo = {
       url,
       title: t("NewMessage"),
