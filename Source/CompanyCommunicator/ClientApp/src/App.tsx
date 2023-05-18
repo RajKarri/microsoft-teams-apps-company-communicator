@@ -81,8 +81,8 @@ export const App = () => {
                   path={`/${ROUTE_PARTS.SEND_CONFIRMATION}/:${ROUTE_PARAMS.ID}`}
                   component={SendConfirmationTask}
                 />
-                <Route exact path={`/${ROUTE_PARTS.ERROR_PAGE}`} component={ErrorPage} />
-                <Route exact path={`/${ROUTE_PARTS.ERROR_PAGE}/:${ROUTE_PARAMS.ID}`} component={ErrorPage} />
+                <Route path={`/${ROUTE_PARTS.ERROR_PAGE}/:${ROUTE_PARAMS.ID}`} component={ErrorPage} />
+                <Route path={`/${ROUTE_PARTS.ERROR_PAGE}`} component={ErrorPage} />
                 <Route exact path={`/${ROUTE_PARTS.SIGN_IN}`} component={SignInPage} />
                 <Route exact path={`/${ROUTE_PARTS.SIGN_IN_SIMPLE_START}`} component={SignInSimpleStart} />
                 <Route exact path={`/${ROUTE_PARTS.SIGN_IN_SIMPLE_END}`} component={SignInSimpleEnd} />
