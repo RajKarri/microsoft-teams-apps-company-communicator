@@ -16,7 +16,7 @@ import {
   Theme,
 } from "@fluentui/react-components";
 import { Status24Regular, PersonFeedback24Regular, QuestionCircle24Regular } from "@fluentui/react-icons";
-import { dialog, DialogDimension, UrlDialogInfo } from "@microsoft/teams-js";
+import { app, dialog, DialogDimension, UrlDialogInfo, authentication } from "@microsoft/teams-js";
 import { GetDraftMessagesSilentAction } from "../../actions";
 import mslogo from "../../assets/Images/mslogo.png";
 import { getBaseUrl } from "../../configVariables";
@@ -33,6 +33,15 @@ export const MainContainer = (props: IMainContainer) => {
   const url = getBaseUrl() + `/${ROUTE_PARTS.NEW_MESSAGE}?${ROUTE_QUERY_PARAMS.LOCALE}={locale}`;
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const [token1, setToken1] = React.useState<any>("");
+
+  React.useEffect(() => {
+    authentication.getAuthToken().then(x => {
+      setToken1(x);
+    }).catch((error) => {
+      setToken1(error);
+    })
+  }, []);
 
   const onNewMessage = () => {
     const dialogInfo: UrlDialogInfo = {
@@ -45,8 +54,11 @@ export const MainContainer = (props: IMainContainer) => {
     const submitHandler: dialog.DialogSubmitHandler = (result: dialog.ISdkResponse) => {
       GetDraftMessagesSilentAction(dispatch);
     };
+
     // now open the dialog
-    dialog.url.open(dialogInfo, submitHandler);
+    if (app.isInitialized()) {
+      dialog.url.open(dialogInfo, submitHandler);
+    }
   };
 
   const customHeaderImagePath = process.env.REACT_APP_HEADERIMAGE;
@@ -56,6 +68,7 @@ export const MainContainer = (props: IMainContainer) => {
 
   return (
     <>
+      {`token=${token1}`}
       <div className={props.theme === teamsLightTheme ? "cc-header-light" : "cc-header"}>
         <div className="cc-main-left">
           <img
