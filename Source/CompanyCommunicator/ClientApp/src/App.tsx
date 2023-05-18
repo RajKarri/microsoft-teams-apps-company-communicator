@@ -27,6 +27,8 @@ export const App = () => {
   const [locale, setLocale] = React.useState("en-US");
   const { t } = useTranslation();
 
+  microsoftTeams.initialize();
+
   React.useEffect(() => {
     microsoftTeams.getContext((context: microsoftTeams.Context) => {
       const theme = context.theme || "default";
