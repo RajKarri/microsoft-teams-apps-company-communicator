@@ -8,7 +8,7 @@ import { useParams } from "react-router-dom";
 import { AvatarShape } from "@fluentui/react-avatar";
 import { Button, Field, Persona, Spinner, Text } from "@fluentui/react-components";
 import { ArrowDownload24Regular, CheckmarkSquare24Regular, ShareScreenStop24Regular } from "@fluentui/react-icons";
-import * as microsoftTeams from "@microsoft/teams-js";
+import { app, dialog } from "@microsoft/teams-js";
 
 import { exportNotification, getSentNotification } from "../../apis/messageListApi";
 import { formatDate, formatDuration, formatNumber } from "../../i18n";
@@ -79,8 +79,8 @@ export const ViewStatusTask = () => {
   });
 
   React.useEffect(() => {
-    microsoftTeams.getContext((context) => {
-      setStatusState({ ...statusState, teamId: context.teamId, isTeamDataUpdated: true });
+    app.getContext().then((context) => {
+      setStatusState({ ...statusState, teamId: context.team?.internalId || "", isTeamDataUpdated: true });
     });
   }, []);
 
@@ -103,7 +103,7 @@ export const ViewStatusTask = () => {
       };
       setLoader(false);
     }
-  }, [isCardReady, messageState.isMsgDataUpdated]);
+  }, [isCardReady, messageState.isMsgDataUpdated, statusState.page]);
 
   const getMessage = async (id: number) => {
     try {
@@ -136,7 +136,7 @@ export const ViewStatusTask = () => {
   };
 
   const onClose = () => {
-    microsoftTeams.tasks.submitTask();
+    dialog.url.submit();
   };
 
   const onExport = async () => {

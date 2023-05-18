@@ -29,7 +29,7 @@ import {
 } from "@fluentui/react-components";
 import { InfoLabel } from "@fluentui/react-components/unstable";
 import { ArrowUpload24Regular, Dismiss12Regular } from "@fluentui/react-icons";
-import * as microsoftTeams from "@microsoft/teams-js";
+import { dialog } from "@microsoft/teams-js";
 
 import {
   GetDraftMessagesSilentAction,
@@ -395,7 +395,7 @@ export const NewMessage = () => {
         })
         .finally(() => {
           setShowMsgDraftingSpinner(false);
-          microsoftTeams.tasks.submitTask();
+          dialog.url.submit();
         });
     } catch (error) {
       return error;
@@ -410,7 +410,7 @@ export const NewMessage = () => {
         })
         .finally(() => {
           setShowMsgDraftingSpinner(false);
-          microsoftTeams.tasks.submitTask();
+          dialog.url.submit();
         });
     } catch (error) {
       return error;

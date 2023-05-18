@@ -6,7 +6,7 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { Button, Field, Label, Persona, Spinner, Text } from '@fluentui/react-components';
-import * as microsoftTeams from '@microsoft/teams-js';
+import { dialog } from '@microsoft/teams-js';
 import {
     getConsentSummaries, getDraftNotification, sendDraftNotification
 } from '../../apis/messageListApi';
@@ -134,7 +134,7 @@ export const SendConfirmationTask = () => {
     setDisableSendButton(true);
     sendDraftNotification(messageState)
       .then(() => {
-        microsoftTeams.tasks.submitTask();
+        dialog.url.submit();
       })
       .finally(() => {
         setDisableSendButton(false);

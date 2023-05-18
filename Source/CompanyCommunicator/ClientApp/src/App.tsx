@@ -4,12 +4,11 @@
 import './App.scss';
 import i18n from 'i18next';
 import React, { Suspense } from 'react';
-import { useTranslation } from 'react-i18next';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import {
     FluentProvider, teamsDarkTheme, teamsHighContrastTheme, teamsLightTheme
 } from '@fluentui/react-components';
-import * as microsoftTeams from '@microsoft/teams-js';
+import { app } from '@microsoft/teams-js';
 
 import Configuration from './components/config';
 import ErrorPage from './components/ErrorPage/errorPage';
@@ -25,22 +24,22 @@ import { ROUTE_PARAMS, ROUTE_PARTS } from './routes';
 export const App = () => {
   const [fluentUITheme, setFluentUITheme] = React.useState(teamsLightTheme);
   const [locale, setLocale] = React.useState("en-US");
-  const { t } = useTranslation();
-
-  microsoftTeams.initialize();
 
   React.useEffect(() => {
-    microsoftTeams.getContext((context: microsoftTeams.Context) => {
-      const theme = context.theme || "default";
-      setLocale(context.locale);
-      i18n.changeLanguage(context.locale);
-      updateTheme(theme);
-    });
+    if (app.isInitialized()) {
+      app.getContext().then((context: app.Context) => {
+        const theme = context.app.theme || "default";
+        setLocale(context.app.locale);
+        i18n.changeLanguage(context.app.locale);
+        updateTheme(theme);
+      });
 
-    microsoftTeams.registerOnThemeChangeHandler((theme: string) => {
-      updateTheme(theme);
-    });
+      app.registerOnThemeChangeHandler((theme: string) => {
+        updateTheme(theme);
+      });
+    }
   }, []);
+
 
   const updateTheme = (theme: string) => {
     switch (theme.toLocaleLowerCase()) {

@@ -28,7 +28,7 @@ import {
   OpenRegular,
   SendRegular,
 } from "@fluentui/react-icons";
-import * as microsoftTeams from "@microsoft/teams-js";
+import { app, dialog, DialogDimension, UrlDialogInfo } from "@microsoft/teams-js";
 import { GetDraftMessagesSilentAction, GetSentMessagesSilentAction } from "../../actions";
 import { deleteDraftNotification, duplicateDraftNotification, sendPreview } from "../../apis/messageListApi";
 import { getBaseUrl } from "../../configVariables";
@@ -47,27 +47,29 @@ export const DraftMessageDetail = (draftMessages: any) => {
     getBaseUrl() + `/${ROUTE_PARTS.NEW_MESSAGE}/${id}?${ROUTE_QUERY_PARAMS.LOCALE}={locale}`;
 
   React.useEffect(() => {
-    microsoftTeams.getContext((context: microsoftTeams.Context) => {
-      setTeamsTeamId(context.teamId || "");
-      setTeamsChannelId(context.channelId || "");
-    });
+    if (app.isInitialized()) {
+      app.getContext().then((context: app.Context) => {
+        setTeamsTeamId(context.team?.internalId || "");
+        setTeamsChannelId(context.channel?.id || "");
+      });
+    }
   }, []);
 
-  const submitHandler = (err: any, result: any) => {
-    GetDraftMessagesSilentAction(dispatch);
-    GetSentMessagesSilentAction(dispatch);
-  };
-
   const onOpenTaskModule = (event: any, url: string, title: string) => {
-    let taskInfo: microsoftTeams.TaskInfo = {
-      url: url,
-      title: title,
-      height: microsoftTeams.TaskModuleDimension.Large,
-      width: microsoftTeams.TaskModuleDimension.Large,
+    const dialogInfo: UrlDialogInfo = {
+      url,
+      title,
+      size: { height: DialogDimension.Large, width: DialogDimension.Large },
       fallbackUrl: url,
     };
 
-    microsoftTeams.tasks.startTask(taskInfo, submitHandler);
+    const submitHandler: dialog.DialogSubmitHandler = (result: dialog.ISdkResponse) => {
+      GetDraftMessagesSilentAction(dispatch);
+      GetSentMessagesSilentAction(dispatch);
+    };
+
+    // now open the dialog
+    dialog.url.open(dialogInfo, submitHandler);
   };
 
   const duplicateDraftMessage = async (id: number) => {

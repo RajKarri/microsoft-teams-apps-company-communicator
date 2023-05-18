@@ -1,15 +1,15 @@
 {
   "name": "company-communicator",
-  "version": "5.3.0",
+  "version": "5.4.0",
   "private": true,
   "dependencies": {
     "@fluentui/react-components": "^9.19.1",
-    "@microsoft/teams-js": "^1.4.2",
+    "@microsoft/teams-js": "^2.11.0",
     "@reduxjs/toolkit": "^1.9.5",
     "@types/react-redux": "^7.1.25",
     "@types/react-router-dom": "^5.1.8",
     "@types/validator": "^13.7.17",
-    "adaptivecards": "^2.11.2",
+    "adaptivecards": "^1.2.0",
     "axios": "^0.21.4",
     "color-hash": "^1.0.3",
     "faker": "^4.1.0",

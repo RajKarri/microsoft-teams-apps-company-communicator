@@ -15,8 +15,8 @@ import {
   teamsLightTheme,
   Theme,
 } from "@fluentui/react-components";
-import { ChatMultiple24Regular, PersonFeedback24Regular, QuestionCircle24Regular } from "@fluentui/react-icons";
-import * as microsoftTeams from "@microsoft/teams-js";
+import { Status24Regular, PersonFeedback24Regular, QuestionCircle24Regular } from "@fluentui/react-icons";
+import { dialog, DialogDimension, UrlDialogInfo } from "@microsoft/teams-js";
 import { GetDraftMessagesSilentAction } from "../../actions";
 import mslogo from "../../assets/Images/mslogo.png";
 import { getBaseUrl } from "../../configVariables";
@@ -35,23 +35,18 @@ export const MainContainer = (props: IMainContainer) => {
   const dispatch = useAppDispatch();
 
   const onNewMessage = () => {
-    let taskInfo: microsoftTeams.TaskInfo = {
+    const dialogInfo: UrlDialogInfo = {
       url,
       title: t("NewMessage"),
-      height: microsoftTeams.TaskModuleDimension.Large,
-      width: microsoftTeams.TaskModuleDimension.Large,
+      size: { height: DialogDimension.Large, width: DialogDimension.Large },
       fallbackUrl: url,
     };
 
-    let submitHandler = (err: any, result: any) => {
-      if (result === null) {
-        document.getElementById("newMessageButtonId")?.focus();
-      } else {
-        GetDraftMessagesSilentAction(dispatch);
-      }
+    const submitHandler: dialog.DialogSubmitHandler = (result: dialog.ISdkResponse) => {
+      GetDraftMessagesSilentAction(dispatch);
     };
-
-    microsoftTeams.tasks.startTask(taskInfo, submitHandler);
+    // now open the dialog
+    dialog.url.open(dialogInfo, submitHandler);
   };
 
   const customHeaderImagePath = process.env.REACT_APP_HEADERIMAGE;
@@ -88,7 +83,7 @@ export const MainContainer = (props: IMainContainer) => {
       </div>
       <Divider />
       <div className="cc-new-message">
-        <Button id="newMessageButtonId" icon={<ChatMultiple24Regular />} appearance="primary" onClick={onNewMessage}>
+        <Button id="newMessageButtonId" icon={<Status24Regular />} appearance="primary" onClick={onNewMessage}>
           {t("NewMessage")}
         </Button>
       </div>

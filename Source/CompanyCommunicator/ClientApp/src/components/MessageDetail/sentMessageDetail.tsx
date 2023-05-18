@@ -28,11 +28,11 @@ import {
   DocumentCopyRegular,
   Chat20Regular,
   MoreHorizontal24Filled,
-  Status24Regular,
+  ChatMultiple24Regular,
   ShareScreenStop24Regular,
   Warning24Regular,
 } from "@fluentui/react-icons";
-import * as microsoftTeams from "@microsoft/teams-js";
+import { dialog, DialogDimension, UrlDialogInfo } from "@microsoft/teams-js";
 import { cancelSentNotification, duplicateDraftNotification } from "../../apis/messageListApi";
 import { getBaseUrl } from "../../configVariables";
 import { formatNumber } from "../../i18n";
@@ -96,21 +96,21 @@ export const SentMessageDetail = (sentMessages: any) => {
   };
 
   const onOpenTaskModule = (event: any, url: string, title: string) => {
-    let taskInfo: microsoftTeams.TaskInfo = {
-      url: url,
-      title: title,
-      height: microsoftTeams.TaskModuleDimension.Large,
-      width: microsoftTeams.TaskModuleDimension.Large,
+    const dialogInfo: UrlDialogInfo = {
+      url,
+      title,
+      size: { height: DialogDimension.Large, width: DialogDimension.Large },
       fallbackUrl: url,
     };
-    let submitHandler = (err: any, result: any) => {};
-    microsoftTeams.tasks.startTask(taskInfo, submitHandler);
+
+    // now open the dialog
+    dialog.url.open(dialogInfo);
   };
 
   const duplicateDraftMessage = async (id: number) => {
     try {
       await duplicateDraftNotification(id);
-      GetDraftMessagesSilentAction(dispatch);
+        GetDraftMessagesSilentAction(dispatch);
     } catch (error) {
       return error;
     }
@@ -235,7 +235,7 @@ export const SentMessageDetail = (sentMessages: any) => {
                   <MenuPopover>
                     <MenuList>
                       <MenuItem
-                        icon={<Status24Regular />}
+                        icon={<ChatMultiple24Regular />}
                         key={"viewStatusKey"}
                         onClick={() => onOpenTaskModule(null, statusUrl(item.id), t("ViewStatus"))}
                       >

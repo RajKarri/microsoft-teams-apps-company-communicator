@@ -66,11 +66,3 @@
     padding-top: 1rem;
     padding-bottom: 1rem;
 }
-
-#newMessageButtonId {
-    &:focus,
-    &:focus-visible {
-        outline: -webkit-focus-ring-color auto;
-        outline-offset: 3px;
-    }
-}

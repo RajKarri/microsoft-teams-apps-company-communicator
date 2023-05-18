@@ -6,7 +6,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { RouteComponentProps } from "react-router-dom";
 import { Button, Text } from "@fluentui/react-components";
-import * as microsoftTeams from "@microsoft/teams-js";
+import { authentication } from "@microsoft/teams-js";
 import i18n from "../../i18n";
 
 const SignInPage: React.FunctionComponent<RouteComponentProps> = (props) => {
@@ -14,17 +14,16 @@ const SignInPage: React.FunctionComponent<RouteComponentProps> = (props) => {
   const errorMessage = t("SignInPromptMessage");
 
   function onSignIn() {
-    microsoftTeams.authentication.authenticate({
-      url: window.location.origin + "/signin-simple-start",
-      successCallback: () => {
+    authentication
+      .authenticate({ url: window.location.origin + "/signin-simple-start" })
+      .then(() => {
         console.log("Login succeeded!");
         window.location.href = "/messages";
-      },
-      failureCallback: (reason) => {
-        console.log("Login failed: " + reason);
+      })
+      .catch((error) => {
+        console.log("Login failed: " + error);
         window.location.href = `/errorpage?locale=${i18n.language}`;
-      },
-    });
+      });
   }
 
   return (
