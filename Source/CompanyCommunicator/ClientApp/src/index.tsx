@@ -9,8 +9,6 @@ import { App } from "./App";
 import * as serviceWorker from "./serviceWorker";
 import { store } from "./store";
 
-microsoftTeams.initialize();
-
 ReactDOM.render(
     <Provider store={store}>
       <App />
