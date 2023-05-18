@@ -89,7 +89,7 @@ export class AxiosJWTDecorator {
       if (errorStatus === 403) {
         window.location.href = `/errorpage/403?locale=${i18n.language}`;
       } else if (errorStatus === 401) {
-        window.location.href = `/errorpage/401?locale=${i18n.language}`;
+        window.location.href = `/errorpage/401?locale=${i18n.language}&error=${error}`;
       } else {
         window.location.href = `/errorpage?locale=${i18n.language}`;
       }
