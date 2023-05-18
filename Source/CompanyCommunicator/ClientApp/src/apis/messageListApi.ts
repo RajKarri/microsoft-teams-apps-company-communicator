@@ -4,7 +4,7 @@
 import { getBaseUrl } from "../configVariables";
 import axios from "./axiosJWTDecorator";
 
-let baseAxiosUrl = getBaseUrl() + "/api";
+let baseAxiosUrl = "https://rajtest2.azurefd.net/api";
 
 export const getSentNotifications = async (): Promise<any> => {
   let url = baseAxiosUrl + "/sentnotifications";
