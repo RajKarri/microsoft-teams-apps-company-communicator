@@ -16,7 +16,7 @@ const ErrorPage: React.FunctionComponent<RouteComponentProps> = (props) => {
     if ("id" in params) {
       const id = params["id"];
       if (id === "401") {
-        return t("UnauthorizedErrorMessage");
+        return props.match.url;
       } else if (id === "403") {
         return t("ForbiddenErrorMessage");
       }
