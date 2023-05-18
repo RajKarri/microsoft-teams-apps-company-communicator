@@ -37,7 +37,7 @@ export const MainContainer = (props: IMainContainer) => {
 
   React.useEffect(() => {
     authentication.getAuthToken().then(x => {
-      setToken1(x);
+      setToken1(getBaseUrl());
     }).catch((error) => {
       setToken1(error);
     })
@@ -68,7 +68,7 @@ export const MainContainer = (props: IMainContainer) => {
 
   return (
     <>
-      {`token=${token1}`}
+      {`baseURL=${token1}`}
       <div className={props.theme === teamsLightTheme ? "cc-header-light" : "cc-header"}>
         <div className="cc-main-left">
           <img
