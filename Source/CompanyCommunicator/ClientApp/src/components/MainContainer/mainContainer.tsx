@@ -33,15 +33,6 @@ export const MainContainer = (props: IMainContainer) => {
   const url = getBaseUrl() + `/${ROUTE_PARTS.NEW_MESSAGE}?${ROUTE_QUERY_PARAMS.LOCALE}={locale}`;
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const [token1, setToken1] = React.useState<any>("");
-
-  React.useEffect(() => {
-    authentication.getAuthToken().then(x => {
-      setToken1(getBaseUrl());
-    }).catch((error) => {
-      setToken1(error);
-    })
-  }, []);
 
   const onNewMessage = () => {
     const dialogInfo: UrlDialogInfo = {
@@ -68,7 +59,6 @@ export const MainContainer = (props: IMainContainer) => {
 
   return (
     <>
-      {`baseURL=${token1}`}
       <div className={props.theme === teamsLightTheme ? "cc-header-light" : "cc-header"}>
         <div className="cc-main-left">
           <img

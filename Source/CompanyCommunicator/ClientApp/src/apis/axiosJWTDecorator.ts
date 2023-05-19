@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
-import { app, authentication } from "@microsoft/teams-js";
+import { authentication } from "@microsoft/teams-js";
 import i18n from "../i18n";
 
 export class AxiosJWTDecorator {
