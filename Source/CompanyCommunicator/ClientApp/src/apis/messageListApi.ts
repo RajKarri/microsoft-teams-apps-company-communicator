@@ -9,20 +9,10 @@ import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { authentication } from "@microsoft/teams-js";
 let baseAxiosUrl = "https://rajtest2.azurefd.net/api";
 
-const getConfig = () => {
-  let config: AxiosRequestConfig = {};
-  return new Promise<AxiosRequestConfig>((resolve, reject) => {
-    authentication.getAuthToken().then((token: string) => {
-      config.headers["Authorization"] = `Bearer ${token}`;
-      resolve(config);
-    });
-  });
-};
-
 export const getSentNotifications = async (): Promise<any> => {
   let url = baseAxiosUrl + "/sentnotifications";
 
-  await authentication.getAuthToken().then((token: string) => {
+  authentication.getAuthToken().then((token: string) => {
     let config: AxiosRequestConfig = {};
     config.headers["Authorization"] = `Bearer ${token}`;
     return axios.get(url, config);
@@ -34,7 +24,7 @@ export const getSentNotifications = async (): Promise<any> => {
 export const getDraftNotifications = async (): Promise<any> => {
   let url = baseAxiosUrl + "/draftnotifications";
 
-  await authentication.getAuthToken().then((token: string) => {
+  authentication.getAuthToken().then((token: string) => {
     let config: AxiosRequestConfig = {};
     config.headers["Authorization"] = `Bearer ${token}`;
     return axios.get(url, config);
@@ -46,7 +36,7 @@ export const getDraftNotifications = async (): Promise<any> => {
 export const verifyGroupAccess = async (): Promise<any> => {
   let url = baseAxiosUrl + "/groupdata/verifyaccess";
 
-  await authentication.getAuthToken().then((token: string) => {
+  authentication.getAuthToken().then((token: string) => {
     let config: AxiosRequestConfig = {};
     config.headers["Authorization"] = `Bearer ${token}`;
     return axios.get(url, config);
@@ -58,7 +48,7 @@ export const verifyGroupAccess = async (): Promise<any> => {
 export const getGroups = async (id: number): Promise<any> => {
   let url = baseAxiosUrl + "/groupdata/" + id;
 
-  await authentication.getAuthToken().then((token: string) => {
+  authentication.getAuthToken().then((token: string) => {
     let config: AxiosRequestConfig = {};
     config.headers["Authorization"] = `Bearer ${token}`;
     return axios.get(url, config);
@@ -68,7 +58,7 @@ export const getGroups = async (id: number): Promise<any> => {
 
 export const searchGroups = async (query: string): Promise<any> => {
   let url = baseAxiosUrl + "/groupdata/search/" + query;
-  await authentication.getAuthToken().then((token: string) => {
+  authentication.getAuthToken().then((token: string) => {
     let config: AxiosRequestConfig = {};
     config.headers["Authorization"] = `Bearer ${token}`;
     return axios.get(url, config);
@@ -79,7 +69,7 @@ export const searchGroups = async (query: string): Promise<any> => {
 export const exportNotification = async (payload: {}): Promise<any> => {
   let url = baseAxiosUrl + "/exportnotification/export";
 
-  await authentication.getAuthToken().then((token: string) => {
+  authentication.getAuthToken().then((token: string) => {
     let config: AxiosRequestConfig = {};
     config.headers["Authorization"] = `Bearer ${token}`;
     return axios.put(url, payload, config);
@@ -90,7 +80,7 @@ export const exportNotification = async (payload: {}): Promise<any> => {
 export const getSentNotification = async (id: number): Promise<any> => {
   let url = baseAxiosUrl + "/sentnotifications/" + id;
 
-  await authentication.getAuthToken().then((token: string) => {
+  authentication.getAuthToken().then((token: string) => {
     let config: AxiosRequestConfig = {};
     config.headers["Authorization"] = `Bearer ${token}`;
     return axios.get(url, config);
@@ -101,7 +91,7 @@ export const getSentNotification = async (id: number): Promise<any> => {
 export const getDraftNotification = async (id: number): Promise<any> => {
   let url = baseAxiosUrl + "/draftnotifications/" + id;
 
-  await authentication.getAuthToken().then((token: string) => {
+  authentication.getAuthToken().then((token: string) => {
     let config: AxiosRequestConfig = {};
     config.headers["Authorization"] = `Bearer ${token}`;
     return axios.get(url, config);
@@ -113,7 +103,7 @@ export const getDraftNotification = async (id: number): Promise<any> => {
 export const deleteDraftNotification = async (id: number): Promise<any> => {
   let url = baseAxiosUrl + "/draftnotifications/" + id;
 
-  await authentication.getAuthToken().then((token: string) => {
+  authentication.getAuthToken().then((token: string) => {
     let config: AxiosRequestConfig = {};
     config.headers["Authorization"] = `Bearer ${token}`;
     return axios.delete(url, config);
@@ -125,7 +115,7 @@ export const deleteDraftNotification = async (id: number): Promise<any> => {
 export const duplicateDraftNotification = async (id: number): Promise<any> => {
   let url = baseAxiosUrl + "/draftnotifications/duplicates/" + id;
 
-  await authentication.getAuthToken().then((token: string) => {
+  authentication.getAuthToken().then((token: string) => {
     let config: AxiosRequestConfig = {};
     config.headers["Authorization"] = `Bearer ${token}`;
     return axios.post(url, undefined, config);
@@ -137,7 +127,7 @@ export const duplicateDraftNotification = async (id: number): Promise<any> => {
 export const sendDraftNotification = async (payload: {}): Promise<any> => {
   let url = baseAxiosUrl + "/sentnotifications";
 
-  await authentication.getAuthToken().then((token: string) => {
+  authentication.getAuthToken().then((token: string) => {
     let config: AxiosRequestConfig = {};
     config.headers["Authorization"] = `Bearer ${token}`;
     return axios.post(url, payload, config);
@@ -149,7 +139,7 @@ export const sendDraftNotification = async (payload: {}): Promise<any> => {
 export const updateDraftNotification = async (payload: {}): Promise<any> => {
   let url = baseAxiosUrl + "/draftnotifications";
 
-  await authentication.getAuthToken().then((token: string) => {
+  authentication.getAuthToken().then((token: string) => {
     let config: AxiosRequestConfig = {};
     config.headers["Authorization"] = `Bearer ${token}`;
     return axios.put(url, payload, config);
@@ -160,7 +150,7 @@ export const updateDraftNotification = async (payload: {}): Promise<any> => {
 export const createDraftNotification = async (payload: {}): Promise<any> => {
   let url = baseAxiosUrl + "/draftnotifications";
 
-  await authentication.getAuthToken().then((token: string) => {
+  authentication.getAuthToken().then((token: string) => {
     let config: AxiosRequestConfig = {};
     config.headers["Authorization"] = `Bearer ${token}`;
     return axios.post(url, payload, config);
@@ -171,7 +161,7 @@ export const createDraftNotification = async (payload: {}): Promise<any> => {
 
 export const getTeams = async (): Promise<any> => {
   let url = baseAxiosUrl + "/teamdata";
-  await authentication.getAuthToken().then((token: string) => {
+  authentication.getAuthToken().then((token: string) => {
     let config: AxiosRequestConfig = {};
     config.headers["Authorization"] = `Bearer ${token}`;
     return axios.get(url, config);
@@ -182,7 +172,7 @@ export const getTeams = async (): Promise<any> => {
 export const cancelSentNotification = async (id: number): Promise<any> => {
   let url = baseAxiosUrl + "/sentnotifications/cancel/" + id;
 
-  await authentication.getAuthToken().then((token: string) => {
+  authentication.getAuthToken().then((token: string) => {
     let config: AxiosRequestConfig = {};
     config.headers["Authorization"] = `Bearer ${token}`;
     return axios.post(url, undefined, config);
@@ -193,7 +183,7 @@ export const cancelSentNotification = async (id: number): Promise<any> => {
 
 export const getConsentSummaries = async (id: number): Promise<any> => {
   let url = baseAxiosUrl + "/draftnotifications/consentSummaries/" + id;
-  await authentication.getAuthToken().then((token: string) => {
+  authentication.getAuthToken().then((token: string) => {
     let config: AxiosRequestConfig = {};
     config.headers["Authorization"] = `Bearer ${token}`;
     return axios.get(url, config);
@@ -204,7 +194,7 @@ export const getConsentSummaries = async (id: number): Promise<any> => {
 export const sendPreview = async (payload: {}): Promise<any> => {
   let url = baseAxiosUrl + "/draftnotifications/previews";
 
-  await authentication.getAuthToken().then((token: string) => {
+   authentication.getAuthToken().then((token: string) => {
     let config: AxiosRequestConfig = {};
     config.headers["Authorization"] = `Bearer ${token}`;
     return axios.post(url, payload, config);
@@ -218,7 +208,7 @@ export const getAuthenticationConsentMetadata = async (
 ): Promise<any> => {
   let url = `${baseAxiosUrl}/authenticationMetadata/consentUrl?windowLocationOriginDomain=${windowLocationOriginDomain}&loginhint=${login_hint}`;
 
-  await authentication.getAuthToken().then((token: string) => {
+  authentication.getAuthToken().then((token: string) => {
     let config: AxiosRequestConfig = {};
     config.headers["Authorization"] = `Bearer ${token}`;
     return axios.get(url, config);
