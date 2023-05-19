@@ -89,7 +89,7 @@ export class AxiosJWTDecorator {
       if (errorStatus === 403) {
         window.location.href = `/errorpage/403?locale=${i18n.language}`;
       } else if (errorStatus === 401) {
-        window.location.href = `/errorpage/401/${error}`;
+        window.location.href = `/errorpage/401?locale=${i18n.language}`;
       } else {
         window.location.href = `/errorpage?locale=${i18n.language}`;
       }
@@ -99,28 +99,29 @@ export class AxiosJWTDecorator {
   }
 
   private async setupAuthorizationHeader(config?: AxiosRequestConfig): Promise<AxiosRequestConfig> {
-    if (app.isInitialized()) {
-      return new Promise<AxiosRequestConfig>((resolve, reject) => {
-        authentication
-          .getAuthToken()
-          .then((token) => {
-            if (!config) {
-              config = axios.defaults;
-            }
-            config.headers["Authorization"] = `Bearer ${token}`;
-            config.headers["Accept-Language"] = i18n.language;
-            resolve(config);
-          })
-          .catch((error) => {
-            console.error("Error from getAuthToken: ", error);
-            window.location.href = `/signin?locale=${i18n.language}`;
-          });
-      });
-    } else {
-      return new Promise<AxiosRequestConfig>((resolve, reject) => {
-        resolve(axios.defaults);
-      });
-    }
+    return new Promise<AxiosRequestConfig>((resolve, reject) => {
+      const authTokenRequest = {
+        successCallback: (token: string) => {
+          if (!config) {
+            config = axios.defaults;
+          }
+          config.headers["Authorization"] = `Bearer ${token}`;
+          config.headers["Accept-Language"] = i18n.language;
+          resolve(config);
+        },
+        failureCallback: (error: string) => {
+          // When the getAuthToken function returns a "resourceRequiresConsent" error,
+          // it means Azure AD needs the user's consent before issuing a token to the app.
+          // The following code redirects the user to the "Sign in" page where the user can grant the consent.
+          // Right now, the app redirects to the consent page for any error.
+          console.error("Error from getAuthToken: ", error);
+          window.location.href = `/signin?locale=${i18n.language}`;
+        },
+        resources: [],
+      };
+      
+      authentication.getAuthToken(authTokenRequest);
+    });
   }
 }
 
