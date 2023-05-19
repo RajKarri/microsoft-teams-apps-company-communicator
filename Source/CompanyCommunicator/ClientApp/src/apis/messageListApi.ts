@@ -17,7 +17,7 @@ const getConfig = () => {
       config.headers["Authorization"] = `Bearer ${token}`;
       resolve(config);
     });
-  }
+  });
 };
 
 export const getSentNotifications = async (): Promise<any> => {
