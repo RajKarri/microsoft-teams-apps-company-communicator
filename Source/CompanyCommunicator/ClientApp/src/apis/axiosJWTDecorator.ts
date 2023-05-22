@@ -5,6 +5,7 @@ import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { authentication } from "@microsoft/teams-js";
 import i18n from "../i18n";
 
+
 export class AxiosJWTDecorator {
   public async get<T = any, R = AxiosResponse<T>>(
     url: string,
@@ -98,30 +99,43 @@ export class AxiosJWTDecorator {
     }
   }
 
-  private async setupAuthorizationHeader(config?: AxiosRequestConfig): Promise<AxiosRequestConfig> {
-    return new Promise<AxiosRequestConfig>((resolve, reject) => {
-      const authTokenRequest = {
-        successCallback: (token: string) => {
-          if (!config) {
-            config = axios.defaults;
-          }
-          config.headers["Authorization"] = `Bearer ${token}`;
-          config.headers["Accept-Language"] = i18n.language;
-          resolve(config);
-        },
-        failureCallback: (error: string) => {
-          // When the getAuthToken function returns a "resourceRequiresConsent" error,
-          // it means Azure AD needs the user's consent before issuing a token to the app.
-          // The following code redirects the user to the "Sign in" page where the user can grant the consent.
-          // Right now, the app redirects to the consent page for any error.
-          console.error("Error from getAuthToken: ", error);
-          window.location.href = `/signin?locale=${i18n.language}`;
-        },
-        resources: [],
-      };
-      
-      authentication.getAuthToken(authTokenRequest);
-    });
+  private async setupAuthorizationHeader(config?: AxiosRequestConfig) {
+    try {
+      const token = await authentication.getAuthToken({ silent: true });
+      if (!config) {
+        config = axios.defaults;
+      }
+      config.headers["Authorization"] = `Bearer ${token}`;
+      config.headers["Accept-Language"] = i18n.language;
+    } catch (error) {
+      console.error("Error from getAuthToken: ", error);
+      window.location.href = `/signin?locale=${i18n.language}`;
+    }
+
+    return config;
+    // return new Promise<AxiosRequestConfig>((resolve, reject) => {
+    //   const authTokenRequest = {
+    //     successCallback: (token: string) => {
+    //       if (!config) {
+    //         config = axios.defaults;
+    //       }
+    //       config.headers["Authorization"] = `Bearer ${token}`;
+    //       config.headers["Accept-Language"] = i18n.language;
+    //       resolve(config);
+    //     },
+    //     failureCallback: (error: string) => {
+    //       // When the getAuthToken function returns a "resourceRequiresConsent" error,
+    //       // it means Azure AD needs the user's consent before issuing a token to the app.
+    //       // The following code redirects the user to the "Sign in" page where the user can grant the consent.
+    //       // Right now, the app redirects to the consent page for any error.
+    //       // console.error("Error from getAuthToken: ", error);
+    //       // window.location.href = `/signin?locale=${i18n.language}`;
+    //       resolve(axios.defaults);
+    //     },
+    //     resources: [],
+    //   };
+    //  // authentication.getAuthToken(authTokenRequest);
+    // });
   }
 }
 

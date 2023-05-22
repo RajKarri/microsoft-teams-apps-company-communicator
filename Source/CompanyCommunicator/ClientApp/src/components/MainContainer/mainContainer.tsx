@@ -16,7 +16,7 @@ import {
   Theme,
 } from "@fluentui/react-components";
 import { Status24Regular, PersonFeedback24Regular, QuestionCircle24Regular } from "@fluentui/react-icons";
-import { app, dialog, DialogDimension, UrlDialogInfo, authentication } from "@microsoft/teams-js";
+import { app, dialog, DialogDimension, UrlDialogInfo } from "@microsoft/teams-js";
 import { GetDraftMessagesSilentAction } from "../../actions";
 import mslogo from "../../assets/Images/mslogo.png";
 import { getBaseUrl } from "../../configVariables";
@@ -24,7 +24,6 @@ import { ROUTE_PARTS, ROUTE_QUERY_PARAMS } from "../../routes";
 import { useAppDispatch } from "../../store";
 import { DraftMessages } from "../DraftMessages/draftMessages";
 import { SentMessages } from "../SentMessages/sentMessages";
-import { testApi } from "../../apis/messageListApi";
 
 interface IMainContainer {
   theme: Theme;
@@ -34,15 +33,6 @@ export const MainContainer = (props: IMainContainer) => {
   const url = getBaseUrl() + `/${ROUTE_PARTS.NEW_MESSAGE}?${ROUTE_QUERY_PARAMS.LOCALE}={locale}`;
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const [output, setOutput] = React.useState<any>("");
-
-  React.useEffect(() => {
-    testApi().then(out => {
-      setOutput(out);
-    }).catch(error => {
-      setOutput(error);
-    })
-  }, []);
 
   const onNewMessage = () => {
     const dialogInfo: UrlDialogInfo = {
@@ -69,7 +59,6 @@ export const MainContainer = (props: IMainContainer) => {
 
   return (
     <>
-      {`output: ${output}`}
       <div className={props.theme === teamsLightTheme ? "cc-header-light" : "cc-header"}>
         <div className="cc-main-left">
           <img
