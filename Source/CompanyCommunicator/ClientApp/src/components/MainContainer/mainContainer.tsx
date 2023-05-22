@@ -24,6 +24,7 @@ import { ROUTE_PARTS, ROUTE_QUERY_PARAMS } from "../../routes";
 import { useAppDispatch } from "../../store";
 import { DraftMessages } from "../DraftMessages/draftMessages";
 import { SentMessages } from "../SentMessages/sentMessages";
+import { testApi } from "../../apis/messageListApi";
 
 interface IMainContainer {
   theme: Theme;
@@ -33,6 +34,15 @@ export const MainContainer = (props: IMainContainer) => {
   const url = getBaseUrl() + `/${ROUTE_PARTS.NEW_MESSAGE}?${ROUTE_QUERY_PARAMS.LOCALE}={locale}`;
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const [output, setOutput] = React.useState<any>("");
+
+  React.useEffect(() => {
+    testApi().then(out => {
+      setOutput(out);
+    }).catch(error => {
+      setOutput(error);
+    })
+  }, []);
 
   const onNewMessage = () => {
     const dialogInfo: UrlDialogInfo = {
@@ -59,6 +69,7 @@ export const MainContainer = (props: IMainContainer) => {
 
   return (
     <>
+      {`output: ${output}`}
       <div className={props.theme === teamsLightTheme ? "cc-header-light" : "cc-header"}>
         <div className="cc-main-left">
           <img

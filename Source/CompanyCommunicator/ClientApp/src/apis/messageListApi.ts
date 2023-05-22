@@ -26,6 +26,10 @@ export const getGroups = async (id: number): Promise<any> => {
   return await axios.get(url);
 };
 
+export const testApi = async (): Promise<any> => {
+  return await axios.get("https://api.github.com/users/rajkarri");
+};
+
 export const searchGroups = async (query: string): Promise<any> => {
   let url = baseAxiosUrl + "/groupdata/search/" + query;
   return await axios.get(url);
