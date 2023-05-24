@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 import React from "react";
-import { pages }from "@microsoft/teams-js";
+import * as microsoftTeams from "@microsoft/teams-js";
 import { getBaseUrl } from "../configVariables";
 
 export interface IConfigState {
@@ -18,16 +18,17 @@ class Configuration extends React.Component<{}, IConfigState> {
   }
 
   public componentDidMount() {
-    pages.config.registerOnSaveHandler((saveEvent) => {
-     pages.config.setConfig({
-       entityId: "Company_Communicator_App",
-       contentUrl: this.state.url,
-       suggestedDisplayName: "Company Communicator",
-     });
+    microsoftTeams.initialize();
+    microsoftTeams.settings.registerOnSaveHandler((saveEvent) => {
+      microsoftTeams.settings.setSettings({
+        entityId: "Company_Communicator_App",
+        contentUrl: this.state.url,
+        suggestedDisplayName: "Company Communicator",
+      });
       saveEvent.notifySuccess();
     });
 
-    pages.config.setValidityState(true);
+    microsoftTeams.settings.setValidityState(true);
   }
 
   public render(): JSX.Element {

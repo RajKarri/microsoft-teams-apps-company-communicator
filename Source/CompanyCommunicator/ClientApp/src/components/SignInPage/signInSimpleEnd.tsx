@@ -19,8 +19,7 @@ const SignInSimpleEnd: React.FunctionComponent = () => {
           hashParams[k] = v;
         });
       return hashParams;
-    }
-    catch(error) {
+    } catch (error) {
       console.log(error);
     }
     return null;

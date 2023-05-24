@@ -72,6 +72,7 @@ export const DraftMessageDetail = (draftMessages: any) => {
     dialog.url.open(dialogInfo, submitHandler);
   };
 
+
   const duplicateDraftMessage = async (id: number) => {
     try {
       await duplicateDraftNotification(id);

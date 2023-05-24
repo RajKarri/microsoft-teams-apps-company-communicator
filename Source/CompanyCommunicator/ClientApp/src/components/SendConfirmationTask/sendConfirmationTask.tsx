@@ -6,7 +6,7 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { Button, Field, Label, Persona, Spinner, Text } from '@fluentui/react-components';
-import { dialog } from '@microsoft/teams-js';
+import { dialog } from "@microsoft/teams-js";
 import {
     getConsentSummaries, getDraftNotification, sendDraftNotification
 } from '../../apis/messageListApi';
@@ -72,6 +72,7 @@ export const SendConfirmationTask = () => {
       getDraftMessage(id);
       getConsents(id);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   React.useEffect(() => {
@@ -140,10 +141,11 @@ export const SendConfirmationTask = () => {
         setDisableSendButton(false);
       });
   };
-
+  
   const getItemList = (items: string[], secondaryText: string, shape: AvatarShape) => {
     let resultedTeams: any[] = [];
     if (items) {
+      // eslint-disable-next-line array-callback-return
       items.map((element) => {
         resultedTeams.push(
           <li key={element + "key"}>

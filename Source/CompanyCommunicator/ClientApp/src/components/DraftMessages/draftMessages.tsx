@@ -15,10 +15,10 @@ export const DraftMessages = () => {
   const dispatch = useAppDispatch();
 
   React.useEffect(() => {
-    if (draftMessages && draftMessages.length === 0) {
+    if (dispatch && draftMessages && draftMessages.length === 0) {
       GetDraftMessagesAction(dispatch);
     }
-  }, []);
+  }, [dispatch, draftMessages]);
 
   return (
     <>

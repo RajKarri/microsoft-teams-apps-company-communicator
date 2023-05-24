@@ -1,141 +1,78 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
-import { authentication } from "@microsoft/teams-js";
+import axios, { AxiosResponse } from "axios";
+import { app, authentication } from "@microsoft/teams-js";
 import i18n from "../i18n";
-
+import { ROUTE_PARTS } from "../routes";
 
 export class AxiosJWTDecorator {
-  public async get<T = any, R = AxiosResponse<T>>(
-    url: string,
-    handleError: boolean = true,
-    needAuthorizationHeader: boolean = true,
-    config?: AxiosRequestConfig
-  ): Promise<R> {
+  public async get<T = any, R = AxiosResponse<T>>(url: string): Promise<R> {
+    return await this.handleAxiosCall("get", url);
+  }
+
+  public async delete<T = any, R = AxiosResponse<T>>(url: string): Promise<R> {
+    return await this.handleAxiosCall("delete", url);
+  }
+
+  public async post<T = any, R = AxiosResponse<T>>(url: string, data?: any): Promise<R> {
+    return await this.handleAxiosCall("post", url, data);
+  }
+
+  public async put<T = any, R = AxiosResponse<T>>(url: string, data?: any): Promise<R> {
+    return await this.handleAxiosCall("put", url, data);
+  }
+
+  private async handleAxiosCall<T = any, R = AxiosResponse<T>>(verb: string, url: string, data?: any): Promise<R> {
     try {
-      if (needAuthorizationHeader) {
-        config = await this.setupAuthorizationHeader(config);
+      const config = await this.setupAuthorizationHeader();
+      switch (verb) {
+        case "get":
+          return await axios.get(url, config);
+        case "post":
+          return await axios.post(url, data, config);
+        case "put":
+          return await axios.put(url, data, config);
+        case "delete":
+          return await axios.delete(url, config);
+        default:
+          return await axios.get(url, config);
       }
-      return await axios.get(url, config);
     } catch (error) {
-      if (handleError) {
-        this.handleError(error);
-        throw error;
-      } else {
-        throw error;
-      }
+      this.handleError(error);
+      throw error;
     }
   }
 
-  public async delete<T = any, R = AxiosResponse<T>>(
-    url: string,
-    handleError: boolean = true,
-    config?: AxiosRequestConfig
-  ): Promise<R> {
+  private async setupAuthorizationHeader() {
+    const config: any = axios.defaults;
+
     try {
-      config = await this.setupAuthorizationHeader(config);
-      return await axios.delete(url, config);
-    } catch (error) {
-      if (handleError) {
-        this.handleError(error);
-        throw error;
-      } else {
-        throw error;
+      if (app.isInitialized()) {
+        const token = await authentication.getAuthToken({ silent: true });
+        config.headers!["Authorization"] = `Bearer ${token}`;
+        config.headers!["Accept-Language"] = i18n.language;
       }
-    }
-  }
-
-  public async post<T = any, R = AxiosResponse<T>>(
-    url: string,
-    data?: any,
-    handleError: boolean = true,
-    config?: AxiosRequestConfig
-  ): Promise<R> {
-    try {
-      config = await this.setupAuthorizationHeader(config);
-      return await axios.post(url, data, config);
-    } catch (error) {
-      if (handleError) {
-        this.handleError(error);
-        throw error;
-      } else {
-        throw error;
-      }
-    }
-  }
-
-  public async put<T = any, R = AxiosResponse<T>>(
-    url: string,
-    data?: any,
-    handleError: boolean = true,
-    config?: AxiosRequestConfig
-  ): Promise<R> {
-    try {
-      config = await this.setupAuthorizationHeader(config);
-      return await axios.put(url, data, config);
-    } catch (error) {
-      if (handleError) {
-        this.handleError(error);
-        throw error;
-      } else {
-        throw error;
-      }
-    }
-  }
-
-  private handleError(error: any): void {
-    if (error.hasOwnProperty("response")) {
-      const errorStatus = error.response.status;
-      if (errorStatus === 403) {
-        window.location.href = `/errorpage/403?locale=${i18n.language}`;
-      } else if (errorStatus === 401) {
-        window.location.href = `/errorpage/401?locale=${i18n.language}`;
-      } else {
-        window.location.href = `/errorpage?locale=${i18n.language}`;
-      }
-    } else {
-      window.location.href = `/errorpage?locale=${i18n.language}`;
-    }
-  }
-
-  private async setupAuthorizationHeader(config?: AxiosRequestConfig) {
-    try {
-      const token = await authentication.getAuthToken({ silent: true });
-      if (!config) {
-        config = axios.defaults;
-      }
-      config.headers["Authorization"] = `Bearer ${token}`;
-      config.headers["Accept-Language"] = i18n.language;
     } catch (error) {
       console.error("Error from getAuthToken: ", error);
-      window.location.href = `/signin?locale=${i18n.language}`;
+      window.location.href = `/${ROUTE_PARTS.SIGN_IN}?locale=${i18n.language}`;
     }
 
     return config;
-    // return new Promise<AxiosRequestConfig>((resolve, reject) => {
-    //   const authTokenRequest = {
-    //     successCallback: (token: string) => {
-    //       if (!config) {
-    //         config = axios.defaults;
-    //       }
-    //       config.headers["Authorization"] = `Bearer ${token}`;
-    //       config.headers["Accept-Language"] = i18n.language;
-    //       resolve(config);
-    //     },
-    //     failureCallback: (error: string) => {
-    //       // When the getAuthToken function returns a "resourceRequiresConsent" error,
-    //       // it means Azure AD needs the user's consent before issuing a token to the app.
-    //       // The following code redirects the user to the "Sign in" page where the user can grant the consent.
-    //       // Right now, the app redirects to the consent page for any error.
-    //       // console.error("Error from getAuthToken: ", error);
-    //       // window.location.href = `/signin?locale=${i18n.language}`;
-    //       resolve(axios.defaults);
-    //     },
-    //     resources: [],
-    //   };
-    //  // authentication.getAuthToken(authTokenRequest);
-    // });
+  }
+
+  private handleError(error: any): void {
+    if (error?.response?.status) {
+      if (error.response.status === 403) {
+        window.location.href = `/${ROUTE_PARTS.ERROR_PAGE}/403?locale=${i18n.language}`;
+      } else if (error.response.status === 401) {
+        window.location.href = `/${ROUTE_PARTS.ERROR_PAGE}/401?locale=${i18n.language}`;
+      } else {
+        window.location.href = `/${ROUTE_PARTS.ERROR_PAGE}?locale=${i18n.language}`;
+      }
+    } else {
+      window.location.href = `/${ROUTE_PARTS.ERROR_PAGE}?locale=${i18n.language}`;
+    }
   }
 }
 

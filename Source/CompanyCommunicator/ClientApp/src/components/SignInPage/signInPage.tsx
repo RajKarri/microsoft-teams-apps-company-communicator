@@ -4,12 +4,11 @@
 import "./signInPage.scss";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { RouteComponentProps } from "react-router-dom";
 import { Button, Text } from "@fluentui/react-components";
 import { app, authentication } from "@microsoft/teams-js";
 import i18n from "../../i18n";
 
-const SignInPage: React.FunctionComponent<RouteComponentProps> = (props) => {
+const SignInPage = () => {
   const { t } = useTranslation();
   const errorMessage = t("SignInPromptMessage");
 

@@ -4,7 +4,7 @@
 import "./App.scss";
 import i18n from "i18next";
 import React, { Suspense } from "react";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { FluentProvider, teamsDarkTheme, teamsHighContrastTheme, teamsLightTheme } from "@fluentui/react-components";
 import { app } from "@microsoft/teams-js";
 
@@ -22,21 +22,9 @@ import { ROUTE_PARAMS, ROUTE_PARTS } from "./routes";
 export const App = () => {
   const [fluentUITheme, setFluentUITheme] = React.useState(teamsLightTheme);
   const [locale, setLocale] = React.useState("en-US");
-  const [isAppReady, setIsAppReady] = React.useState(false);
 
   React.useEffect(() => {
-    app
-      .initialize()
-      .then(() => {
-        setIsAppReady(true);
-      })
-      .catch((error) => {
-        setIsAppReady(false);
-      });
-  }, []);
-
-  React.useEffect(() => {
-    if (app.isInitialized() && isAppReady) {
+    if (app.isInitialized()) {
       app.getContext().then((context: app.Context) => {
         const theme = context.app.theme || "default";
         setLocale(context.app.locale);
@@ -48,7 +36,7 @@ export const App = () => {
         updateTheme(theme);
       });
     }
-  }, [isAppReady]);
+  }, []);
 
   const updateTheme = (theme: string) => {
     switch (theme.toLocaleLowerCase()) {
@@ -66,31 +54,28 @@ export const App = () => {
 
   return (
     <>
-      {isAppReady &&
-        <FluentProvider theme={fluentUITheme} dir={i18n.dir(locale)}>
-          <Suspense fallback={<div></div>}>
-            <BrowserRouter>
-              <Switch>
-                <Route exact path={`/${ROUTE_PARTS.CONFIG_TAB}`} component={Configuration} />
-                <Route exact path={`/${ROUTE_PARTS.MESSAGES}`} render={() => <MainContainer theme={fluentUITheme} />} />
-                <Route exact path={`/${ROUTE_PARTS.NEW_MESSAGE}`} component={NewMessage} />
-                <Route exact path={`/${ROUTE_PARTS.NEW_MESSAGE}/:${ROUTE_PARAMS.ID}`} component={NewMessage} />
-                <Route exact path={`/${ROUTE_PARTS.VIEW_STATUS}/:${ROUTE_PARAMS.ID}`} component={ViewStatusTask} />
-                <Route
-                  exact
-                  path={`/${ROUTE_PARTS.SEND_CONFIRMATION}/:${ROUTE_PARAMS.ID}`}
-                  component={SendConfirmationTask}
-                />
-                <Route path={`/${ROUTE_PARTS.ERROR_PAGE}/:${ROUTE_PARAMS.ID}`} component={ErrorPage} />
-                <Route path={`/${ROUTE_PARTS.ERROR_PAGE}`} component={ErrorPage} />
-                <Route exact path={`/${ROUTE_PARTS.SIGN_IN}`} component={SignInPage} />
-                <Route exact path={`/${ROUTE_PARTS.SIGN_IN_SIMPLE_START}`} component={SignInSimpleStart} />
-                <Route exact path={`/${ROUTE_PARTS.SIGN_IN_SIMPLE_END}`} component={SignInSimpleEnd} />
-              </Switch>
-            </BrowserRouter>
-          </Suspense>
-        </FluentProvider>
-      }
+      <FluentProvider theme={fluentUITheme} dir={i18n.dir(locale)}>
+        <Suspense fallback={<div></div>}>
+          <BrowserRouter>
+            <Routes>
+              <Route path={`/${ROUTE_PARTS.CONFIG_TAB}`} element={<Configuration />} />
+              <Route path={`/${ROUTE_PARTS.MESSAGES}`} element={<MainContainer theme={fluentUITheme} />} />
+              <Route path={`/${ROUTE_PARTS.NEW_MESSAGE}`} element={<NewMessage />} />
+              <Route path={`/${ROUTE_PARTS.NEW_MESSAGE}/:${ROUTE_PARAMS.ID}`} element={<NewMessage />} />
+              <Route path={`/${ROUTE_PARTS.VIEW_STATUS}/:${ROUTE_PARAMS.ID}`} element={<ViewStatusTask />} />
+              <Route
+                path={`/${ROUTE_PARTS.SEND_CONFIRMATION}/:${ROUTE_PARAMS.ID}`}
+                element={<SendConfirmationTask />}
+              />
+              <Route path={`/${ROUTE_PARTS.SIGN_IN}`} element={<SignInPage />} />
+              <Route path={`/${ROUTE_PARTS.SIGN_IN_SIMPLE_START}`} element={<SignInSimpleStart />} />
+              <Route path={`/${ROUTE_PARTS.SIGN_IN_SIMPLE_END}`} element={<SignInSimpleEnd />} />
+              <Route path={`/${ROUTE_PARTS.ERROR_PAGE}`} element={<ErrorPage />} />
+              <Route path={`/${ROUTE_PARTS.ERROR_PAGE}/:${ROUTE_PARAMS.ID}`} element={<ErrorPage />} />
+            </Routes>
+          </BrowserRouter>
+        </Suspense>
+      </FluentProvider>
     </>
   );
 };

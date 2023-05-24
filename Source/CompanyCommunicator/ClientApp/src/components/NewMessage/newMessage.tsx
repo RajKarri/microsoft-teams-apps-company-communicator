@@ -148,22 +148,29 @@ export const NewMessage = () => {
   const [searchSelectedOptions, setSearchSelectedOptions] = React.useState<ITeamTemplate[]>([]);
 
   React.useEffect(() => {
-    GetTeamsDataAction(dispatch);
-    VerifyGroupAccessAction(dispatch);
-    card = getInitAdaptiveCard(t);
-    setDefaultCard(card);
-    updateAdaptiveCard();
-  }, []);
+    if (dispatch) {
+      GetTeamsDataAction(dispatch);
+      VerifyGroupAccessAction(dispatch);
+      card = getInitAdaptiveCard(t);
+      setDefaultCard(card);
+      updateAdaptiveCard();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch]);
 
   React.useEffect(() => {
-    if (id) {
+    if (dispatch && id) {
       GetGroupsAction(dispatch, { id });
       getDraftNotificationItem(id);
     }
-  }, [id]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, id]);
 
   React.useEffect(() => {
-    updateAdaptiveCard();
+    if (pageSelection) {
+      updateAdaptiveCard();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageSelection]);
 
   React.useEffect(() => {
@@ -280,7 +287,7 @@ export const NewMessage = () => {
       const { type: mimeType } = file;
 
       if (!validImageTypes.includes(fileType)) {
-        setImageUploadErrorMessage(t("ErrorImageTypesMessage"));
+        setImageUploadErrorMessage(t("ErrorImageTypesMessage")!);
         return;
       }
 
@@ -311,7 +318,7 @@ export const NewMessage = () => {
         };
 
         if (!checkValidSizeOfImage(resizedImageAsBase64)) {
-          setImageUploadErrorMessage(t("ErrorImageSizeMessage"));
+          setImageUploadErrorMessage(t("ErrorImageSizeMessage")!);
           return;
         }
 
@@ -453,10 +460,10 @@ export const NewMessage = () => {
       )
     ) {
       isGoodLink = false;
-      setImageUploadErrorMessage(t("ErrorURLMessage"));
+      setImageUploadErrorMessage(t("ErrorURLMessage")!);
     } else {
       isGoodLink = true;
-      setImageUploadErrorMessage(t(""));
+      setImageUploadErrorMessage("");
     }
 
     if (isGoodLink) {
@@ -488,7 +495,7 @@ export const NewMessage = () => {
     if (validator.isURL(event.target.value) || event.target.value === "") {
       setBtnLinkErrorMessage("");
     } else {
-      setBtnLinkErrorMessage("Please enter a valid URL");
+      setBtnLinkErrorMessage(`${event.target.value} is invalid. Please enter a valid URL`);
     }
     setCardBtn(card, messageState.buttonTitle, event.target.value);
     setMessageState({ ...messageState, buttonLink: event.target.value });
@@ -610,7 +617,7 @@ export const NewMessage = () => {
     <>
       {pageSelection === CurrentPageSelection.CardCreation && (
         <>
-          <span role="alert" aria-label={t("NewMessageStep1")} />
+          <span role="alert" aria-label={t("NewMessageStep1")!} />
           <div className="adaptive-task-grid">
             <div className="form-area">
               <Field
@@ -621,7 +628,7 @@ export const NewMessage = () => {
                 validationMessage={titleErrorMessage}
               >
                 <Input
-                  placeholder={t("PlaceHolderTitle")}
+                  placeholder={t("PlaceHolderTitle")!}
                   onChange={onTitleChanged}
                   autoComplete="off"
                   size="large"
@@ -633,10 +640,11 @@ export const NewMessage = () => {
               <Field
                 size="large"
                 className={field_styles.styles}
+                // @ts-ignore
                 label={{
                   children: (_: unknown, imageInfoProps: LabelProps) => (
-                    <InfoLabel {...imageInfoProps} info={t("ImageSizeInfoContent") || ""}>
-                      {t("ImageURL")}
+                    <InfoLabel {...imageInfoProps} info={t("ImageSizeInfoContent")! || ""}>
+                      {t("ImageURL")!}
                     </InfoLabel>
                   ),
                 }}
@@ -654,19 +662,21 @@ export const NewMessage = () => {
                     style={{ gridColumn: "1" }}
                     appearance="filled-darker"
                     value={imageFileName || ""}
-                    placeholder={t("ImageURL")}
+                    placeholder={t("ImageURL")!}
                     onChange={onImageLinkChanged}
                   />
-                  <Button
-                    style={{ gridColumn: "2", marginLeft: "5px" }}
-                    onClick={handleUploadClick}
-                    size="large"
-                    appearance="secondary"
-                    aria-label={imageFileName ? t("UploadImageSuccessful") : t("UploadImageInfo")}
-                    icon={<ArrowUpload24Regular />}
-                  >
-                    {t("Upload")}
-                  </Button>
+                  {// @ts-ignore
+                    <Button
+                      style={{ gridColumn: "2", marginLeft: "5px" }}
+                      onClick={handleUploadClick}
+                      size="large"
+                      appearance="secondary"
+                      aria-label={imageFileName ? t("UploadImageSuccessful")! : t("UploadImageInfo")!}
+                      icon={<ArrowUpload24Regular />}
+                    >
+                      {t("Upload")}
+                    </Button>
+                  }
                   <input
                     type="file"
                     accept=".jpg, .jpeg, .png, .gif"
@@ -681,14 +691,14 @@ export const NewMessage = () => {
                 <Textarea
                   size="large"
                   appearance="filled-darker"
-                  placeholder={t("Summary")}
+                  placeholder={t("Summary")!}
                   value={messageState.summary || ""}
                   onChange={onSummaryChanged}
                 />
               </Field>
               <Field size="large" className={field_styles.styles} label={t("Author")}>
                 <Input
-                  placeholder={t("Author")}
+                  placeholder={t("Author")!}
                   size="large"
                   onChange={onAuthorChanged}
                   autoComplete="off"
@@ -699,7 +709,7 @@ export const NewMessage = () => {
               <Field size="large" className={field_styles.styles} label={t("ButtonTitle")}>
                 <Input
                   size="large"
-                  placeholder={t("ButtonTitle")}
+                  placeholder={t("ButtonTitle")!}
                   onChange={onBtnTitleChanged}
                   autoComplete="off"
                   appearance="filled-darker"
@@ -714,7 +724,7 @@ export const NewMessage = () => {
               >
                 <Input
                   size="large"
-                  placeholder={t("ButtonURL")}
+                  placeholder={t("ButtonURL")!}
                   onChange={onBtnLinkChanged}
                   type="url"
                   autoComplete="off"
@@ -738,7 +748,7 @@ export const NewMessage = () => {
       )}
       {pageSelection === CurrentPageSelection.AudienceSelection && (
         <>
-          <span role="alert" aria-label={t("NewMessageStep2")} />
+          <span role="alert" aria-label={t("NewMessageStep2")!} />
           <div className="adaptive-task-grid">
             <div className="form-area">
               <Label size="large" id="audienceSelectionGroupLabelId">
@@ -791,7 +801,7 @@ export const NewMessage = () => {
                       onOptionSelect={onTeamsSelect}
                       ref={teamsComboboxInputRef}
                       aria-labelledby={teamsLabelledBy}
-                      placeholder={teams.length !== 0 ? "Pick one or more teams" : t("NoMatchMessage")}
+                      placeholder={teams.length !== 0 ? "Pick one or more teams" : t("NoMatchMessage")!}
                     >
                       {teams.map((opt) => (
                         <Option text={opt.name} value={opt.id} key={opt.id}>
@@ -847,7 +857,7 @@ export const NewMessage = () => {
                       onOptionSelect={onRostersSelect}
                       ref={rostersComboboxInputRef}
                       aria-labelledby={rostersLabelledBy}
-                      placeholder={teams.length !== 0 ? "Pick one or more teams" : t("NoMatchMessage")}
+                      placeholder={teams.length !== 0 ? "Pick one or more teams" : t("NoMatchMessage")!}
                     >
                       {teams.map((opt) => (
                         <Option text={opt.name} value={opt.id} key={opt.id}>

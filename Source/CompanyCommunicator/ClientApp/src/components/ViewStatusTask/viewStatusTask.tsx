@@ -79,15 +79,19 @@ export const ViewStatusTask = () => {
   });
 
   React.useEffect(() => {
-    app.getContext().then((context) => {
-      setStatusState({ ...statusState, teamId: context.team?.internalId || "", isTeamDataUpdated: true });
-    });
+    if (app.isInitialized()) {
+      app.getContext().then((context) => {
+        setStatusState({ ...statusState, teamId: context.team?.internalId || "", isTeamDataUpdated: true });
+      });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   React.useEffect(() => {
     if (id) {
       getMessage(id);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   React.useEffect(() => {
@@ -160,6 +164,7 @@ export const ViewStatusTask = () => {
   const getItemList = (items: string[], secondaryText: string, shape: AvatarShape) => {
     let resultedTeams: any[] = [];
     if (items) {
+      // eslint-disable-next-line array-callback-return
       items.map((element) => {
         resultedTeams.push(
           <li key={element + "key"}>
@@ -235,7 +240,7 @@ export const ViewStatusTask = () => {
       {loader && <Spinner />}
       {statusState.page === "ViewStatus" && (
         <>
-          <span role="alert" aria-label={t("ViewMessageStatus")} />
+          <span role="alert" aria-label={t("ViewMessageStatus")!} />
           <div className="adaptive-task-grid">
             <div className="form-area">
               {!loader && (
@@ -293,8 +298,8 @@ export const ViewStatusTask = () => {
                   style={{ marginLeft: "16px" }}
                   title={
                     exportDisabled || messageState.canDownload === false
-                      ? t("ExportButtonProgressText")
-                      : t("ExportButtonText")
+                      ? t("ExportButtonProgressText")!
+                      : t("ExportButtonText")!
                   }
                   disabled={exportDisabled || messageState.canDownload === false}
                   onClick={onExport}
@@ -309,7 +314,7 @@ export const ViewStatusTask = () => {
       )}
       {!loader && statusState.page === "SuccessPage" && (
         <>
-          <span role="alert" aria-label={t("ExportSuccessView")} />
+          <span role="alert" aria-label={t("ExportSuccessView")!} />
           <div className="wizard-page">
             <h2>
               <CheckmarkSquare24Regular style={{ color: "#22bb33", verticalAlign: "middle", paddingRight: "8px" }} />
@@ -336,7 +341,7 @@ export const ViewStatusTask = () => {
       )}
       {!loader && statusState.page === "ErrorPage" && (
         <>
-          <span role="alert" aria-label={t("ExportFailureView")} />
+          <span role="alert" aria-label={t("ExportFailureView")!} />
           <div className="wizard-page">
             <h2>
               <ShareScreenStop24Regular style={{ color: "#bb2124", verticalAlign: "middle", paddingRight: "8px" }} />

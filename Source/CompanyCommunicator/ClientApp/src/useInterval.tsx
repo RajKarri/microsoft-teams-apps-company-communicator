@@ -15,7 +15,9 @@ export const useInterval = (callback: any, delay: any) => {
     };
 
     if (delay !== null) {
+      /* tslint:disable-next-line */
       const id = setInterval(tick, delay);
+      /* tslint:disable-next-line */
       return () => clearInterval(id);
     } else {
       return;

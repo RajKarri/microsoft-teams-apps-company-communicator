@@ -110,7 +110,7 @@ export const SentMessageDetail = (sentMessages: any) => {
   const duplicateDraftMessage = async (id: number) => {
     try {
       await duplicateDraftNotification(id);
-        GetDraftMessagesSilentAction(dispatch);
+      GetDraftMessagesSilentAction(dispatch);
     } catch (error) {
       return error;
     }

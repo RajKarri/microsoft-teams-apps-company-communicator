@@ -20,7 +20,7 @@ export const SentMessages = () => {
     if (sentMessages && sentMessages.length === 0) {
       GetSentMessagesAction(dispatch);
     }
-  }, []);
+  }, [dispatch, sentMessages]);
 
   CustomHooks.useInterval(() => {
     GetSentMessagesSilentAction(dispatch);
