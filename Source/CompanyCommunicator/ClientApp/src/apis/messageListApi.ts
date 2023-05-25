@@ -82,7 +82,7 @@ export const cancelSentNotification = async (id: number): Promise<any> => {
 };
 
 export const getConsentSummaries = async (id: number): Promise<any> => {
-  const url = `${baseAxiosUrl}'/draftnotifications/consentSummaries/${id}`;
+  const url = `${baseAxiosUrl}/draftnotifications/consentSummaries/${id}`;
   return await axios.get(url);
 };
 
