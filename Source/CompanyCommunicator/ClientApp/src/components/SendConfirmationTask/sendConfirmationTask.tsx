@@ -86,7 +86,7 @@ export const SendConfirmationTask = () => {
   }, [isCardReady, consentState.isConsentsUpdated, messageState.isDraftMsgUpdated]);
 
   const updateCardData = (msg: IMessageState) => {
-    card = getInitAdaptiveCard(t('TitleText') || '');
+    card = getInitAdaptiveCard(t('TitleText') ?? '');
     setCardTitle(card, msg.title);
     setCardImageLink(card, msg.imageLink);
     setCardSummary(card, msg.summary);

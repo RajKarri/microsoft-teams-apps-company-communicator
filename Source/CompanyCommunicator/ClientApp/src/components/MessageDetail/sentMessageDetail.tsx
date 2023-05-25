@@ -120,7 +120,7 @@ export const SentMessageDetail = (sentMessages: any) => {
   };
 
   return (
-    <Table {...keyboardNavAttr} role='grid' aria-label='Sent messages table with grid keyboard navigation'>
+    <Table {...keyboardNavAttr} role='grid' aria-label={t('sentMessagesGridNavigation') ?? ''}>
       <TableHeader>
         <TableRow>
           <TableHeaderCell key='title'>
@@ -137,7 +137,7 @@ export const SentMessageDetail = (sentMessages: any) => {
             <b className='big-screen-visible'>{t('CreatedBy')}</b>
           </TableHeaderCell>
           <TableHeaderCell key='actions' style={{ float: 'right' }}>
-            <b>Actions</b>
+            <b>{t('actions')}</b>
           </TableHeaderCell>
         </TableRow>
       </TableHeader>

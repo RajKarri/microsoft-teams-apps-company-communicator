@@ -2,11 +2,11 @@
 // Licensed under the MIT License.
 
 import './App.scss';
-import i18n from 'i18next';
 import React, { Suspense } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { FluentProvider, teamsDarkTheme, teamsHighContrastTheme, teamsLightTheme } from '@fluentui/react-components';
 import { app } from '@microsoft/teams-js';
+import i18n from '../src/i18n';
 import Configuration from './components/config';
 import ErrorPage from './components/ErrorPage/errorPage';
 import { MainContainer } from './components/MainContainer/mainContainer';

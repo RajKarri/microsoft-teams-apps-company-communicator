@@ -137,10 +137,15 @@ export const NewMessage = () => {
   React.useEffect(() => {
     GetTeamsDataAction(dispatch);
     VerifyGroupAccessAction(dispatch);
-    card = getInitAdaptiveCard(t('TitleText') || '');
-    setDefaultCard(card);
-    updateAdaptiveCard();
   }, []);
+
+  React.useEffect(() => {
+    if (t) {
+      card = getInitAdaptiveCard(t('TitleText') ?? '');
+      setDefaultCard(card);
+      updateAdaptiveCard();
+    }
+  }, [t]);
 
   React.useEffect(() => {
     if (id) {
@@ -411,7 +416,7 @@ export const NewMessage = () => {
 
   const onTitleChanged = (event: any) => {
     if (event.target.value === '') {
-      setTitleErrorMessage('Title is required.');
+      setTitleErrorMessage(t('titleRequired') ?? '');
     } else {
       setTitleErrorMessage('');
     }
@@ -471,7 +476,7 @@ export const NewMessage = () => {
       setBtnLinkErrorMessage('');
     } else {
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      setBtnLinkErrorMessage(`${event.target.value} is invalid. Please enter a valid URL`);
+      setBtnLinkErrorMessage(`${event.target.value} is invalid. ${t('enterValidURL')}`);
     }
     setCardBtn(card, messageState.buttonTitle, event.target.value);
     setMessageState({ ...messageState, buttonLink: event.target.value });
@@ -654,7 +659,7 @@ export const NewMessage = () => {
                   <input
                     type='file'
                     accept='.jpg, .jpeg, .png, .gif'
-                    aria-label='hidden input'
+                    aria-label='input file upload (hidden)'
                     style={{ display: 'none' }}
                     multiple={false}
                     onChange={handleImageSelection}
@@ -732,14 +737,14 @@ export const NewMessage = () => {
                 <Radio id='radio1' value={AudienceSelection.Teams} label={t('SendToGeneralChannel')} />
                 {selectedRadioButton === AudienceSelection.Teams && (
                   <div className={cmbStyles.root}>
-                    <Label id={teamsComboId}>Pick team(s)</Label>
+                    <Label id={teamsComboId}>{t('pickTeams')}</Label>
                     {
                       // eslint-disable-next-line multiline-ternary
                       teamsSelectedOptions.length ? (
                         <ul id={teamsSelectedListId} className={cmbStyles.tagsList} ref={teamsSelectedListRef}>
                           {/* The "Remove" span is used for naming the buttons without affecting the Combobox name */}
                           <span id={`${teamsComboId}-remove`} hidden>
-                            Remove
+                            {t('remove')}
                           </span>
                           {teamsSelectedOptions.map((option, i) => (
                             <li key={option.id}>
@@ -772,7 +777,7 @@ export const NewMessage = () => {
                       ref={teamsComboboxInputRef}
                       aria-labelledby={teamsLabelledBy}
                       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                      placeholder={teams.length !== 0 ? 'Pick one or more teams' : t('NoMatchMessage')!}
+                      placeholder={teams.length !== 0 ? t('pickOneOrMoreTeams')! : t('NoMatchMessage')!}
                     >
                       {teams.map((opt) => (
                         <Option text={opt.name} value={opt.id} key={opt.id}>
@@ -785,14 +790,14 @@ export const NewMessage = () => {
                 <Radio id='radio2' value={AudienceSelection.Rosters} label={t('SendToRosters')} />
                 {selectedRadioButton === AudienceSelection.Rosters && (
                   <div className={cmbStyles.root}>
-                    <Label id={rostersComboId}>Pick team(s)</Label>
+                    <Label id={rostersComboId}>{t('pickTeams')}</Label>
                     {
                       // eslint-disable-next-line multiline-ternary
                       rostersSelectedOptions.length ? (
                         <ul id={rostersSelectedListId} className={cmbStyles.tagsList} ref={rostersSelectedListRef}>
                           {/* The "Remove" span is used for naming the buttons without affecting the Combobox name */}
                           <span id={`${rostersComboId}-remove`} hidden>
-                            Remove
+                            {t('remove')}
                           </span>
                           {rostersSelectedOptions.map((option, i) => (
                             <li key={option.id}>
@@ -825,7 +830,7 @@ export const NewMessage = () => {
                       ref={rostersComboboxInputRef}
                       aria-labelledby={rostersLabelledBy}
                       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                      placeholder={teams.length !== 0 ? 'Pick one or more teams' : t('NoMatchMessage')!}
+                      placeholder={teams.length !== 0 ? t('pickOneOrMoreTeams')! : t('NoMatchMessage')!}
                     >
                       {teams.map((opt) => (
                         <Option text={opt.name} value={opt.id} key={opt.id}>
@@ -853,14 +858,14 @@ export const NewMessage = () => {
                     )}
                     {canAccessGroups && (
                       <>
-                        <Label id={searchComboId}>Pick group(s)</Label>
+                        <Label id={searchComboId}>{t('pickGroups')}</Label>
                         {
                           // eslint-disable-next-line multiline-ternary
                           searchSelectedOptions.length ? (
                             <ul id={searchSelectedListId} className={cmbStyles.tagsList} ref={searchSelectedListRef}>
                               {/* The "Remove" span is used for naming the buttons without affecting the Combobox name */}
                               <span id={`${searchComboId}-remove`} hidden>
-                                Remove
+                                {t('remove')}
                               </span>
                               {searchSelectedOptions.map((option, i) => (
                                 <li key={option.id}>
@@ -890,7 +895,7 @@ export const NewMessage = () => {
                           onOptionSelect={onSearchSelect}
                           onChange={onSearchChange}
                           aria-labelledby={searchLabelledBy}
-                          placeholder={'Search for groups'}
+                          placeholder={t('searchForGroups') ?? ''}
                         >
                           {queryGroups.map((opt) => (
                             <Option text={opt.name} value={opt.id} key={opt.id}>

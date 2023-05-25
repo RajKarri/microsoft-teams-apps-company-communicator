@@ -104,14 +104,14 @@ export const DraftMessageDetail = (draftMessages: any) => {
   };
 
   return (
-    <Table {...keyboardNavAttr} role='grid' aria-label='Draft messages table with grid keyboard navigation'>
+    <Table {...keyboardNavAttr} role='grid' aria-label={t('draftMessagesGridNavigation') ?? ''}>
       <TableHeader>
         <TableRow>
           <TableHeaderCell key='title'>
             <b>{t('TitleText')}</b>
           </TableHeaderCell>
           <TableHeaderCell key='actions' style={{ float: 'right' }}>
-            <b>Actions</b>
+            <b>{t('actions')}</b>
           </TableHeaderCell>
         </TableRow>
       </TableHeader>
@@ -123,7 +123,9 @@ export const DraftMessageDetail = (draftMessages: any) => {
               <TableCellLayout
                 media={<Chat20Regular />}
                 style={{ cursor: 'pointer' }}
-                onClick={() => { onOpenTaskModule(null, editUrl(item.id), t('EditMessage')); }}
+                onClick={() => {
+                  onOpenTaskModule(null, editUrl(item.id), t('EditMessage'));
+                }}
               >
                 {item.title}
               </TableCellLayout>
@@ -139,11 +141,14 @@ export const DraftMessageDetail = (draftMessages: any) => {
                       <MenuItem
                         icon={<SendRegular />}
                         key={'sendConfirmationKey'}
-                        onClick={() => { onOpenTaskModule(null, sendUrl(item.id), t('SendConfirmation')); }}
+                        onClick={() => {
+                          onOpenTaskModule(null, sendUrl(item.id), t('SendConfirmation'));
+                        }}
                       >
                         {t('Send')}
                       </MenuItem>
-                      {// eslint-disable-next-line @typescript-eslint/no-misused-promises, @typescript-eslint/promise-function-async
+                      {
+                        // eslint-disable-next-line @typescript-eslint/no-misused-promises, @typescript-eslint/promise-function-async
                         <MenuItem key={'previewInThisChannelKey'} icon={<OpenRegular />} onClick={() => checkPreviewMessage(item.id)}>
                           {t('PreviewInThisChannel')}
                         </MenuItem>
@@ -151,16 +156,20 @@ export const DraftMessageDetail = (draftMessages: any) => {
                       <MenuItem
                         icon={<EditRegular />}
                         key={'editMessageKey'}
-                        onClick={() => { onOpenTaskModule(null, editUrl(item.id), t('EditMessage')); }}
+                        onClick={() => {
+                          onOpenTaskModule(null, editUrl(item.id), t('EditMessage'));
+                        }}
                       >
                         {t('Edit')}
                       </MenuItem>
-                      {// eslint-disable-next-line @typescript-eslint/no-misused-promises, @typescript-eslint/promise-function-async
+                      {
+                        // eslint-disable-next-line @typescript-eslint/no-misused-promises, @typescript-eslint/promise-function-async
                         <MenuItem key={'duplicateKey'} icon={<DocumentCopyRegular />} onClick={() => duplicateDraftMessage(item.id)}>
                           {t('Duplicate')}
                         </MenuItem>
                       }
-                      {// eslint-disable-next-line @typescript-eslint/no-misused-promises, @typescript-eslint/promise-function-async
+                      {
+                        // eslint-disable-next-line @typescript-eslint/no-misused-promises, @typescript-eslint/promise-function-async
                         <MenuItem key={'deleteKey'} icon={<DeleteRegular />} onClick={() => deleteDraftMessage(item.id)}>
                           {t('Delete')}
                         </MenuItem>
