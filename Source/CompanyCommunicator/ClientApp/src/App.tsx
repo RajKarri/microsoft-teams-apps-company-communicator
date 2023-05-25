@@ -21,9 +21,21 @@ import { ROUTE_PARAMS, ROUTE_PARTS } from './routes';
 export const App = () => {
   const [fluentUITheme, setFluentUITheme] = React.useState(teamsLightTheme);
   const [locale, setLocale] = React.useState('en-US');
+  const [isAppReady, setIsAppReady] = React.useState(false);
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment, @typescript-eslint/prefer-ts-expect-error
   // @ts-ignore
   const dir = i18n.dir(locale);
+
+  React.useEffect(() => {
+    app
+      .initialize()
+      .then(() => {
+        setIsAppReady(true);
+      })
+      .catch(() => {
+        setIsAppReady(false);
+      });
+  }, []);
 
   React.useEffect(() => {
     if (app.isInitialized()) {
@@ -58,25 +70,27 @@ export const App = () => {
 
   return (
     <>
-      <FluentProvider theme={fluentUITheme} dir={dir}>
-        <Suspense fallback={<div></div>}>
-          <BrowserRouter>
-            <Routes>
-              <Route path={`/${ROUTE_PARTS.CONFIG_TAB}`} element={<Configuration />} />
-              <Route path={`/${ROUTE_PARTS.MESSAGES}`} element={<MainContainer theme={fluentUITheme} />} />
-              <Route path={`/${ROUTE_PARTS.NEW_MESSAGE}`} element={<NewMessage />} />
-              <Route path={`/${ROUTE_PARTS.NEW_MESSAGE}/:${ROUTE_PARAMS.ID}`} element={<NewMessage />} />
-              <Route path={`/${ROUTE_PARTS.VIEW_STATUS}/:${ROUTE_PARAMS.ID}`} element={<ViewStatusTask />} />
-              <Route path={`/${ROUTE_PARTS.SEND_CONFIRMATION}/:${ROUTE_PARAMS.ID}`} element={<SendConfirmationTask />} />
-              <Route path={`/${ROUTE_PARTS.SIGN_IN}`} element={<SignInPage />} />
-              <Route path={`/${ROUTE_PARTS.SIGN_IN_SIMPLE_START}`} element={<SignInSimpleStart />} />
-              <Route path={`/${ROUTE_PARTS.SIGN_IN_SIMPLE_END}`} element={<SignInSimpleEnd />} />
-              <Route path={`/${ROUTE_PARTS.ERROR_PAGE}`} element={<ErrorPage />} />
-              <Route path={`/${ROUTE_PARTS.ERROR_PAGE}/:${ROUTE_PARAMS.ID}`} element={<ErrorPage />} />
-            </Routes>
-          </BrowserRouter>
-        </Suspense>
-      </FluentProvider>
+      {isAppReady && (
+        <FluentProvider theme={fluentUITheme} dir={dir}>
+          <Suspense fallback={<div></div>}>
+            <BrowserRouter>
+              <Routes>
+                <Route path={`/${ROUTE_PARTS.CONFIG_TAB}`} element={<Configuration />} />
+                <Route path={`/${ROUTE_PARTS.MESSAGES}`} element={<MainContainer theme={fluentUITheme} />} />
+                <Route path={`/${ROUTE_PARTS.NEW_MESSAGE}`} element={<NewMessage />} />
+                <Route path={`/${ROUTE_PARTS.NEW_MESSAGE}/:${ROUTE_PARAMS.ID}`} element={<NewMessage />} />
+                <Route path={`/${ROUTE_PARTS.VIEW_STATUS}/:${ROUTE_PARAMS.ID}`} element={<ViewStatusTask />} />
+                <Route path={`/${ROUTE_PARTS.SEND_CONFIRMATION}/:${ROUTE_PARAMS.ID}`} element={<SendConfirmationTask />} />
+                <Route path={`/${ROUTE_PARTS.SIGN_IN}`} element={<SignInPage />} />
+                <Route path={`/${ROUTE_PARTS.SIGN_IN_SIMPLE_START}`} element={<SignInSimpleStart />} />
+                <Route path={`/${ROUTE_PARTS.SIGN_IN_SIMPLE_END}`} element={<SignInSimpleEnd />} />
+                <Route path={`/${ROUTE_PARTS.ERROR_PAGE}`} element={<ErrorPage />} />
+                <Route path={`/${ROUTE_PARTS.ERROR_PAGE}/:${ROUTE_PARAMS.ID}`} element={<ErrorPage />} />
+              </Routes>
+            </BrowserRouter>
+          </Suspense>
+        </FluentProvider>
+      )}
     </>
   );
 };
