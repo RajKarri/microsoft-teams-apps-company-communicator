@@ -51,13 +51,12 @@ export class AxiosJWTDecorator {
     const lang: string = i18n.language;
 
     try {
-      if (app.isInitialized()) {
+      void app.initialize().then(async () => {
         const token = await authentication.getAuthToken({ silent: true });
         // eslint-disable-next-line @typescript-eslint/dot-notation
         config.headers['Authorization'] = `Bearer ${token}`;
-
         config.headers['Accept-Language'] = lang;
-      }
+      });
     } catch (error) {
       console.error('Error from getAuthToken: ', error);
       window.location.href = `/${ROUTE_PARTS.SIGN_IN}?locale=${lang}`;
