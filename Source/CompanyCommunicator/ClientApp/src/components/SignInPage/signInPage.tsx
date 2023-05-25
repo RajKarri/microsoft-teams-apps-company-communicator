@@ -5,7 +5,7 @@ import './signInPage.scss';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Text } from '@fluentui/react-components';
-import { app, authentication } from '@microsoft/teams-js';
+import { authentication } from '@microsoft/teams-js';
 import i18n from '../../i18n';
 import { ROUTE_PARTS } from '../../routes';
 
@@ -17,19 +17,17 @@ const SignInPage = () => {
   const lang: string = i18n.language;
 
   function onSignIn() {
-    if (app.isInitialized()) {
-      authentication
-        .authenticate({ url: window.location.origin + '/signin-simple-start', isExternal: true })
-        .then(() => {
-          console.log('Login succeeded!');
-          window.location.href = '/messages';
-        })
-        .catch((error) => {
-          // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-          console.log('Login failed: ' + error);
-          window.location.href = `/${ROUTE_PARTS.ERROR_PAGE}?locale=${lang}`;
-        });
-    }
+    authentication
+      .authenticate({ url: window.location.origin + '/signin-simple-start', isExternal: true })
+      .then(() => {
+        console.log('Login succeeded!');
+        window.location.href = '/messages';
+      })
+      .catch((error) => {
+        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+        console.log('Login failed: ' + error);
+        window.location.href = `/${ROUTE_PARTS.ERROR_PAGE}?locale=${lang}`;
+      });
   }
 
   return (

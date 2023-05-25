@@ -38,7 +38,7 @@ export const App = () => {
   }, []);
 
   React.useEffect(() => {
-    if (app.isInitialized()) {
+    if (isAppReady) {
       void app.getContext().then((context: app.Context) => {
         const theme = context.app.theme || 'default';
         setLocale(context.app.locale);
@@ -52,7 +52,7 @@ export const App = () => {
         updateTheme(theme);
       });
     }
-  }, []);
+  }, [isAppReady]);
 
   const updateTheme = (theme: string) => {
     switch (theme.toLocaleLowerCase()) {
