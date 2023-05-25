@@ -6,6 +6,8 @@ import { app, authentication } from '@microsoft/teams-js';
 import { ROUTE_PARTS } from '../routes';
 import i18n from '../i18n';
 
+void app.initialize();
+
 export class AxiosJWTDecorator {
   public async get<T = any, R = AxiosResponse<T>>(url: string): Promise<R> {
     return await this.handleAxiosCall('get', url);
@@ -51,12 +53,10 @@ export class AxiosJWTDecorator {
     const lang: string = i18n.language;
 
     try {
-      void app.initialize().then(async () => {
-        const token = await authentication.getAuthToken({ silent: true });
-        // eslint-disable-next-line @typescript-eslint/dot-notation
-        config.headers['Authorization'] = `Bearer ${token}`;
-        config.headers['Accept-Language'] = lang;
-      });
+      const token = await authentication.getAuthToken({ silent: true });
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      config.headers['Authorization'] = `Bearer ${token}`;
+      config.headers['Accept-Language'] = lang;
     } catch (error) {
       console.error('Error from getAuthToken: ', error);
       window.location.href = `/${ROUTE_PARTS.SIGN_IN}?locale=${lang}`;
