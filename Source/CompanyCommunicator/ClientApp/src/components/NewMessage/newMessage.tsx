@@ -1,11 +1,12 @@
+/* eslint-disable @typescript-eslint/dot-notation */
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import * as AdaptiveCards from "adaptivecards";
-import * as React from "react";
-import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
-import validator from "validator";
+import * as AdaptiveCards from 'adaptivecards';
+import * as React from 'react';
+import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
+import validator from 'validator';
 import {
   Button,
   Combobox,
@@ -26,31 +27,17 @@ import {
   Textarea,
   tokens,
   useId,
-} from "@fluentui/react-components";
-import { InfoLabel } from "@fluentui/react-components/unstable";
-import { ArrowUpload24Regular, Dismiss12Regular } from "@fluentui/react-icons";
-import { dialog } from "@microsoft/teams-js";
+} from '@fluentui/react-components';
+import { InfoLabel } from '@fluentui/react-components/unstable';
+import { ArrowUpload24Regular, Dismiss12Regular } from '@fluentui/react-icons';
+import { dialog } from '@microsoft/teams-js';
+import { GetDraftMessagesSilentAction, GetGroupsAction, GetTeamsDataAction, SearchGroupsAction, VerifyGroupAccessAction } from '../../actions';
+import { createDraftNotification, getDraftNotification, updateDraftNotification } from '../../apis/messageListApi';
+import { getBaseUrl } from '../../configVariables';
+import { RootState, useAppDispatch, useAppSelector } from '../../store';
+import { getInitAdaptiveCard, setCardAuthor, setCardBtn, setCardImageLink, setCardSummary, setCardTitle } from '../AdaptiveCard/adaptiveCard';
 
-import {
-  GetDraftMessagesSilentAction,
-  GetGroupsAction,
-  GetTeamsDataAction,
-  SearchGroupsAction,
-  VerifyGroupAccessAction,
-} from "../../actions";
-import { createDraftNotification, getDraftNotification, updateDraftNotification } from "../../apis/messageListApi";
-import { getBaseUrl } from "../../configVariables";
-import { RootState, useAppDispatch, useAppSelector } from "../../store";
-import {
-  getInitAdaptiveCard,
-  setCardAuthor,
-  setCardBtn,
-  setCardImageLink,
-  setCardSummary,
-  setCardTitle,
-} from "../AdaptiveCard/adaptiveCard";
-
-const validImageTypes = ["image/gif", "image/jpeg", "image/png", "image/jpg"];
+const validImageTypes = ['image/gif', 'image/jpeg', 'image/png', 'image/jpg'];
 
 interface IMessageState {
   id?: string;
@@ -74,14 +61,14 @@ interface ITeamTemplate {
 const useComboboxStyles = makeStyles({
   root: {
     // Stack the label above the field with a gap
-    display: "grid",
-    gridTemplateRows: "repeat(1fr)",
-    justifyItems: "start",
-    ...shorthands.gap("2px"),
-    paddingLeft: "36px",
+    display: 'grid',
+    gridTemplateRows: 'repeat(1fr)',
+    justifyItems: 'start',
+    ...shorthands.gap('2px'),
+    paddingLeft: '36px',
   },
   tagsList: {
-    listStyleType: "none",
+    listStyleType: 'none',
     marginBottom: tokens.spacingVerticalXXS,
     marginTop: 0,
     paddingLeft: 0,
@@ -98,16 +85,16 @@ const useFieldStyles = makeStyles({
 });
 
 enum AudienceSelection {
-  Teams = "Teams",
-  Rosters = "Rosters",
-  Groups = "Groups",
-  AllUsers = "AllUsers",
-  None = "None",
+  Teams = 'Teams',
+  Rosters = 'Rosters',
+  Groups = 'Groups',
+  AllUsers = 'AllUsers',
+  None = 'None',
 }
 
 enum CurrentPageSelection {
-  CardCreation = "CardCreation",
-  AudienceSelection = "AudienceSelection",
+  CardCreation = 'CardCreation',
+  AudienceSelection = 'AudienceSelection',
 }
 
 let card: any;
@@ -115,7 +102,7 @@ let card: any;
 const MAX_SELECTED_TEAMS_NUM: number = 20;
 
 export const NewMessage = () => {
-  let fileInput = React.createRef<any>();
+  const fileInput = React.createRef<any>();
   const { t } = useTranslation();
   const { id } = useParams() as any;
   const dispatch = useAppDispatch();
@@ -126,15 +113,15 @@ export const NewMessage = () => {
   const [selectedRadioButton, setSelectedRadioButton] = React.useState(AudienceSelection.None);
   const [pageSelection, setPageSelection] = React.useState(CurrentPageSelection.CardCreation);
   const [allUsersState, setAllUsersState] = React.useState(false);
-  const [imageFileName, setImageFileName] = React.useState("");
-  const [imageUploadErrorMessage, setImageUploadErrorMessage] = React.useState("");
-  const [titleErrorMessage, setTitleErrorMessage] = React.useState("");
-  const [btnLinkErrorMessage, setBtnLinkErrorMessage] = React.useState("");
+  const [imageFileName, setImageFileName] = React.useState('');
+  const [imageUploadErrorMessage, setImageUploadErrorMessage] = React.useState('');
+  const [titleErrorMessage, setTitleErrorMessage] = React.useState('');
+  const [btnLinkErrorMessage, setBtnLinkErrorMessage] = React.useState('');
   const [showMsgDraftingSpinner, setShowMsgDraftingSpinner] = React.useState(false);
-  const [allUsersAria, setAllUserAria] = React.useState("none");
-  const [groupsAria, setGroupsAria] = React.useState("none");
+  const [allUsersAria, setAllUserAria] = React.useState('none');
+  const [groupsAria, setGroupsAria] = React.useState('none');
   const [messageState, setMessageState] = React.useState<IMessageState>({
-    title: "",
+    title: '',
     teams: [],
     rosters: [],
     groups: [],
@@ -148,29 +135,22 @@ export const NewMessage = () => {
   const [searchSelectedOptions, setSearchSelectedOptions] = React.useState<ITeamTemplate[]>([]);
 
   React.useEffect(() => {
-    if (dispatch) {
-      GetTeamsDataAction(dispatch);
-      VerifyGroupAccessAction(dispatch);
-      card = getInitAdaptiveCard(t);
-      setDefaultCard(card);
-      updateAdaptiveCard();
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch]);
+    GetTeamsDataAction(dispatch);
+    VerifyGroupAccessAction(dispatch);
+    card = getInitAdaptiveCard(t('TitleText') || '');
+    setDefaultCard(card);
+    updateAdaptiveCard();
+  }, []);
 
   React.useEffect(() => {
-    if (dispatch && id) {
+    if (id) {
       GetGroupsAction(dispatch, { id });
-      getDraftNotificationItem(id);
+      void getDraftNotificationItem(id);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, id]);
+  }, [id]);
 
   React.useEffect(() => {
-    if (pageSelection) {
-      updateAdaptiveCard();
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    updateAdaptiveCard();
   }, [pageSelection]);
 
   React.useEffect(() => {
@@ -236,31 +216,31 @@ export const NewMessage = () => {
   };
 
   const setDefaultCard = (card: any) => {
-    const titleAsString = t("TitleText");
-    const summaryAsString = t("Summary");
-    const authorAsString = t("Author1");
-    const buttonTitleAsString = t("ButtonTitle");
+    const titleAsString = t('TitleText');
+    const summaryAsString = t('Summary');
+    const authorAsString = t('Author1');
+    const buttonTitleAsString = t('ButtonTitle');
     setCardTitle(card, titleAsString);
-    let imgUrl = getBaseUrl() + "/image/imagePlaceholder.png";
+    const imgUrl = getBaseUrl() + '/image/imagePlaceholder.png';
     setCardImageLink(card, imgUrl);
     setCardSummary(card, summaryAsString);
     setCardAuthor(card, authorAsString);
-    setCardBtn(card, buttonTitleAsString, "https://adaptivecards.io");
+    setCardBtn(card, buttonTitleAsString, 'https://adaptivecards.io');
   };
 
   const updateAdaptiveCard = () => {
-    var adaptiveCard = new AdaptiveCards.AdaptiveCard();
+    const adaptiveCard = new AdaptiveCards.AdaptiveCard();
     adaptiveCard.parse(card);
     const renderCard = adaptiveCard.render();
     if (renderCard && pageSelection === CurrentPageSelection.CardCreation) {
-      document.getElementsByClassName("card-area-1")[0].innerHTML = "";
-      document.getElementsByClassName("card-area-1")[0].appendChild(renderCard);
+      document.getElementsByClassName('card-area-1')[0].innerHTML = '';
+      document.getElementsByClassName('card-area-1')[0].appendChild(renderCard);
     } else if (renderCard && pageSelection === CurrentPageSelection.AudienceSelection) {
-      document.getElementsByClassName("card-area-2")[0].innerHTML = "";
-      document.getElementsByClassName("card-area-2")[0].appendChild(renderCard);
+      document.getElementsByClassName('card-area-2')[0].innerHTML = '';
+      document.getElementsByClassName('card-area-2')[0].appendChild(renderCard);
     }
     adaptiveCard.onExecuteAction = function (action: any) {
-      window.open(action.url, "_blank");
+      window.open(action.url, '_blank');
     };
   };
 
@@ -271,9 +251,9 @@ export const NewMessage = () => {
   };
 
   const checkValidSizeOfImage = (resizedImageAsBase64: string) => {
-    var stringLength = resizedImageAsBase64.length - "data:image/png;base64,".length;
-    var sizeInBytes = 4 * Math.ceil(stringLength / 3) * 0.5624896334383812;
-    var sizeInKb = sizeInBytes / 1000;
+    const stringLength = resizedImageAsBase64.length - 'data:image/png;base64,'.length;
+    const sizeInBytes = 4 * Math.ceil(stringLength / 3) * 0.5624896334383812;
+    const sizeInKb = sizeInBytes / 1000;
 
     if (sizeInKb <= 1024) return true;
     else return false;
@@ -283,32 +263,32 @@ export const NewMessage = () => {
     const file = fileInput.current?.files[0];
 
     if (file) {
-      const fileType = file["type"];
+      const fileType = file['type'];
       const { type: mimeType } = file;
 
       if (!validImageTypes.includes(fileType)) {
-        setImageUploadErrorMessage(t("ErrorImageTypesMessage")!);
+        setImageUploadErrorMessage(t('ErrorImageTypesMessage') ?? '');
         return;
       }
 
-      setImageFileName(file["name"]);
-      setImageUploadErrorMessage("");
+      setImageFileName(file['name']);
+      setImageUploadErrorMessage('');
 
       const fileReader = new FileReader();
       fileReader.readAsDataURL(file);
       fileReader.onload = () => {
-        var image = new Image();
+        const image = new Image();
         image.src = fileReader.result as string;
-        var resizedImageAsBase64 = fileReader.result as string;
+        let resizedImageAsBase64 = fileReader.result as string;
 
         image.onload = function (e: any) {
           const MAX_WIDTH = 1024;
 
           if (image.width > MAX_WIDTH) {
-            const canvas = document.createElement("canvas");
+            const canvas = document.createElement('canvas');
             canvas.width = MAX_WIDTH;
             canvas.height = ~~(image.height * (MAX_WIDTH / image.width));
-            const context = canvas.getContext("2d", { alpha: false });
+            const context = canvas.getContext('2d', { alpha: false });
             if (!context) {
               return;
             }
@@ -318,7 +298,7 @@ export const NewMessage = () => {
         };
 
         if (!checkValidSizeOfImage(resizedImageAsBase64)) {
-          setImageUploadErrorMessage(t("ErrorImageSizeMessage")!);
+          setImageUploadErrorMessage(t('ErrorImageSizeMessage') ?? '');
           return;
         }
 
@@ -331,15 +311,14 @@ export const NewMessage = () => {
   };
 
   const isSaveBtnDisabled = () => {
-    const msg_page_conditions =
-      messageState.title !== "" && imageUploadErrorMessage === "" && btnLinkErrorMessage === "";
-    const aud_page_conditions =
+    const msgPageConditions = messageState.title !== '' && imageUploadErrorMessage === '' && btnLinkErrorMessage === '';
+    const audPageConditions =
       (teamsSelectedOptions.length > 0 && selectedRadioButton === AudienceSelection.Teams) ||
       (rostersSelectedOptions.length > 0 && selectedRadioButton === AudienceSelection.Rosters) ||
       (searchSelectedOptions.length > 0 && selectedRadioButton === AudienceSelection.Groups) ||
       selectedRadioButton === AudienceSelection.AllUsers;
 
-    if (msg_page_conditions && aud_page_conditions) {
+    if (msgPageConditions && audPageConditions) {
       return false;
     } else {
       return true;
@@ -347,7 +326,7 @@ export const NewMessage = () => {
   };
 
   const isNextBtnDisabled = () => {
-    if (messageState.title !== "" && imageUploadErrorMessage === "" && btnLinkErrorMessage === "") {
+    if (messageState.title !== '' && imageUploadErrorMessage === '' && btnLinkErrorMessage === '') {
       return false;
     } else {
       return true;
@@ -361,14 +340,10 @@ export const NewMessage = () => {
     let finalAllUsers: boolean = false;
 
     if (selectedRadioButton === AudienceSelection.Teams) {
-      finalSelectedTeams = [
-        ...teams.filter((t1) => teamsSelectedOptions.some((sp) => sp.id === t1.id)).map((t2) => t2.id),
-      ];
+      finalSelectedTeams = [...teams.filter((t1) => teamsSelectedOptions.some((sp) => sp.id === t1.id)).map((t2) => t2.id)];
     }
     if (selectedRadioButton === AudienceSelection.Rosters) {
-      finalSelectedRosters = [
-        ...teams.filter((t1) => rostersSelectedOptions.some((sp) => sp.id === t1.id)).map((t2) => t2.id),
-      ];
+      finalSelectedRosters = [...teams.filter((t1) => rostersSelectedOptions.some((sp) => sp.id === t1.id)).map((t2) => t2.id)];
     }
     if (selectedRadioButton === AudienceSelection.Groups) {
       finalSelectedGroups = [...searchSelectedOptions.map((g) => g.id)];
@@ -430,15 +405,15 @@ export const NewMessage = () => {
 
   const onBack = (event: any) => {
     setPageSelection(CurrentPageSelection.CardCreation);
-    setAllUserAria("none");
-    setGroupsAria("none");
+    setAllUserAria('none');
+    setGroupsAria('none');
   };
 
   const onTitleChanged = (event: any) => {
-    if (event.target.value === "") {
-      setTitleErrorMessage("Title is required.");
+    if (event.target.value === '') {
+      setTitleErrorMessage('Title is required.');
     } else {
-      setTitleErrorMessage("");
+      setTitleErrorMessage('');
     }
     setCardTitle(card, event.target.value);
     setMessageState({ ...messageState, title: event.target.value });
@@ -452,18 +427,18 @@ export const NewMessage = () => {
 
     if (
       !(
-        urlOrDataUrl === "" ||
-        urlOrDataUrl.startsWith("https://") ||
-        urlOrDataUrl.startsWith("data:image/png;base64,") ||
-        urlOrDataUrl.startsWith("data:image/jpeg;base64,") ||
-        urlOrDataUrl.startsWith("data:image/gif;base64,")
+        urlOrDataUrl === '' ||
+        urlOrDataUrl.startsWith('https://') ||
+        urlOrDataUrl.startsWith('data:image/png;base64,') ||
+        urlOrDataUrl.startsWith('data:image/jpeg;base64,') ||
+        urlOrDataUrl.startsWith('data:image/gif;base64,')
       )
     ) {
       isGoodLink = false;
-      setImageUploadErrorMessage(t("ErrorURLMessage")!);
+      setImageUploadErrorMessage(t('ErrorURLMessage') ?? '');
     } else {
       isGoodLink = true;
-      setImageUploadErrorMessage("");
+      setImageUploadErrorMessage('');
     }
 
     if (isGoodLink) {
@@ -492,9 +467,10 @@ export const NewMessage = () => {
   };
 
   const onBtnLinkChanged = (event: any) => {
-    if (validator.isURL(event.target.value) || event.target.value === "") {
-      setBtnLinkErrorMessage("");
+    if (validator.isURL(event.target.value) || event.target.value === '') {
+      setBtnLinkErrorMessage('');
     } else {
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       setBtnLinkErrorMessage(`${event.target.value} is invalid. Please enter a valid URL`);
     }
     setCardBtn(card, messageState.buttonTitle, event.target.value);
@@ -503,13 +479,13 @@ export const NewMessage = () => {
   };
 
   // generate ids for handling labelling
-  const teamsComboId = useId("teams-combo-multi");
+  const teamsComboId = useId('teams-combo-multi');
   const teamsSelectedListId = `${teamsComboId}-selection`;
 
-  const rostersComboId = useId("rosters-combo-multi");
+  const rostersComboId = useId('rosters-combo-multi');
   const rostersSelectedListId = `${rostersComboId}-selection`;
 
-  const searchComboId = useId("search-combo-multi");
+  const searchComboId = useId('search-combo-multi');
   const searchSelectedListId = `${searchComboId}-selection`;
 
   // refs for managing focus when removing tags
@@ -522,26 +498,26 @@ export const NewMessage = () => {
   const searchSelectedListRef = React.useRef<HTMLUListElement>(null);
   const searchComboboxInputRef = React.useRef<HTMLInputElement>(null);
 
-  const onTeamsSelect: ComboboxProps["onOptionSelect"] = (event, data) => {
+  const onTeamsSelect: ComboboxProps['onOptionSelect'] = (event, data) => {
     if (data.selectedOptions.length <= MAX_SELECTED_TEAMS_NUM) {
       setTeamsSelectedOptions(teams.filter((t1) => data.selectedOptions.some((t2) => t2 === t1.id)));
     }
   };
 
-  const onRostersSelect: ComboboxProps["onOptionSelect"] = (event, data) => {
+  const onRostersSelect: ComboboxProps['onOptionSelect'] = (event, data) => {
     if (data.selectedOptions.length <= MAX_SELECTED_TEAMS_NUM) {
       setRostersSelectedOptions(teams.filter((t1) => data.selectedOptions.some((t2) => t2 === t1.id)));
     }
   };
 
-  const onSearchSelect: ComboboxProps["onOptionSelect"] = (event, data: any) => {
+  const onSearchSelect: ComboboxProps['onOptionSelect'] = (event, data: any) => {
     if (data.optionText && !searchSelectedOptions.find((x) => x.id === data.optionValue)) {
       setSearchSelectedOptions([...searchSelectedOptions, { id: data.optionValue, name: data.optionText }]);
     }
   };
 
   const onSearchChange = (event: any) => {
-    if (event && event.target && event.target.value) {
+    if (event?.target?.value) {
       const q = encodeURIComponent(event.target.value);
       SearchGroupsAction(dispatch, { query: q });
     }
@@ -590,17 +566,15 @@ export const NewMessage = () => {
   };
 
   const teamsLabelledBy = teamsSelectedOptions.length > 0 ? `${teamsComboId} ${teamsSelectedListId}` : teamsComboId;
-  const rostersLabelledBy =
-    rostersSelectedOptions.length > 0 ? `${rostersComboId} ${rostersSelectedListId}` : rostersComboId;
+  const rostersLabelledBy = rostersSelectedOptions.length > 0 ? `${rostersComboId} ${rostersSelectedListId}` : rostersComboId;
 
-  const searchLabelledBy =
-    searchSelectedOptions.length > 0 ? `${searchComboId} ${searchSelectedListId}` : searchComboId;
+  const searchLabelledBy = searchSelectedOptions.length > 0 ? `${searchComboId} ${searchSelectedListId}` : searchComboId;
 
-  const cmb_styles = useComboboxStyles();
-  const field_styles = useFieldStyles();
+  const cmbStyles = useComboboxStyles();
+  const fieldStyles = useFieldStyles();
 
   const audienceSelectionChange = (ev: any, data: RadioGroupOnChangeData) => {
-    let input = data.value as keyof typeof AudienceSelection;
+    const input = data.value as keyof typeof AudienceSelection;
     setSelectedRadioButton(AudienceSelection[input]);
 
     if (AudienceSelection[input] === AudienceSelection.AllUsers) {
@@ -609,42 +583,38 @@ export const NewMessage = () => {
       setAllUsersState(false);
     }
 
-    AudienceSelection[input] === AudienceSelection.AllUsers ? setAllUserAria("alert") : setAllUserAria("none");
-    AudienceSelection[input] === AudienceSelection.Groups ? setGroupsAria("alert") : setGroupsAria("none");
+    AudienceSelection[input] === AudienceSelection.AllUsers ? setAllUserAria('alert') : setAllUserAria('none');
+    AudienceSelection[input] === AudienceSelection.Groups ? setGroupsAria('alert') : setGroupsAria('none');
   };
 
   return (
     <>
       {pageSelection === CurrentPageSelection.CardCreation && (
         <>
-          <span role="alert" aria-label={t("NewMessageStep1")!} />
-          <div className="adaptive-task-grid">
-            <div className="form-area">
-              <Field
-                size="large"
-                className={field_styles.styles}
-                label={t("TitleText")}
-                required={true}
-                validationMessage={titleErrorMessage}
-              >
+          <span role='alert' aria-label={t('NewMessageStep1') ?? ''} />
+          <div className='adaptive-task-grid'>
+            <div className='form-area'>
+              <Field size='large' className={fieldStyles.styles} label={t('TitleText')} required={true} validationMessage={titleErrorMessage}>
                 <Input
-                  placeholder={t("PlaceHolderTitle")!}
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  placeholder={t('PlaceHolderTitle')!}
                   onChange={onTitleChanged}
-                  autoComplete="off"
-                  size="large"
+                  autoComplete='off'
+                  size='large'
                   required={true}
-                  appearance="filled-darker"
-                  value={messageState.title || ""}
+                  appearance='filled-darker'
+                  value={messageState.title || ''}
                 />
               </Field>
               <Field
-                size="large"
-                className={field_styles.styles}
+                size='large'
+                className={fieldStyles.styles}
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment, @typescript-eslint/prefer-ts-expect-error
                 // @ts-ignore
                 label={{
                   children: (_: unknown, imageInfoProps: LabelProps) => (
-                    <InfoLabel {...imageInfoProps} info={t("ImageSizeInfoContent")! || ""}>
-                      {t("ImageURL")!}
+                    <InfoLabel {...imageInfoProps} info={t('ImageSizeInfoContent') ?? ''}>
+                      {t('ImageURL')}
                     </InfoLabel>
                   ),
                 }}
@@ -652,95 +622,99 @@ export const NewMessage = () => {
               >
                 <div
                   style={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr auto",
-                    gridTemplateAreas: "input-area btn-area",
+                    display: 'grid',
+                    gridTemplateColumns: '1fr auto',
+                    gridTemplateAreas: 'input-area btn-area',
                   }}
                 >
                   <Input
-                    size="large"
-                    style={{ gridColumn: "1" }}
-                    appearance="filled-darker"
-                    value={imageFileName || ""}
-                    placeholder={t("ImageURL")!}
+                    size='large'
+                    style={{ gridColumn: '1' }}
+                    appearance='filled-darker'
+                    value={imageFileName || ''}
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    placeholder={t('ImageURL')!}
                     onChange={onImageLinkChanged}
                   />
-                  {// @ts-ignore
+                  {
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment, @typescript-eslint/prefer-ts-expect-error
+                    // @ts-ignore
                     <Button
-                      style={{ gridColumn: "2", marginLeft: "5px" }}
+                      style={{ gridColumn: '2', marginLeft: '5px' }}
                       onClick={handleUploadClick}
-                      size="large"
-                      appearance="secondary"
-                      aria-label={imageFileName ? t("UploadImageSuccessful")! : t("UploadImageInfo")!}
+                      size='large'
+                      appearance='secondary'
+                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                      aria-label={imageFileName ? t('UploadImageSuccessful') : t('UploadImageInfo')}
                       icon={<ArrowUpload24Regular />}
                     >
-                      {t("Upload")}
+                      {t('Upload')}
                     </Button>
                   }
                   <input
-                    type="file"
-                    accept=".jpg, .jpeg, .png, .gif"
-                    style={{ display: "none" }}
+                    type='file'
+                    accept='.jpg, .jpeg, .png, .gif'
+                    aria-label='hidden input'
+                    style={{ display: 'none' }}
                     multiple={false}
                     onChange={handleImageSelection}
                     ref={fileInput}
                   />
                 </div>
               </Field>
-              <Field size="large" className={field_styles.styles} label={t("Summary")}>
+              <Field size='large' className={fieldStyles.styles} label={t('Summary')}>
                 <Textarea
-                  size="large"
-                  appearance="filled-darker"
-                  placeholder={t("Summary")!}
-                  value={messageState.summary || ""}
+                  size='large'
+                  appearance='filled-darker'
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  placeholder={t('Summary')!}
+                  value={messageState.summary ?? ''}
                   onChange={onSummaryChanged}
                 />
               </Field>
-              <Field size="large" className={field_styles.styles} label={t("Author")}>
+              <Field size='large' className={fieldStyles.styles} label={t('Author')}>
                 <Input
-                  placeholder={t("Author")!}
-                  size="large"
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  placeholder={t('Author')!}
+                  size='large'
                   onChange={onAuthorChanged}
-                  autoComplete="off"
-                  appearance="filled-darker"
-                  value={messageState.author || ""}
+                  autoComplete='off'
+                  appearance='filled-darker'
+                  value={messageState.author ?? ''}
                 />
               </Field>
-              <Field size="large" className={field_styles.styles} label={t("ButtonTitle")}>
+              <Field size='large' className={fieldStyles.styles} label={t('ButtonTitle')}>
                 <Input
-                  size="large"
-                  placeholder={t("ButtonTitle")!}
+                  size='large'
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  placeholder={t('ButtonTitle')!}
                   onChange={onBtnTitleChanged}
-                  autoComplete="off"
-                  appearance="filled-darker"
-                  value={messageState.buttonTitle || ""}
+                  autoComplete='off'
+                  appearance='filled-darker'
+                  value={messageState.buttonTitle ?? ''}
                 />
               </Field>
-              <Field
-                size="large"
-                className={field_styles.styles}
-                label={t("ButtonURL")}
-                validationMessage={btnLinkErrorMessage}
-              >
+              <Field size='large' className={fieldStyles.styles} label={t('ButtonURL')} validationMessage={btnLinkErrorMessage}>
                 <Input
-                  size="large"
-                  placeholder={t("ButtonURL")!}
+                  size='large'
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  placeholder={t('ButtonURL')!}
                   onChange={onBtnLinkChanged}
-                  type="url"
-                  autoComplete="off"
-                  appearance="filled-darker"
-                  value={messageState.buttonLink || ""}
+                  type='url'
+                  autoComplete='off'
+                  appearance='filled-darker'
+                  value={messageState.buttonLink ?? ''}
                 />
               </Field>
             </div>
-            <div className="card-area">
-              <div className="card-area-1"></div>
+            <div className='card-area'>
+              <div className='card-area-1'></div>
             </div>
           </div>
-          <div className="fixed-footer">
-            <div className="footer-action-right">
-              <Button disabled={isNextBtnDisabled()} id="saveBtn" onClick={onNext} appearance="primary">
-                {t("Next")}
+          <div className='fixed-footer'>
+            <div className='footer-action-right'>
+              <Button disabled={isNextBtnDisabled()} id='saveBtn' onClick={onNext} appearance='primary'>
+                {t('Next')}
               </Button>
             </div>
           </div>
@@ -748,190 +722,184 @@ export const NewMessage = () => {
       )}
       {pageSelection === CurrentPageSelection.AudienceSelection && (
         <>
-          <span role="alert" aria-label={t("NewMessageStep2")!} />
-          <div className="adaptive-task-grid">
-            <div className="form-area">
-              <Label size="large" id="audienceSelectionGroupLabelId">
-                {t("SendHeadingText")}
+          <span role='alert' aria-label={t('NewMessageStep2') ?? ''} />
+          <div className='adaptive-task-grid'>
+            <div className='form-area'>
+              <Label size='large' id='audienceSelectionGroupLabelId'>
+                {t('SendHeadingText')}
               </Label>
-              <RadioGroup
-                defaultValue={selectedRadioButton}
-                aria-labelledby="audienceSelectionGroupLabelId"
-                onChange={audienceSelectionChange}
-              >
-                <Radio id="radio1" value={AudienceSelection.Teams} label={t("SendToGeneralChannel")} />
+              <RadioGroup defaultValue={selectedRadioButton} aria-labelledby='audienceSelectionGroupLabelId' onChange={audienceSelectionChange}>
+                <Radio id='radio1' value={AudienceSelection.Teams} label={t('SendToGeneralChannel')} />
                 {selectedRadioButton === AudienceSelection.Teams && (
-                  <div className={cmb_styles.root}>
+                  <div className={cmbStyles.root}>
                     <Label id={teamsComboId}>Pick team(s)</Label>
-                    {teamsSelectedOptions.length ? (
-                      <ul id={teamsSelectedListId} className={cmb_styles.tagsList} ref={teamsSelectedListRef}>
-                        {/* The "Remove" span is used for naming the buttons without affecting the Combobox name */}
-                        <span id={`${teamsComboId}-remove`} hidden>
-                          Remove
-                        </span>
-                        {teamsSelectedOptions.map((option, i) => (
-                          <li key={option.id}>
-                            <Button
-                              size="small"
-                              shape="rounded"
-                              appearance="subtle"
-                              icon={<Dismiss12Regular />}
-                              iconPosition="after"
-                              onClick={() => onTeamsTagClick(option, i)}
-                              id={`${teamsComboId}-remove-${i}`}
-                              aria-labelledby={`${teamsComboId}-remove ${teamsComboId}-remove-${i}`}
-                            >
-                              <Persona
-                                name={option.name}
-                                secondaryText={"Team"}
-                                avatar={{ shape: "square", color: "colorful" }}
-                              />
-                            </Button>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <></>
-                    )}
+                    {
+                      // eslint-disable-next-line multiline-ternary
+                      teamsSelectedOptions.length ? (
+                        <ul id={teamsSelectedListId} className={cmbStyles.tagsList} ref={teamsSelectedListRef}>
+                          {/* The "Remove" span is used for naming the buttons without affecting the Combobox name */}
+                          <span id={`${teamsComboId}-remove`} hidden>
+                            Remove
+                          </span>
+                          {teamsSelectedOptions.map((option, i) => (
+                            <li key={option.id}>
+                              <Button
+                                size='small'
+                                shape='rounded'
+                                appearance='subtle'
+                                icon={<Dismiss12Regular />}
+                                iconPosition='after'
+                                // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
+                                onClick={() => onTeamsTagClick(option, i)}
+                                id={`${teamsComboId}-remove-${i}`}
+                                aria-labelledby={`${teamsComboId}-remove ${teamsComboId}-remove-${i}`}
+                              >
+                                <Persona name={option.name} secondaryText={'Team'} avatar={{ shape: 'square', color: 'colorful' }} />
+                              </Button>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <></>
+                      )
+                    }
                     <Combobox
                       multiselect={true}
                       selectedOptions={teamsSelectedOptions.map((op) => op.id)}
-                      appearance="filled-darker"
-                      size="large"
+                      appearance='filled-darker'
+                      size='large'
                       onOptionSelect={onTeamsSelect}
                       ref={teamsComboboxInputRef}
                       aria-labelledby={teamsLabelledBy}
-                      placeholder={teams.length !== 0 ? "Pick one or more teams" : t("NoMatchMessage")!}
+                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                      placeholder={teams.length !== 0 ? 'Pick one or more teams' : t('NoMatchMessage')!}
                     >
                       {teams.map((opt) => (
                         <Option text={opt.name} value={opt.id} key={opt.id}>
-                          <Persona
-                            name={opt.name}
-                            secondaryText={"Team"}
-                            avatar={{ shape: "square", color: "colorful" }}
-                          />
+                          <Persona name={opt.name} secondaryText={'Team'} avatar={{ shape: 'square', color: 'colorful' }} />
                         </Option>
                       ))}
                     </Combobox>
                   </div>
                 )}
-                <Radio id="radio2" value={AudienceSelection.Rosters} label={t("SendToRosters")} />
+                <Radio id='radio2' value={AudienceSelection.Rosters} label={t('SendToRosters')} />
                 {selectedRadioButton === AudienceSelection.Rosters && (
-                  <div className={cmb_styles.root}>
+                  <div className={cmbStyles.root}>
                     <Label id={rostersComboId}>Pick team(s)</Label>
-                    {rostersSelectedOptions.length ? (
-                      <ul id={rostersSelectedListId} className={cmb_styles.tagsList} ref={rostersSelectedListRef}>
-                        {/* The "Remove" span is used for naming the buttons without affecting the Combobox name */}
-                        <span id={`${rostersComboId}-remove`} hidden>
-                          Remove
-                        </span>
-                        {rostersSelectedOptions.map((option, i) => (
-                          <li key={option.id}>
-                            <Button
-                              size="small"
-                              shape="rounded"
-                              appearance="subtle"
-                              icon={<Dismiss12Regular />}
-                              iconPosition="after"
-                              onClick={() => onRostersTagClick(option, i)}
-                              id={`${rostersComboId}-remove-${i}`}
-                              aria-labelledby={`${rostersComboId}-remove ${rostersComboId}-remove-${i}`}
-                            >
-                              <Persona
-                                name={option.name}
-                                secondaryText={"Team"}
-                                avatar={{ shape: "square", color: "colorful" }}
-                              />
-                            </Button>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <></>
-                    )}
+                    {
+                      // eslint-disable-next-line multiline-ternary
+                      rostersSelectedOptions.length ? (
+                        <ul id={rostersSelectedListId} className={cmbStyles.tagsList} ref={rostersSelectedListRef}>
+                          {/* The "Remove" span is used for naming the buttons without affecting the Combobox name */}
+                          <span id={`${rostersComboId}-remove`} hidden>
+                            Remove
+                          </span>
+                          {rostersSelectedOptions.map((option, i) => (
+                            <li key={option.id}>
+                              <Button
+                                size='small'
+                                shape='rounded'
+                                appearance='subtle'
+                                icon={<Dismiss12Regular />}
+                                iconPosition='after'
+                                // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
+                                onClick={() => onRostersTagClick(option, i)}
+                                id={`${rostersComboId}-remove-${i}`}
+                                aria-labelledby={`${rostersComboId}-remove ${rostersComboId}-remove-${i}`}
+                              >
+                                <Persona name={option.name} secondaryText={'Team'} avatar={{ shape: 'square', color: 'colorful' }} />
+                              </Button>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <></>
+                      )
+                    }
                     <Combobox
                       multiselect={true}
                       selectedOptions={rostersSelectedOptions.map((op) => op.id)}
-                      appearance="filled-darker"
-                      size="large"
+                      appearance='filled-darker'
+                      size='large'
                       onOptionSelect={onRostersSelect}
                       ref={rostersComboboxInputRef}
                       aria-labelledby={rostersLabelledBy}
-                      placeholder={teams.length !== 0 ? "Pick one or more teams" : t("NoMatchMessage")!}
+                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                      placeholder={teams.length !== 0 ? 'Pick one or more teams' : t('NoMatchMessage')!}
                     >
                       {teams.map((opt) => (
                         <Option text={opt.name} value={opt.id} key={opt.id}>
-                          <Persona
-                            name={opt.name}
-                            secondaryText={"Team"}
-                            avatar={{ shape: "square", color: "colorful" }}
-                          />
+                          <Persona name={opt.name} secondaryText={'Team'} avatar={{ shape: 'square', color: 'colorful' }} />
                         </Option>
                       ))}
                     </Combobox>
                   </div>
                 )}
-                <Radio id="radio3" value={AudienceSelection.AllUsers} label={t("SendToAllUsers")} />
-                <div className={cmb_styles.root}>
+                <Radio id='radio3' value={AudienceSelection.AllUsers} label={t('SendToAllUsers')} />
+                <div className={cmbStyles.root}>
                   {selectedRadioButton === AudienceSelection.AllUsers && (
-                    <Text id="radio3Note" role={allUsersAria} className="info-text">
-                      {t("SendToAllUsersNote")}
+                    <Text id='radio3Note' role={allUsersAria} className='info-text'>
+                      {t('SendToAllUsersNote')}
                     </Text>
                   )}
                 </div>
-                <Radio id="radio4" value={AudienceSelection.Groups} label={t("SendToGroups")} />
+                <Radio id='radio4' value={AudienceSelection.Groups} label={t('SendToGroups')} />
                 {selectedRadioButton === AudienceSelection.Groups && (
-                  <div className={cmb_styles.root}>
+                  <div className={cmbStyles.root}>
                     {!canAccessGroups && (
-                      <Text role={groupsAria} className="info-text">
-                        {t("SendToGroupsPermissionNote")}
+                      <Text role={groupsAria} className='info-text'>
+                        {t('SendToGroupsPermissionNote')}
                       </Text>
                     )}
                     {canAccessGroups && (
                       <>
                         <Label id={searchComboId}>Pick group(s)</Label>
-                        {searchSelectedOptions.length ? (
-                          <ul id={searchSelectedListId} className={cmb_styles.tagsList} ref={searchSelectedListRef}>
-                            {/* The "Remove" span is used for naming the buttons without affecting the Combobox name */}
-                            <span id={`${searchComboId}-remove`} hidden>
-                              Remove
-                            </span>
-                            {searchSelectedOptions.map((option, i) => (
-                              <li key={option.id}>
-                                <Button
-                                  size="small"
-                                  shape="rounded"
-                                  appearance="subtle"
-                                  icon={<Dismiss12Regular />}
-                                  iconPosition="after"
-                                  onClick={() => onSearchTagClick(option, i)}
-                                  id={`${searchComboId}-remove-${i}`}
-                                  aria-labelledby={`${searchComboId}-remove ${searchComboId}-remove-${i}`}
-                                >
-                                  <Persona name={option.name} secondaryText={"Group"} avatar={{ color: "colorful" }} />
-                                </Button>
-                              </li>
-                            ))}
-                          </ul>
-                        ) : (
-                          <></>
-                        )}
+                        {
+                          // eslint-disable-next-line multiline-ternary
+                          searchSelectedOptions.length ? (
+                            <ul id={searchSelectedListId} className={cmbStyles.tagsList} ref={searchSelectedListRef}>
+                              {/* The "Remove" span is used for naming the buttons without affecting the Combobox name */}
+                              <span id={`${searchComboId}-remove`} hidden>
+                                Remove
+                              </span>
+                              {searchSelectedOptions.map((option, i) => (
+                                <li key={option.id}>
+                                  <Button
+                                    size='small'
+                                    shape='rounded'
+                                    appearance='subtle'
+                                    icon={<Dismiss12Regular />}
+                                    iconPosition='after'
+                                    // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
+                                    onClick={() => onSearchTagClick(option, i)}
+                                    id={`${searchComboId}-remove-${i}`}
+                                    aria-labelledby={`${searchComboId}-remove ${searchComboId}-remove-${i}`}
+                                  >
+                                    <Persona name={option.name} secondaryText={'Group'} avatar={{ color: 'colorful' }} />
+                                  </Button>
+                                </li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <></>
+                          )
+                        }
                         <Combobox
-                          appearance="filled-darker"
-                          size="large"
+                          appearance='filled-darker'
+                          size='large'
                           onOptionSelect={onSearchSelect}
                           onChange={onSearchChange}
                           aria-labelledby={searchLabelledBy}
-                          placeholder={"Search for groups"}
+                          placeholder={'Search for groups'}
                         >
                           {queryGroups.map((opt) => (
                             <Option text={opt.name} value={opt.id} key={opt.id}>
-                              <Persona name={opt.name} secondaryText={"Group"} avatar={{ color: "colorful" }} />
+                              <Persona name={opt.name} secondaryText={'Group'} avatar={{ color: 'colorful' }} />
                             </Option>
                           ))}
                         </Combobox>
-                        <Text role={groupsAria} className="info-text">
-                          {t("SendToGroupsNote")}
+                        <Text role={groupsAria} className='info-text'>
+                          {t('SendToGroupsNote')}
                         </Text>
                       </>
                     )}
@@ -939,36 +907,30 @@ export const NewMessage = () => {
                 )}
               </RadioGroup>
             </div>
-            <div className="card-area">
-              <div className="card-area-2"></div>
+            <div className='card-area'>
+              <div className='card-area-2'></div>
             </div>
           </div>
           <div>
-            <div className="fixed-footer">
-              <div className="footer-action-left">
-                <Button id="backBtn" onClick={onBack} disabled={showMsgDraftingSpinner} appearance="secondary">
-                  {t("Back")}
+            <div className='fixed-footer'>
+              <div className='footer-action-left'>
+                <Button id='backBtn' onClick={onBack} disabled={showMsgDraftingSpinner} appearance='secondary'>
+                  {t('Back')}
                 </Button>
               </div>
-              <div className="footer-action-right">
-                <div className="footer-actions-flex">
+              <div className='footer-action-right'>
+                <div className='footer-actions-flex'>
                   {showMsgDraftingSpinner && (
-                    <Spinner
-                      role="alert"
-                      id="draftingLoader"
-                      size="small"
-                      label={t("DraftingMessageLabel")}
-                      labelPosition="after"
-                    />
+                    <Spinner role='alert' id='draftingLoader' size='small' label={t('DraftingMessageLabel')} labelPosition='after' />
                   )}
                   <Button
-                    style={{ marginLeft: "16px" }}
+                    style={{ marginLeft: '16px' }}
                     disabled={isSaveBtnDisabled() || showMsgDraftingSpinner}
-                    id="saveBtn"
+                    id='saveBtn'
                     onClick={onSave}
-                    appearance="primary"
+                    appearance='primary'
                   >
-                    {t("SaveAsDraft")}
+                    {t('SaveAsDraft')}
                   </Button>
                 </div>
               </div>
