@@ -8,7 +8,7 @@ import { useParams } from 'react-router-dom';
 import { AvatarShape } from '@fluentui/react-avatar';
 import { Button, Field, Persona, Spinner, Text } from '@fluentui/react-components';
 import { ArrowDownload24Regular, CheckmarkSquare24Regular, ShareScreenStop24Regular } from '@fluentui/react-icons';
-import { app, dialog } from '@microsoft/teams-js';
+import * as microsoftTeams from '@microsoft/teams-js';
 
 import { exportNotification, getSentNotification } from '../../apis/messageListApi';
 import { formatDate, formatDuration, formatNumber } from '../../i18n';
@@ -58,6 +58,7 @@ export const ViewStatusTask = () => {
   const [loader, setLoader] = React.useState(true);
   const [isCardReady, setIsCardReady] = React.useState(false);
   const [exportDisabled, setExportDisabled] = React.useState(false);
+  const [cardAreaBorderClass, setCardAreaBorderClass] = React.useState('');
 
   const [messageState, setMessageState] = React.useState<IMessageState>({
     id: '',
@@ -72,33 +73,32 @@ export const ViewStatusTask = () => {
   });
 
   React.useEffect(() => {
-    if (app.isInitialized()) {
-      void app.getContext().then((context) => {
-        setStatusState({ ...statusState, teamId: context.team?.internalId ?? '', isTeamDataUpdated: true });
-      });
-    }
+    microsoftTeams.getContext((context) => {
+      setStatusState({ ...statusState, teamId: context.teamId, isTeamDataUpdated: true });
+    });
   }, []);
 
   React.useEffect(() => {
     if (id) {
-      void getMessage(id);
+      getMessage(id);
     }
   }, [id]);
 
   React.useEffect(() => {
     if (isCardReady && messageState.isMsgDataUpdated) {
-      const adaptiveCard = new AdaptiveCards.AdaptiveCard();
+      var adaptiveCard = new AdaptiveCards.AdaptiveCard();
       adaptiveCard.parse(card);
       const renderCard = adaptiveCard.render();
       if (renderCard && statusState.page === 'ViewStatus') {
-        document.getElementsByClassName('card-area')[0].appendChild(renderCard);
+        document.getElementsByClassName('card-area-1')[0].appendChild(renderCard);
+        setCardAreaBorderClass('card-area-border');
       }
       adaptiveCard.onExecuteAction = function (action: any) {
         window.open(action.url, '_blank');
       };
       setLoader(false);
     }
-  }, [isCardReady, messageState.isMsgDataUpdated, statusState.page]);
+  }, [isCardReady, messageState.isMsgDataUpdated]);
 
   const getMessage = async (id: number) => {
     try {
@@ -119,7 +119,7 @@ export const ViewStatusTask = () => {
   };
 
   const updateCardData = (msg: IMessageState) => {
-    card = getInitAdaptiveCard(t('TitleText') ?? '');
+    card = getInitAdaptiveCard(msg.title);
     setCardTitle(card, msg.title);
     setCardImageLink(card, msg.imageLink);
     setCardSummary(card, msg.summary);
@@ -131,12 +131,12 @@ export const ViewStatusTask = () => {
   };
 
   const onClose = () => {
-    dialog.url.submit();
+    microsoftTeams.tasks.submitTask();
   };
 
   const onExport = async () => {
     setExportDisabled(true);
-    const payload = {
+    let payload = {
       id: messageState.id,
       teamId: statusState.teamId,
     };
@@ -153,9 +153,8 @@ export const ViewStatusTask = () => {
   };
 
   const getItemList = (items: string[], secondaryText: string, shape: AvatarShape) => {
-    const resultedTeams: any[] = [];
+    let resultedTeams: any[] = [];
     if (items) {
-      // eslint-disable-next-line array-callback-return
       items.map((element) => {
         resultedTeams.push(
           <li key={element + 'key'}>
@@ -231,7 +230,7 @@ export const ViewStatusTask = () => {
       {loader && <Spinner />}
       {statusState.page === 'ViewStatus' && (
         <>
-          <span role='alert' aria-label={t('ViewMessageStatus') ?? ''} />
+          <span role='alert' aria-label={t('ViewMessageStatus')} />
           <div className='adaptive-task-grid'>
             <div className='form-area'>
               {!loader && (
@@ -272,13 +271,19 @@ export const ViewStatusTask = () => {
                       )}
                     </Field>
                   </div>
-                  <div style={{ paddingBottom: '16px' }}>{renderAudienceSelection()}</div>
-                  <div style={{ paddingBottom: '16px' }}>{renderErrorMessage()}</div>
-                  <div style={{ paddingBottom: '16px' }}>{renderWarningMessage()}</div>
+                  <div style={{ paddingBottom: '16px' }}>
+                    {renderAudienceSelection()}
+                    {renderErrorMessage()}
+                    {renderWarningMessage()}
+                  </div>
                 </>
               )}
             </div>
-            <div className='card-area'></div>
+            <div className='card-area'>
+              <div className={cardAreaBorderClass}>
+                <div className='card-area-1'></div>
+              </div>
+            </div>
           </div>
           <div className='fixed-footer'>
             <div className='footer-action-right'>
@@ -287,10 +292,8 @@ export const ViewStatusTask = () => {
                 <Button
                   icon={<ArrowDownload24Regular />}
                   style={{ marginLeft: '16px' }}
-                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  title={exportDisabled || messageState.canDownload === false ? t('ExportButtonProgressText')! : t('ExportButtonText')!}
+                  title={exportDisabled || messageState.canDownload === false ? t('ExportButtonProgressText') : t('ExportButtonText')}
                   disabled={exportDisabled || messageState.canDownload === false}
-                  // eslint-disable-next-line @typescript-eslint/no-misused-promises
                   onClick={onExport}
                   appearance='primary'
                 >
@@ -303,10 +306,10 @@ export const ViewStatusTask = () => {
       )}
       {!loader && statusState.page === 'SuccessPage' && (
         <>
-          <span role='alert' aria-label={t('ExportSuccessView') ?? ''} />
+          <span role='alert' aria-label={t('ExportSuccessView')} />
           <div className='wizard-page'>
             <h2>
-              <CheckmarkSquare24Regular style={{ color: '#22bb33', verticalAlign: 'middle', paddingRight: '8px' }} />
+              <CheckmarkSquare24Regular style={{ color: '#22bb33', verticalAlign: 'top', paddingRight: '4px' }} />
               {t('ExportQueueTitle')}
             </h2>
             <Text>{t('ExportQueueSuccessMessage1')}</Text>
@@ -330,10 +333,10 @@ export const ViewStatusTask = () => {
       )}
       {!loader && statusState.page === 'ErrorPage' && (
         <>
-          <span role='alert' aria-label={t('ExportFailureView') ?? ''} />
+          <span role='alert' aria-label={t('ExportFailureView')} />
           <div className='wizard-page'>
             <h2>
-              <ShareScreenStop24Regular style={{ color: '#bb2124', verticalAlign: 'middle', paddingRight: '8px' }} />
+              <ShareScreenStop24Regular style={{ color: '#bb2124', verticalAlign: 'top', paddingRight: '4px' }} />
               {t('ExportErrorTitle')}
             </h2>
             <Text>{t('ExportErrorMessage')}</Text>

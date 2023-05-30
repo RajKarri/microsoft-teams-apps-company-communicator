@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 
 export const useInterval = (callback: any, delay: any) => {
   const savedCallback = React.useRef<any>();
@@ -15,10 +15,12 @@ export const useInterval = (callback: any, delay: any) => {
     };
 
     if (delay !== null) {
+      /* tslint:disable-next-line */
       const id = setInterval(tick, delay);
-      return () => {
-        clearInterval(id);
-      };
+      /* tslint:disable-next-line */
+      return () => clearInterval(id);
+    } else {
+      return;
     }
   }, [delay]);
 };

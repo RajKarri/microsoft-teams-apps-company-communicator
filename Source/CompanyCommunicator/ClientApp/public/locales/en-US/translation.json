@@ -101,16 +101,5 @@
   "ExportSuccessView": "Export success view loaded",
   "ExportFailureView": "Export failure view loaded",
   "NewMessageStep1": "Message form basic information step",
-  "NewMessageStep2": "Message form audience selection step",
-  "fetching": "Fetching...",
-  "actions": "Actions",
-  "draftMessagesGridNavigation": "Draft messages table with grid keyboard navigation",
-  "sentMessagesGridNavigation": "Sent messages table with grid keyboard navigation",
-  "titleRequired": "Title is required",
-  "enterValidURL": "Please enter a valid URL",
-  "pickTeams": "Pick team(s)",
-  "pickGroups": "Pick group(s)",
-  "remove": "Remove",
-  "searchForGroups": "Search for groups",
-  "pickOneOrMoreTeams": "Pick one or more teams"
+  "NewMessageStep2": "Message form audience selection step"
 }

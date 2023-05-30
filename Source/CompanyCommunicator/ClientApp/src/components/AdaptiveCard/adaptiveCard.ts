@@ -34,10 +34,10 @@ export const getInitAdaptiveCard = (titleText: string) => {
       },
       {
         type: 'TextBlock',
-        wrap: true,
         size: 'Small',
         weight: 'Lighter',
         text: '',
+        wrap: true,
       },
     ],
     $schema: 'https://adaptivecards.io/schemas/adaptive-card.json',

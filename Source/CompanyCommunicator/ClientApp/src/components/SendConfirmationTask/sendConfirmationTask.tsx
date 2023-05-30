@@ -6,9 +6,13 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { Button, Field, Label, Persona, Spinner, Text } from '@fluentui/react-components';
-import { dialog } from '@microsoft/teams-js';
-import { getConsentSummaries, getDraftNotification, sendDraftNotification } from '../../apis/messageListApi';
-import { getInitAdaptiveCard, setCardAuthor, setCardBtn, setCardImageLink, setCardSummary, setCardTitle } from '../AdaptiveCard/adaptiveCard';
+import * as microsoftTeams from '@microsoft/teams-js';
+import {
+    getConsentSummaries, getDraftNotification, sendDraftNotification
+} from '../../apis/messageListApi';
+import {
+    getInitAdaptiveCard, setCardAuthor, setCardBtn, setCardImageLink, setCardSummary, setCardTitle
+} from '../AdaptiveCard/adaptiveCard';
 import { AvatarShape } from '@fluentui/react-avatar';
 
 export interface IMessageState {
@@ -47,10 +51,11 @@ export const SendConfirmationTask = () => {
   const [loader, setLoader] = React.useState(true);
   const [isCardReady, setIsCardReady] = React.useState(false);
   const [disableSendButton, setDisableSendButton] = React.useState(false);
+  const [cardAreaBorderClass, setCardAreaBorderClass] = React.useState('');
 
   const [messageState, setMessageState] = React.useState<IMessageState>({
-    id: '',
-    title: '',
+    id: "",
+    title: "",
     isDraftMsgUpdated: false,
   });
 
@@ -65,28 +70,29 @@ export const SendConfirmationTask = () => {
 
   React.useEffect(() => {
     if (id) {
-      void getDraftMessage(id);
-      void getConsents(id);
+      getDraftMessage(id);
+      getConsents(id);
     }
   }, [id]);
 
   React.useEffect(() => {
     if (isCardReady && consentState.isConsentsUpdated && messageState.isDraftMsgUpdated) {
-      const adaptiveCard = new AdaptiveCards.AdaptiveCard();
+      var adaptiveCard = new AdaptiveCards.AdaptiveCard();
       adaptiveCard.parse(card);
       const renderCard = adaptiveCard.render();
       if (renderCard) {
-        document.getElementsByClassName('card-area')[0].appendChild(renderCard);
+        document.getElementsByClassName("card-area-1")[0].appendChild(renderCard);
+        setCardAreaBorderClass('card-area-border');
       }
       adaptiveCard.onExecuteAction = function (action: any) {
-        window.open(action.url, '_blank');
+        window.open(action.url, "_blank");
       };
       setLoader(false);
     }
   }, [isCardReady, consentState.isConsentsUpdated, messageState.isDraftMsgUpdated]);
 
   const updateCardData = (msg: IMessageState) => {
-    card = getInitAdaptiveCard(t('TitleText') ?? '');
+    card = getInitAdaptiveCard(msg.title);
     setCardTitle(card, msg.title);
     setCardImageLink(card, msg.imageLink);
     setCardSummary(card, msg.summary);
@@ -130,7 +136,7 @@ export const SendConfirmationTask = () => {
     setDisableSendButton(true);
     sendDraftNotification(messageState)
       .then(() => {
-        dialog.url.submit();
+        microsoftTeams.tasks.submitTask();
       })
       .finally(() => {
         setDisableSendButton(false);
@@ -138,13 +144,12 @@ export const SendConfirmationTask = () => {
   };
 
   const getItemList = (items: string[], secondaryText: string, shape: AvatarShape) => {
-    const resultedTeams: any[] = [];
+    let resultedTeams: any[] = [];
     if (items) {
-      // eslint-disable-next-line array-callback-return
       items.map((element) => {
         resultedTeams.push(
-          <li key={element + 'key'}>
-            <Persona name={element} secondaryText={secondaryText} avatar={{ shape, color: 'colorful' }} />
+          <li key={element + "key"}>
+            <Persona name={element} secondaryText={secondaryText} avatar={{ shape, color: "colorful" }} />
           </li>
         );
       });
@@ -155,31 +160,31 @@ export const SendConfirmationTask = () => {
   const renderAudienceSelection = () => {
     if (consentState.teamNames && consentState.teamNames.length > 0) {
       return (
-        <div key='teamNames' style={{ paddingBottom: '16px' }}>
-          <Label>{t('TeamsLabel')}</Label>
-          <ul className='ul-no-bullets'>{getItemList(consentState.teamNames, 'Team', 'square')}</ul>
+        <div key="teamNames" style={{ paddingBottom: "16px" }}>
+          <Label>{t("TeamsLabel")}</Label>
+          <ul className="ul-no-bullets">{getItemList(consentState.teamNames, "Team", "square")}</ul>
         </div>
       );
     } else if (consentState.rosterNames && consentState.rosterNames.length > 0) {
       return (
-        <div key='rosterNames' style={{ paddingBottom: '16px' }}>
-          <Label>{t('TeamsMembersLabel')}</Label>
-          <ul className='ul-no-bullets'>{getItemList(consentState.rosterNames, 'Team', 'square')}</ul>
+        <div key="rosterNames" style={{ paddingBottom: "16px" }}>
+          <Label>{t("TeamsMembersLabel")}</Label>
+          <ul className="ul-no-bullets">{getItemList(consentState.rosterNames, "Team", "square")}</ul>
         </div>
       );
     } else if (consentState.groupNames && consentState.groupNames.length > 0) {
       return (
-        <div key='groupNames' style={{ paddingBottom: '16px' }}>
-          <Label>{t('GroupsMembersLabel')}</Label>
-          <ul className='ul-no-bullets'>{getItemList(consentState.groupNames, 'Group', 'circular')}</ul>
+        <div key="groupNames" style={{ paddingBottom: "16px" }}>
+          <Label>{t("GroupsMembersLabel")}</Label>
+          <ul className="ul-no-bullets">{getItemList(consentState.groupNames, "Group", "circular")}</ul>
         </div>
       );
     } else if (consentState.allUsers) {
       return (
-        <div key='allUsers' style={{ paddingBottom: '16px' }}>
-          <Label>{t('AllUsersLabel')}</Label>
+        <div key="allUsers" style={{ paddingBottom: "16px" }}>
+          <Label>{t("AllUsersLabel")}</Label>
           <div>
-            <Text className='info-text'>{t('SendToAllUsersNote')}</Text>
+            <Text className="info-text">{t("SendToAllUsersNote")}</Text>
           </div>
         </div>
       );
@@ -205,13 +210,17 @@ export const SendConfirmationTask = () => {
               </>
             )}
           </div>
-          <div className='card-area'></div>
+          <div className='card-area'>
+            <div className={cardAreaBorderClass}>
+              <div className='card-area-1'></div>
+            </div>
+          </div>
         </div>
         <div className='fixed-footer'>
           <div className='footer-action-right'>
             <div className='footer-actions-flex'>
               {disableSendButton && <Spinner role='alert' id='sendLoader' label={t('PreparingMessageLabel')} size='small' labelPosition='after' />}
-              <Button disabled={disableSendButton} style={{ marginLeft: '16px' }} onClick={onSendMessage} appearance='primary'>
+              <Button disabled={loader || disableSendButton} style={{ marginLeft: '16px' }} onClick={onSendMessage} appearance='primary'>
                 {t('Send')}
               </Button>
             </div>
