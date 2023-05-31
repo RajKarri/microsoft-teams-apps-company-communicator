@@ -8,7 +8,7 @@ import { useParams } from 'react-router-dom';
 import { AvatarShape } from '@fluentui/react-avatar';
 import { Button, Field, Persona, Spinner, Text } from '@fluentui/react-components';
 import { ArrowDownload24Regular, CheckmarkSquare24Regular, ShareScreenStop24Regular } from '@fluentui/react-icons';
-import * as microsoftTeams from '@microsoft/teams-js';
+import { app, dialog } from '@microsoft/teams-js';
 
 import { exportNotification, getSentNotification } from '../../apis/messageListApi';
 import { formatDate, formatDuration, formatNumber } from '../../i18n';
@@ -73,20 +73,22 @@ export const ViewStatusTask = () => {
   });
 
   React.useEffect(() => {
-    microsoftTeams.getContext((context) => {
-      setStatusState({ ...statusState, teamId: context.teamId, isTeamDataUpdated: true });
-    });
+    if (app.isInitialized()) {
+      void app.getContext().then((context) => {
+        setStatusState({ ...statusState, teamId: context.team?.internalId ?? '', isTeamDataUpdated: true });
+      });
+    }
   }, []);
 
   React.useEffect(() => {
     if (id) {
-      getMessage(id);
+      void getMessage(id);
     }
   }, [id]);
 
   React.useEffect(() => {
     if (isCardReady && messageState.isMsgDataUpdated) {
-      var adaptiveCard = new AdaptiveCards.AdaptiveCard();
+      const adaptiveCard = new AdaptiveCards.AdaptiveCard();
       adaptiveCard.parse(card);
       const renderCard = adaptiveCard.render();
       if (renderCard && statusState.page === 'ViewStatus') {
@@ -98,7 +100,7 @@ export const ViewStatusTask = () => {
       };
       setLoader(false);
     }
-  }, [isCardReady, messageState.isMsgDataUpdated]);
+  }, [isCardReady, messageState.isMsgDataUpdated, statusState.page]);
 
   const getMessage = async (id: number) => {
     try {
@@ -131,12 +133,12 @@ export const ViewStatusTask = () => {
   };
 
   const onClose = () => {
-    microsoftTeams.tasks.submitTask();
+    dialog.url.submit();
   };
 
   const onExport = async () => {
     setExportDisabled(true);
-    let payload = {
+    const payload = {
       id: messageState.id,
       teamId: statusState.teamId,
     };
@@ -153,8 +155,9 @@ export const ViewStatusTask = () => {
   };
 
   const getItemList = (items: string[], secondaryText: string, shape: AvatarShape) => {
-    let resultedTeams: any[] = [];
+    const resultedTeams: any[] = [];
     if (items) {
+      // eslint-disable-next-line array-callback-return
       items.map((element) => {
         resultedTeams.push(
           <li key={element + 'key'}>
@@ -230,14 +233,14 @@ export const ViewStatusTask = () => {
       {loader && <Spinner />}
       {statusState.page === 'ViewStatus' && (
         <>
-          <span role='alert' aria-label={t('ViewMessageStatus')} />
+          <span role='alert' aria-label={t('ViewMessageStatus') ?? ''} />
           <div className='adaptive-task-grid'>
             <div className='form-area'>
               {!loader && (
                 <>
                   <div style={{ paddingBottom: '16px' }}>
                     <Field size='large' label={t('TitleText')}>
-                      <Text>{messageState.title}</Text>
+                      <Text style={{ overflowWrap: 'anywhere' }}>{messageState.title}</Text>
                     </Field>
                   </div>
                   <div style={{ paddingBottom: '16px' }}>
@@ -292,8 +295,10 @@ export const ViewStatusTask = () => {
                 <Button
                   icon={<ArrowDownload24Regular />}
                   style={{ marginLeft: '16px' }}
-                  title={exportDisabled || messageState.canDownload === false ? t('ExportButtonProgressText') : t('ExportButtonText')}
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  title={exportDisabled || messageState.canDownload === false ? t('ExportButtonProgressText')! : t('ExportButtonText')!}
                   disabled={exportDisabled || messageState.canDownload === false}
+                  // eslint-disable-next-line @typescript-eslint/no-misused-promises
                   onClick={onExport}
                   appearance='primary'
                 >
@@ -306,7 +311,7 @@ export const ViewStatusTask = () => {
       )}
       {!loader && statusState.page === 'SuccessPage' && (
         <>
-          <span role='alert' aria-label={t('ExportSuccessView')} />
+          <span role='alert' aria-label={t('ExportSuccessView') ?? ''} />
           <div className='wizard-page'>
             <h2>
               <CheckmarkSquare24Regular style={{ color: '#22bb33', verticalAlign: 'top', paddingRight: '4px' }} />
@@ -333,7 +338,7 @@ export const ViewStatusTask = () => {
       )}
       {!loader && statusState.page === 'ErrorPage' && (
         <>
-          <span role='alert' aria-label={t('ExportFailureView')} />
+          <span role='alert' aria-label={t('ExportFailureView') ?? ''} />
           <div className='wizard-page'>
             <h2>
               <ShareScreenStop24Regular style={{ color: '#bb2124', verticalAlign: 'top', paddingRight: '4px' }} />
