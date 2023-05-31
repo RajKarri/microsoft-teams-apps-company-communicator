@@ -2,24 +2,32 @@
 // Licensed under the MIT License.
 
 import * as React from 'react';
-import { useNavigate, useParams } from 'react-router';
-import { Text, Button, Caption1Stronger, Title2 } from '@fluentui/react-components';
 import { useTranslation } from 'react-i18next';
-import { ROUTE_PARTS } from '../../routes';
+import { useParams } from 'react-router';
+import { Button, Caption1Stronger, Text, Title2 } from '@fluentui/react-components';
+import { dialog } from '@microsoft/teams-js';
+import { DeleteMessagesTaskAction } from '../../actions';
+import { RootState, useAppDispatch, useAppSelector } from '../../store';
 
 export const DeleteConfirmationTask = () => {
   const { deletionType, deletionFromDate, deletionToDate } = useParams() as any;
   const { t } = useTranslation();
-  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const deleteActionResult = useAppSelector((state: RootState) => state.messages).deleteMessagesTask.payload;
 
   const onBack = () => {
-    navigate(`/${ROUTE_PARTS.DELETE_MESSAGES}`);
+    dialog.url.submit();
   };
 
   const onDelete = () => {
-    // Placeholder
-    navigate(`/${ROUTE_PARTS.DELETE_MESSAGES}`);
+    DeleteMessagesTaskAction(dispatch, {});
   };
+
+  React.useEffect(() => {
+    if (deleteActionResult) {
+      dialog.url.submit();
+    }
+  }, [deleteActionResult]);
 
   return (
     <div className='delete-confirmation-task'>

@@ -21,7 +21,6 @@ import {
 import { DatePicker } from '@fluentui/react-datepicker-compat';
 import { ArrowLeft24Regular, CommentMultiple24Regular } from '@fluentui/react-icons';
 import { app, dialog, DialogDimension, UrlDialogInfo } from '@microsoft/teams-js';
-
 import { getBaseUrl } from '../../configVariables';
 import { ROUTE_PARTS } from '../../routes';
 import { RootState, useAppDispatch, useAppSelector } from '../../store';
@@ -91,11 +90,13 @@ export const DeleteMessages = (props: IDeleteMessagesProps) => {
   const onDeleteApplyClick = () => {
     const url =
       getBaseUrl() +
-      `/${ROUTE_PARTS.DELETE_MESSAGES_CONFIRM}/${deleteSelection}/${fromDate ? fromDate.toDateString() : 'na'}/${toDate ? toDate.toDateString() : 'na'}`;
+      `/${ROUTE_PARTS.DELETE_MESSAGES_CONFIRM}/${deleteSelection}/${fromDate ? fromDate.toDateString() : 'na'}/${
+        toDate ? toDate.toDateString() : 'na'
+      }`;
     const dialogInfo: UrlDialogInfo = {
       url,
       title: t('DeleteMessages') ?? '',
-      size: { height: DialogDimension.Large, width: DialogDimension.Large },
+      size: { height: DialogDimension.Small, width: DialogDimension.Small },
       fallbackUrl: url,
     };
 
@@ -110,7 +111,7 @@ export const DeleteMessages = (props: IDeleteMessagesProps) => {
   };
 
   return (
-    <>
+    <div className='delete-messages'>
       <Header theme={props.theme} />
       <Field validationMessage={getValidationErrorMsg()} label={t('chooseRangeOfDeleteMessagesTitle')} size='large' style={{ paddingTop: '32px' }}>
         <RadioGroup onChange={deleteSelectionChange}>
@@ -162,6 +163,6 @@ export const DeleteMessages = (props: IDeleteMessagesProps) => {
           </AccordionPanel>
         </AccordionItem>
       </Accordion>
-    </>
+    </div>
   );
 };

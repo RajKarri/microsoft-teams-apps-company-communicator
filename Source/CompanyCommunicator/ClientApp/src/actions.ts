@@ -97,9 +97,9 @@ export const GetDeletedMessagesSilentAction = (dispatch: typeof store.dispatch) 
   // });
 };
 
-export const DeleteMessagesAction = (dispatch: typeof store.dispatch, payload: any) => {
+export const DeleteMessagesTaskAction = (dispatch: typeof store.dispatch, payload: any) => {
   // void postDeleteMessages().then((response) => {
-  //   dispatch(deleteMessagesRequest({ type: 'POST_DELETE_MESSAGES', payload: response?.data || [] }));
+  //   dispatch(deleteMessagesTask({ type: 'DELETE_MESSAGES_TASK', payload: response?.data || [] }));
   // });
 };
 
