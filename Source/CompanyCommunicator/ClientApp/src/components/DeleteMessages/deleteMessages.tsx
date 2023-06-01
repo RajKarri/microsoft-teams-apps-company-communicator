@@ -90,8 +90,8 @@ export const DeleteMessages = (props: IDeleteMessagesProps) => {
   const onDeleteApplyClick = () => {
     const url =
       getBaseUrl() +
-      `/${ROUTE_PARTS.DELETE_MESSAGES_CONFIRM}/${deleteSelection}/${fromDate ? fromDate.toDateString() : 'na'}/${
-        toDate ? toDate.toDateString() : 'na'
+      `/${ROUTE_PARTS.DELETE_MESSAGES_CONFIRM}/${deleteSelection}/${fromDate ? fromDate.toDateString() : 'NoFromDate'}/${
+        toDate ? toDate.toDateString() : 'NoToDate'
       }`;
     const dialogInfo: UrlDialogInfo = {
       url,

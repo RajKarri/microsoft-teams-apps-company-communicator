@@ -1,9 +1,10 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { getDraftNotifications, getGroups, getSentNotifications, getTeams, searchGroups, verifyGroupAccess } from './apis/messageListApi';
+import { getDeletedMessages, getDraftNotifications, getGroups, getSentNotifications, getTeams, searchGroups, verifyGroupAccess } from './apis/messageListApi';
 import { formatDate } from './i18n';
 import {
+  deletedMessages,
   draftMessages,
   groups,
   isDeletedMessagesFetchOn,
@@ -81,26 +82,20 @@ export const GetDraftMessagesSilentAction = (dispatch: typeof store.dispatch) =>
 };
 
 export const GetDeletedMessagesAction = (dispatch: typeof store.dispatch) => {
-  // DeletedMessageFetchStatusAction(dispatch, true);
-  // getDeletedMessages()
-  //   .then((response) => {
-  //     dispatch(draftMessages({ type: 'FETCH_DELETED_MESSAGES', payload: response?.data || [] }));
-  //   })
-  //   .finally(() => {
-  //     DeletedMessageFetchStatusAction(dispatch, false);
-  //   });
+  DeletedMessageFetchStatusAction(dispatch, true);
+  getDeletedMessages()
+    .then((response) => {
+      dispatch(draftMessages({ type: 'FETCH_DELETED_MESSAGES', payload: response?.data || [] }));
+    })
+    .finally(() => {
+      DeletedMessageFetchStatusAction(dispatch, false);
+    });
 };
 
 export const GetDeletedMessagesSilentAction = (dispatch: typeof store.dispatch) => {
-  // void getDeletedMessages().then((response) => {
-  //   dispatch(deletedMessages({ type: 'FETCH_DELETED_MESSAGES', payload: response?.data || [] }));
-  // });
-};
-
-export const DeleteMessagesTaskAction = (dispatch: typeof store.dispatch, payload: any) => {
-  // void postDeleteMessages().then((response) => {
-  //   dispatch(deleteMessagesTask({ type: 'DELETE_MESSAGES_TASK', payload: response?.data || [] }));
-  // });
+  void getDeletedMessages().then((response) => {
+    dispatch(deletedMessages({ type: 'FETCH_DELETED_MESSAGES', payload: response?.data || [] }));
+  });
 };
 
 export const GetTeamsDataAction = (dispatch: typeof store.dispatch) => {

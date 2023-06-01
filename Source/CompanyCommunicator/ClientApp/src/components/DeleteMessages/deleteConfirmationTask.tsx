@@ -6,28 +6,44 @@ import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 import { Button, Caption1Stronger, Text, Title2 } from '@fluentui/react-components';
 import { dialog } from '@microsoft/teams-js';
-import { DeleteMessagesTaskAction } from '../../actions';
-import { RootState, useAppDispatch, useAppSelector } from '../../store';
+import { deleteMessages } from '../../apis/messageListApi';
+import { useAppDispatch } from '../../store';
+import { GetDeletedMessagesSilentAction } from '../../actions';
+import { IDeleteMessageRequest } from '../../models/deletedMessages';
 
 export const DeleteConfirmationTask = () => {
   const { deletionType, deletionFromDate, deletionToDate } = useParams() as any;
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const deleteActionResult = useAppSelector((state: RootState) => state.messages).deleteMessagesTask.payload;
 
   const onBack = () => {
     dialog.url.submit();
   };
 
   const onDelete = () => {
-    DeleteMessagesTaskAction(dispatch, {});
-  };
+    let fromDate: Date = new Date();
+    let toDate: Date = new Date();
 
-  React.useEffect(() => {
-    if (deleteActionResult) {
-      dialog.url.submit();
+    if (deletionType.toLowerCase() === 'customdate') {
+      fromDate = new Date(deletionFromDate);
+      toDate = new Date(deletionToDate);
+    } else if (deletionType.toLowerCase() === 'last30Days') {
+      fromDate = new Date(new Date().getDate() - 30);
+    } else if (deletionType.toLowerCase() === 'last3Months') {
+      fromDate = new Date(new Date().getDate() - 90);
+    } else if (deletionType.toLowerCase() === 'last6Months') {
+      fromDate = new Date(new Date().getDate() - 180);
+    } else if (deletionType.toLowerCase() === 'last1year') {
+      fromDate = new Date(new Date().getDate() - 365);
     }
-  }, [deleteActionResult]);
+
+    const payload: IDeleteMessageRequest = { selectedDateRange: deletionType, startDate: fromDate, endDate: toDate };
+
+    void deleteMessages(payload).then(() => {
+      GetDeletedMessagesSilentAction(dispatch);
+      dialog.url.submit();
+    });
+  };
 
   return (
     <div className='delete-confirmation-task'>

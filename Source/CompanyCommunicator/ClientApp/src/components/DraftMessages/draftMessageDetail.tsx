@@ -110,7 +110,7 @@ export const DraftMessageDetail = (draftMessages: any) => {
           <TableHeaderCell key='title'>
             <b>{t('TitleText')}</b>
           </TableHeaderCell>
-          <TableHeaderCell key='actions' style={{ float: 'right' }}>
+          <TableHeaderCell key='actions' style={{ width: '50px' }}>
             <b>{t('actions')}</b>
           </TableHeaderCell>
         </TableRow>
@@ -131,8 +131,8 @@ export const DraftMessageDetail = (draftMessages: any) => {
                 {item.title}
               </TableCellLayout>
             </TableCell>
-            <TableCell>
-              <TableCellLayout style={{ float: 'right' }}>
+            <TableCell role='gridcell' style={{ width: '50px' }}>
+              <TableCellLayout>
                 <Menu>
                   <MenuTrigger disableButtonEnhancement>
                     <Button aria-label='Actions menu' icon={<MoreHorizontal24Filled />} />
