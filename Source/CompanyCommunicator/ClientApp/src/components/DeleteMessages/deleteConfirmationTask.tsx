@@ -4,7 +4,7 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
-import { Button, Caption1Stronger, Text, Title2 } from '@fluentui/react-components';
+import { Button, Caption1Stronger, Text, Body1Stronger } from '@fluentui/react-components';
 import { dialog } from '@microsoft/teams-js';
 import { deleteMessages } from '../../apis/messageListApi';
 import { useAppDispatch } from '../../store';
@@ -47,7 +47,7 @@ export const DeleteConfirmationTask = () => {
 
   return (
     <div className='delete-confirmation-task'>
-      <Title2>{t('deleteTheMessages')}</Title2>
+      <Body1Stronger>{t('deleteTheMessages')}</Body1Stronger>
       <br />
       <br />
       <Caption1Stronger>{t('dateRange')}</Caption1Stronger>
@@ -64,8 +64,6 @@ export const DeleteConfirmationTask = () => {
       <br />
       <br />
       <Text className='info-text'>{t('deleteConfirmationNote')}</Text>
-      <br />
-      <br />
       <div className='fixed-footer'>
         <div className='footer-action-right'>
           <div className='footer-actions-flex'>

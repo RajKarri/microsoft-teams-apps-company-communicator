@@ -48,7 +48,7 @@ export const DeleteMessages = (props: IDeleteMessagesProps) => {
   }, [deletedMessages]);
 
   const goBackToHome = () => {
-    navigate(`/${ROUTE_PARTS.MESSAGES}`);
+    navigate(`${getBaseUrl()}/${ROUTE_PARTS.MESSAGES}`);
   };
 
   const onSelectFromDate = (date?: Date | null) => {
