@@ -68,7 +68,7 @@ export const HomePage = (props: IHomePage) => {
       <Button id='newMessageButtonId' className='cc-button' icon={<Status24Regular />} appearance='primary' onClick={onNewMessage}>
         {t('NewMessage')}
       </Button>
-      {hasDeletePermission() && <Button id='deleteMessageButtonId' className='cc-button' icon={<Delete24Regular />} appearance='secondary' onClick={onDeleteMessages}>
+      {!hasDeletePermission() && <Button id='deleteMessageButtonId' className='cc-button' icon={<Delete24Regular />} appearance='secondary' onClick={onDeleteMessages}>
         {t('DeleteMessages')}
       </Button>
       }
