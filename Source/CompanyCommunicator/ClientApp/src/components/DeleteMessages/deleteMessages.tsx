@@ -4,7 +4,6 @@
 import '../Shared/main.scss';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
 import {
   Accordion,
   AccordionHeader,
@@ -20,7 +19,7 @@ import {
 } from '@fluentui/react-components';
 import { DatePicker } from '@fluentui/react-datepicker-compat';
 import { ArrowLeft24Regular, CommentMultiple24Regular } from '@fluentui/react-icons';
-import { app, dialog, DialogDimension, UrlDialogInfo } from '@microsoft/teams-js';
+import { app, dialog, DialogDimension, UrlDialogInfo, pages } from '@microsoft/teams-js';
 import { getBaseUrl } from '../../configVariables';
 import { ROUTE_PARTS } from '../../routes';
 import { RootState, useAppDispatch, useAppSelector } from '../../store';
@@ -33,7 +32,6 @@ interface IDeleteMessagesProps {
 }
 export const DeleteMessages = (props: IDeleteMessagesProps) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const [fromDate, setFromDate] = React.useState<Date | undefined>();
   const [toDate, setToDate] = React.useState<Date | undefined>();
   const [deleteSelection, setDeleteSelection] = React.useState('');
@@ -48,7 +46,7 @@ export const DeleteMessages = (props: IDeleteMessagesProps) => {
   }, [deletedMessages]);
 
   const goBackToHome = () => {
-    navigate(`${getBaseUrl()}/${ROUTE_PARTS.MESSAGES}`);
+    void pages.currentApp.navigateToDefaultPage();
   };
 
   const onSelectFromDate = (date?: Date | null) => {
@@ -96,7 +94,7 @@ export const DeleteMessages = (props: IDeleteMessagesProps) => {
     const dialogInfo: UrlDialogInfo = {
       url,
       title: t('DeleteMessages') ?? '',
-      size: { height: DialogDimension.Small, width: DialogDimension.Small },
+      size: { height: DialogDimension.Medium, width: DialogDimension.Medium },
       fallbackUrl: url,
     };
 
