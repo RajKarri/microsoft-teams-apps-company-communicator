@@ -100,7 +100,7 @@ export const DeleteMessages = (props: IDeleteMessagesProps) => {
     const dialogInfo: UrlDialogInfo = {
       url,
       title: t('DeleteMessages') ?? '',
-      size: { height: DialogDimension.Medium, width: DialogDimension.Medium },
+      size: { height: DialogDimension.Small, width: DialogDimension.Small },
       fallbackUrl: url,
     };
 
