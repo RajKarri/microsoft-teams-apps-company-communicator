@@ -19,7 +19,7 @@ import {
 } from '@fluentui/react-components';
 import { DatePicker } from '@fluentui/react-datepicker-compat';
 import { ArrowLeft24Regular, CommentMultiple24Regular } from '@fluentui/react-icons';
-import { app, dialog, DialogDimension, UrlDialogInfo, pages } from '@microsoft/teams-js';
+import { app, dialog, DialogDimension, UrlDialogInfo } from '@microsoft/teams-js';
 import { getBaseUrl } from '../../configVariables';
 import { ROUTE_PARTS } from '../../routes';
 import { RootState, useAppDispatch, useAppSelector } from '../../store';
@@ -46,7 +46,7 @@ export const DeleteMessages = (props: IDeleteMessagesProps) => {
   }, [deletedMessages]);
 
   const goBackToHome = () => {
-    void pages.currentApp.navigateToDefaultPage();
+    window.location.href = '/messages';
   };
 
   const onSelectFromDate = (date?: Date | null) => {
@@ -88,13 +88,12 @@ export const DeleteMessages = (props: IDeleteMessagesProps) => {
   const onDeleteApplyClick = () => {
     const url =
       getBaseUrl() +
-      `/${ROUTE_PARTS.DELETE_MESSAGES_CONFIRM}/${deleteSelection}/${fromDate ? fromDate.toDateString() : 'NoFromDate'}/${
-        toDate ? toDate.toDateString() : 'NoToDate'
+      `/${ROUTE_PARTS.DELETE_MESSAGES_CONFIRM}/${deleteSelection}/${fromDate ? fromDate.toDateString() : 'NoFromDate'}/${toDate ? toDate.toDateString() : 'NoToDate'
       }`;
     const dialogInfo: UrlDialogInfo = {
       url,
       title: t('DeleteMessages') ?? '',
-      size: { height: DialogDimension.Medium, width: DialogDimension.Medium },
+      size: { height: DialogDimension.Small, width: DialogDimension.Small },
       fallbackUrl: url,
     };
 
