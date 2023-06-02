@@ -2,8 +2,8 @@ export interface IDeleteMessageRequest {
   rowKeyId?: string;
   selectedDateRange: string;
   deletedBy?: string;
-  startDate: Date;
-  endDate: Date;
+  startDate: string;
+  endDate: string;
 }
 
 export interface IDeletedMessagesHistory {

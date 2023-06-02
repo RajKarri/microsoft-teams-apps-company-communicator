@@ -35,7 +35,7 @@ export const App = () => {
         setIsAppReady(true);
       })
       .catch(() => {
-        setIsAppReady(true);
+        setIsAppReady(false);
       });
   }, []);
 

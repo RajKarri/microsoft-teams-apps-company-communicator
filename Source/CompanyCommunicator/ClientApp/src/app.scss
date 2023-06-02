@@ -58,10 +58,6 @@
     padding: 2rem 2rem 8rem 2rem;
 }
 
-.delete-confirmation-task {
-    padding: 2rem 2rem 8rem 2rem;
-}
-
 .fixed-footer {
     display: inline;
     // position: fixed;
@@ -120,12 +116,10 @@
     outline-offset: -2px;
 }
 
-.sent-messages {
-    .fui-Persona__primaryText {
-        text-overflow: ellipsis;
-        overflow: hidden;
-        width: 100%;
-    }
+.fui-Persona__primaryText {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 100%;
 }
 
 .delete-messages {

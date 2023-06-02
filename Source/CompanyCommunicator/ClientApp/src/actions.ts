@@ -1,7 +1,15 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { getDeletedMessages, getDraftNotifications, getGroups, getSentNotifications, getTeams, searchGroups, verifyGroupAccess } from './apis/messageListApi';
+import {
+  getDeletedMessages,
+  getDraftNotifications,
+  getGroups,
+  getSentNotifications,
+  getTeams,
+  searchGroups,
+  verifyGroupAccess,
+} from './apis/messageListApi';
 import { formatDate } from './i18n';
 import {
   deletedMessages,
@@ -85,7 +93,7 @@ export const GetDeletedMessagesAction = (dispatch: typeof store.dispatch) => {
   DeletedMessageFetchStatusAction(dispatch, true);
   getDeletedMessages()
     .then((response) => {
-      dispatch(draftMessages({ type: 'FETCH_DELETED_MESSAGES', payload: response?.data || [] }));
+      dispatch(deletedMessages({ type: 'FETCH_DELETED_MESSAGES', payload: response?.data || [] }));
     })
     .finally(() => {
       DeletedMessageFetchStatusAction(dispatch, false);

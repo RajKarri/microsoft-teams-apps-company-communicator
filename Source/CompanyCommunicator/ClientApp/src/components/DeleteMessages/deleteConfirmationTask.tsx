@@ -10,6 +10,7 @@ import { deleteMessages } from '../../apis/messageListApi';
 import { useAppDispatch } from '../../store';
 import { GetDeletedMessagesSilentAction } from '../../actions';
 import { IDeleteMessageRequest } from '../../models/deletedMessages';
+import moment from 'moment';
 
 export const DeleteConfirmationTask = () => {
   const { deletionType, deletionFromDate, deletionToDate } = useParams() as any;
@@ -21,20 +22,20 @@ export const DeleteConfirmationTask = () => {
   };
 
   const onDelete = () => {
-    let fromDate: Date = new Date();
-    let toDate: Date = new Date();
+    let fromDate = moment().format('MM/DD/YYYY');
+    let toDate = moment().format('MM/DD/YYYY');
 
     if (deletionType.toLowerCase() === 'customdate') {
-      fromDate = new Date(deletionFromDate);
-      toDate = new Date(deletionToDate);
+      fromDate = moment(deletionFromDate).format('MM/DD/YYYY');
+      toDate = moment(deletionToDate).format('MM/DD/YYYY');
     } else if (deletionType.toLowerCase() === 'last30Days') {
-      fromDate = new Date(new Date().getDate() - 30);
+      fromDate = moment().subtract(30, 'days').format('MM/DD/YYYY');
     } else if (deletionType.toLowerCase() === 'last3Months') {
-      fromDate = new Date(new Date().getDate() - 90);
+      fromDate = moment().subtract(90, 'days').format('MM/DD/YYYY');
     } else if (deletionType.toLowerCase() === 'last6Months') {
-      fromDate = new Date(new Date().getDate() - 180);
+      fromDate = moment().subtract(180, 'days').format('MM/DD/YYYY');
     } else if (deletionType.toLowerCase() === 'last1year') {
-      fromDate = new Date(new Date().getDate() - 365);
+      fromDate = moment().subtract(1, 'year').format('MM/DD/YYYY');
     }
 
     const payload: IDeleteMessageRequest = { selectedDateRange: deletionType, startDate: fromDate, endDate: toDate };
@@ -46,7 +47,7 @@ export const DeleteConfirmationTask = () => {
   };
 
   return (
-    <div className='delete-confirmation-task'>
+    <>
       <Body1Stronger>{t('deleteTheMessages')}</Body1Stronger>
       <br />
       <br />
@@ -64,6 +65,8 @@ export const DeleteConfirmationTask = () => {
       <br />
       <br />
       <Text className='info-text'>{t('deleteConfirmationNote')}</Text>
+      <br />
+      <br />
       <div className='fixed-footer'>
         <div className='footer-action-right'>
           <div className='footer-actions-flex'>
@@ -76,6 +79,6 @@ export const DeleteConfirmationTask = () => {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };

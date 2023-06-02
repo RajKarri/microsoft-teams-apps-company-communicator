@@ -19,17 +19,19 @@ import {
 } from '@fluentui/react-components';
 import { DatePicker } from '@fluentui/react-datepicker-compat';
 import { ArrowLeft24Regular, CommentMultiple24Regular } from '@fluentui/react-icons';
-import { app, dialog, DialogDimension, UrlDialogInfo, pages } from '@microsoft/teams-js';
+import { app, dialog, DialogDimension, UrlDialogInfo } from '@microsoft/teams-js';
 import { getBaseUrl } from '../../configVariables';
 import { ROUTE_PARTS } from '../../routes';
 import { RootState, useAppDispatch, useAppSelector } from '../../store';
 import { Header } from '../Shared/header';
 import { DeleteMessageDetail } from './deleteMessagesDetail';
 import { GetDeletedMessagesAction, GetDeletedMessagesSilentAction } from '../../actions';
+import * as CustomHooks from '../../useInterval';
 
 interface IDeleteMessagesProps {
   theme: Theme;
 }
+
 export const DeleteMessages = (props: IDeleteMessagesProps) => {
   const { t } = useTranslation();
   const [fromDate, setFromDate] = React.useState<Date | undefined>();
@@ -38,6 +40,11 @@ export const DeleteMessages = (props: IDeleteMessagesProps) => {
   const deletedMessages = useAppSelector((state: RootState) => state.messages).deletedMessages.payload;
   const loader = useAppSelector((state: RootState) => state.messages).isDeletedMessagesFetchOn.payload;
   const dispatch = useAppDispatch();
+  const delay = 60000;
+
+  CustomHooks.useInterval(() => {
+    GetDeletedMessagesSilentAction(dispatch);
+  }, delay);
 
   React.useEffect(() => {
     if (deletedMessages && deletedMessages.length === 0) {
@@ -46,7 +53,7 @@ export const DeleteMessages = (props: IDeleteMessagesProps) => {
   }, [deletedMessages]);
 
   const goBackToHome = () => {
-    void pages.currentApp.navigateToDefaultPage();
+    window.location.href = '/messages';
   };
 
   const onSelectFromDate = (date?: Date | null) => {
@@ -88,8 +95,7 @@ export const DeleteMessages = (props: IDeleteMessagesProps) => {
   const onDeleteApplyClick = () => {
     const url =
       getBaseUrl() +
-      `/${ROUTE_PARTS.DELETE_MESSAGES_CONFIRM}/${deleteSelection}/${fromDate ? fromDate.toDateString() : 'NoFromDate'}/${
-        toDate ? toDate.toDateString() : 'NoToDate'
+      `/${ROUTE_PARTS.DELETE_MESSAGES_CONFIRM}/${deleteSelection}/${fromDate ? fromDate.toDateString() : 'NoFromDate'}/${toDate ? toDate.toDateString() : 'NoToDate'
       }`;
     const dialogInfo: UrlDialogInfo = {
       url,
@@ -153,8 +159,8 @@ export const DeleteMessages = (props: IDeleteMessagesProps) => {
       </Button>
       {loader && <Spinner labelPosition='below' label={t('fetching')} />}
       <Accordion defaultOpenItems='1' collapsible>
-        <AccordionItem value='1' key='draftMessagesKey'>
-          <AccordionHeader>{t('DraftMessagesSectionTitle')}</AccordionHeader>
+        <AccordionItem value='1' key='deleteMessagesKey'>
+          <AccordionHeader>{t('DeleteMessagesSectionTitle')}</AccordionHeader>
           <AccordionPanel className='cc-accordion-panel'>
             {deletedMessages && deletedMessages.length === 0 && !loader && <div>{t('EmptyDeletedMessages')}</div>}
             {deletedMessages && deletedMessages.length > 0 && !loader && <DeleteMessageDetail deletedMessages={deletedMessages} />}

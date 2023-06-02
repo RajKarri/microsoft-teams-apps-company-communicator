@@ -1,7 +1,7 @@
 {
   "DraftMessagesSectionTitle": "Draft messages",
   "SentMessagesSectionTitle": "Sent messages",
-  "DeleteMessagesSectionTitle": "Delete messages",
+  "DeleteMessagesSectionTitle": "Deletion history",
   "EmptyDraftMessages": "You have no draft messages.",
   "EmptySentMessages": "You have no sent messages.",
   "EmptyDeletedMessages": "You have no delete messages.",
@@ -109,6 +109,7 @@
   "actions": "Actions",
   "draftMessagesGridNavigation": "Draft messages table with grid keyboard navigation",
   "sentMessagesGridNavigation": "Sent messages table with grid keyboard navigation",
+  "deletedMessagesGridNavigation": "Deleted messages table with grid keyboard navigation",
   "titleRequired": "Title is required",
   "enterValidURL": "Please enter a valid URL",
   "pickTeams": "Pick team(s)",
@@ -129,5 +130,9 @@
   "deleteTheMessages": "Delete the messages?",
   "dateRange": "Date Range:",
   "deleteConfirmationNote": "Note: You will not be able to retrieve messages once deleted",
-  "delete": "Delete"
+  "delete": "Delete",
+  "selectedDateRange": "Date Range",
+  "status": "Status",
+  "recordsDeleted": "Number of records deleted",
+  "deletedBy": "Deleted By"
 }

@@ -25,6 +25,15 @@ export const HomePage = (props: IHomePage) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const [currentUser, setCurrentUser] = React.useState<string | undefined>();
+
+  React.useEffect(() => {
+    if (app.isInitialized()) {
+      void app.getContext().then((context: app.Context) => {
+        setCurrentUser(context.user?.userPrincipalName);
+      });
+    }
+  }, []);
 
   const onNewMessage = () => {
     const dialogInfo: UrlDialogInfo = {
@@ -48,15 +57,21 @@ export const HomePage = (props: IHomePage) => {
     navigate(`/${ROUTE_PARTS.DELETE_MESSAGES}`);
   };
 
+  const hasDeletePermission = () => {
+    const authorizedUsers = process.env.REACT_APP_AUTHORIZED_USERS_EMAIL;
+    return currentUser ? authorizedUsers?.toLowerCase()?.includes(currentUser) : false;
+  };
+
   return (
     <>
       <Header theme={props.theme} />
       <Button id='newMessageButtonId' className='cc-button' icon={<Status24Regular />} appearance='primary' onClick={onNewMessage}>
         {t('NewMessage')}
       </Button>
-      <Button id='deleteMessageButtonId' className='cc-button' icon={<Delete24Regular />} appearance='secondary' onClick={onDeleteMessages}>
+      {hasDeletePermission() && <Button id='deleteMessageButtonId' className='cc-button' icon={<Delete24Regular />} appearance='secondary' onClick={onDeleteMessages}>
         {t('DeleteMessages')}
       </Button>
+      }
       <Accordion defaultOpenItems={['1', '2']} multiple collapsible>
         <AccordionItem value='1' key='draftMessagesKey'>
           <AccordionHeader>{t('DraftMessagesSectionTitle')}</AccordionHeader>
