@@ -49,7 +49,6 @@ export const DeleteConfirmationTask = () => {
     <div className='delete-confirmation-task'>
       <Body1Stronger>{t('deleteTheMessages')}</Body1Stronger>
       <br />
-      <br />
       <Caption1Stronger>{t('dateRange')}</Caption1Stronger>
       <br />
       {deletionType.toLowerCase() === 'last30days' && <Text>{t('last30Days')}</Text>}
@@ -61,7 +60,6 @@ export const DeleteConfirmationTask = () => {
           {t('from')}&nbsp;{deletionFromDate}&nbsp;{t('to')}&nbsp;{deletionToDate}
         </Text>
       )}
-      <br />
       <br />
       <Text className='info-text'>{t('deleteConfirmationNote')}</Text>
       <div className='fixed-footer'>
