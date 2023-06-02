@@ -25,12 +25,11 @@ import { ROUTE_PARTS } from '../../routes';
 import { RootState, useAppDispatch, useAppSelector } from '../../store';
 import { Header } from '../Shared/header';
 import { DeleteMessageDetail } from './deleteMessagesDetail';
-import { GetDeletedMessagesSilentAction, GetDeletedMessagesAction } from '../../actions';
+import { GetDeletedMessagesAction, GetDeletedMessagesSilentAction } from '../../actions';
 
 interface IDeleteMessagesProps {
   theme: Theme;
 }
-
 export const DeleteMessages = (props: IDeleteMessagesProps) => {
   const { t } = useTranslation();
   const [fromDate, setFromDate] = React.useState<Date | undefined>();
