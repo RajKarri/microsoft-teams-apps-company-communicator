@@ -19,7 +19,7 @@ import { ViewStatusTask } from './components/ViewStatusTask/viewStatusTask';
 import { ROUTE_PARAMS, ROUTE_PARTS } from './routes';
 import { DeleteMessages } from './components/DeleteMessages/deleteMessages';
 import { DeleteConfirmationTask } from './components/DeleteMessages/deleteConfirmationTask';
-import { useAppDispatch } from './store';
+import { RootState, useAppDispatch, useAppSelector } from './store';
 import { authToken } from './authSlice';
 
 export const App = () => {
@@ -27,6 +27,7 @@ export const App = () => {
   const [locale, setLocale] = React.useState('en-US');
   const [isAppReady, setIsAppReady] = React.useState(false);
   const [isTokenReady, setIsTokenReady] = React.useState(false);
+  const token = useAppSelector((state: RootState) => state.auth).authToken.payload;
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment, @typescript-eslint/prefer-ts-expect-error
   // @ts-ignore
   const dir = i18n.dir(locale);
@@ -44,10 +45,15 @@ export const App = () => {
   }, []);
 
   React.useEffect(() => {
+    if (token) {
+      setIsTokenReady(true);
+    }
+  }, [token]);
+
+  React.useEffect(() => {
     if (isAppReady) {
       void authentication.getAuthToken().then(token => {
         dispatch(authToken({ type: 'ACCESS_TOKEN', payload: token }));
-        setIsTokenReady(true);
       });
       void app.getContext().then((context: app.Context) => {
         const theme = context.app.theme || 'default';
@@ -81,30 +87,33 @@ export const App = () => {
   return (
     <>
       {isAppReady && isTokenReady && (
-        <FluentProvider theme={fluentUITheme} dir={dir}>
-          <Suspense fallback={<div></div>}>
-            <BrowserRouter>
-              <Routes>
-                <Route path={`/${ROUTE_PARTS.CONFIG_TAB}`} element={<Configuration />} />
-                <Route path={`/${ROUTE_PARTS.MESSAGES}`} element={<HomePage theme={fluentUITheme} />} />
-                <Route path={`/${ROUTE_PARTS.NEW_MESSAGE}`} element={<NewMessage />} />
-                <Route path={`/${ROUTE_PARTS.DELETE_MESSAGES}`} element={<DeleteMessages theme={fluentUITheme} />} />
-                <Route
-                  path={`/${ROUTE_PARTS.DELETE_MESSAGES_CONFIRM}/:${ROUTE_PARAMS.DELETION_TYPE}/:${ROUTE_PARAMS.DELETION_FROM_DATE}/:${ROUTE_PARAMS.DELETION_TO_DATE}`}
-                  element={<DeleteConfirmationTask />}
-                />
-                <Route path={`/${ROUTE_PARTS.NEW_MESSAGE}/:${ROUTE_PARAMS.ID}`} element={<NewMessage />} />
-                <Route path={`/${ROUTE_PARTS.VIEW_STATUS}/:${ROUTE_PARAMS.ID}`} element={<ViewStatusTask />} />
-                <Route path={`/${ROUTE_PARTS.SEND_CONFIRMATION}/:${ROUTE_PARAMS.ID}`} element={<SendConfirmationTask />} />
-                <Route path={`/${ROUTE_PARTS.SIGN_IN}`} element={<SignInPage />} />
-                <Route path={`/${ROUTE_PARTS.SIGN_IN_SIMPLE_START}`} element={<SignInSimpleStart />} />
-                <Route path={`/${ROUTE_PARTS.SIGN_IN_SIMPLE_END}`} element={<SignInSimpleEnd />} />
-                <Route path={`/${ROUTE_PARTS.ERROR_PAGE}`} element={<ErrorPage />} />
-                <Route path={`/${ROUTE_PARTS.ERROR_PAGE}/:${ROUTE_PARAMS.ID}`} element={<ErrorPage />} />
-              </Routes>
-            </BrowserRouter>
-          </Suspense>
-        </FluentProvider>
+        <>
+          {`token: ${token}`}
+          <FluentProvider theme={fluentUITheme} dir={dir}>
+            <Suspense fallback={<div></div>}>
+              <BrowserRouter>
+                <Routes>
+                  <Route path={`/${ROUTE_PARTS.CONFIG_TAB}`} element={<Configuration />} />
+                  <Route path={`/${ROUTE_PARTS.MESSAGES}`} element={<HomePage theme={fluentUITheme} />} />
+                  <Route path={`/${ROUTE_PARTS.NEW_MESSAGE}`} element={<NewMessage />} />
+                  <Route path={`/${ROUTE_PARTS.DELETE_MESSAGES}`} element={<DeleteMessages theme={fluentUITheme} />} />
+                  <Route
+                    path={`/${ROUTE_PARTS.DELETE_MESSAGES_CONFIRM}/:${ROUTE_PARAMS.DELETION_TYPE}/:${ROUTE_PARAMS.DELETION_FROM_DATE}/:${ROUTE_PARAMS.DELETION_TO_DATE}`}
+                    element={<DeleteConfirmationTask />}
+                  />
+                  <Route path={`/${ROUTE_PARTS.NEW_MESSAGE}/:${ROUTE_PARAMS.ID}`} element={<NewMessage />} />
+                  <Route path={`/${ROUTE_PARTS.VIEW_STATUS}/:${ROUTE_PARAMS.ID}`} element={<ViewStatusTask />} />
+                  <Route path={`/${ROUTE_PARTS.SEND_CONFIRMATION}/:${ROUTE_PARAMS.ID}`} element={<SendConfirmationTask />} />
+                  <Route path={`/${ROUTE_PARTS.SIGN_IN}`} element={<SignInPage />} />
+                  <Route path={`/${ROUTE_PARTS.SIGN_IN_SIMPLE_START}`} element={<SignInSimpleStart />} />
+                  <Route path={`/${ROUTE_PARTS.SIGN_IN_SIMPLE_END}`} element={<SignInSimpleEnd />} />
+                  <Route path={`/${ROUTE_PARTS.ERROR_PAGE}`} element={<ErrorPage />} />
+                  <Route path={`/${ROUTE_PARTS.ERROR_PAGE}/:${ROUTE_PARAMS.ID}`} element={<ErrorPage />} />
+                </Routes>
+              </BrowserRouter>
+            </Suspense>
+          </FluentProvider>
+        </>
       )}
     </>
   );
