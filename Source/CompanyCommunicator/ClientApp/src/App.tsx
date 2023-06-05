@@ -22,7 +22,7 @@ import { app, authentication } from '@microsoft/teams-js';
 import { useAppDispatch } from './store';
 import { authToken } from './authSlice';
 
-// import axios from 'axios';
+import axios from 'axios';
 // import { getBaseUrl } from './configVariables';
 
 export const App = () => {
@@ -36,7 +36,7 @@ export const App = () => {
   const dispatch = useAppDispatch();
   // const baseAxiosUrl = getBaseUrl() + '/api';
   const [groupAccessCall, setGroupAccessCall] = React.useState('NA');
-  // const [axiosRq, setAxiosRq] = React.useState('');
+  const [axiosRq, setAxiosRq] = React.useState('');
   const [tkn, setTkn] = React.useState<string>('');
   const [pf, setPf] = React.useState<string>('');
 
@@ -62,36 +62,22 @@ export const App = () => {
       try {
         // const url = baseAxiosUrl + '/groupdata/verifyaccess';
         setPf('step 4');
-        // axios.interceptors.request.use(request => {
-        //   request.headers.Authorization = 'Bearer ' + tkn;
-        //   setAxiosRq(JSON.stringify(request, null, 2));
-        //   return request;
-        // });
-
-        // const a = window.location.protocol;
-        // const b = window.location.host;
-
-        void fetch('https://rajtest2.azurefd.net/api/groupdata/verifyaccess', {
-          method: 'GET',
-          headers: {
-            Authorization: 'Bearer ' + tkn
-          },
-        }).then(res => {
-          setPf(JSON.stringify(res));
-        }).catch(() => {
-          setGroupAccessCall('exception 3');
-          setPf('exception ');
+        axios.interceptors.request.use(request => {
+          request.headers.Authorization = 'Bearer ' + tkn;
+          request.data = {};
+          setAxiosRq(JSON.stringify(request, null, 2));
+          return request;
         });
 
-        // setGroupAccessCall('test');
-        // void axios.get('').then((res) => {
-        //   setPf(JSON.stringify(res));
-        //   setGroupAccessCall('Call success');
-        //   // setPf('step 6');
-        // }).catch(er => {
-        //   setPf('step 7');
-        //   setGroupAccessCall(er);
-        // });
+        setGroupAccessCall('test');
+        void axios.get('https://rajtest2.azurefd.net/api/groupdata/verifyaccess').then((res) => {
+          setPf('step 5');
+          setGroupAccessCall('Call success');
+          setPf(res?.data);
+        }).catch(er => {
+          setPf('step 7');
+          setGroupAccessCall(er);
+        });
       } catch {
         setPf('step 10');
       }
@@ -142,6 +128,10 @@ export const App = () => {
         <>
           <span>
             {tkn}
+          </span>
+          <br />
+          <span>
+            {axiosRq}
           </span>
           <br />
           <span>
