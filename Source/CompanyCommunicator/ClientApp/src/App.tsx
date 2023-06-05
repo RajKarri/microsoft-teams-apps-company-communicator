@@ -2,23 +2,23 @@
 // Licensed under the MIT License.
 
 import './App.scss';
-import React from 'react';
-// import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import React, { Suspense } from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { FluentProvider, teamsDarkTheme, teamsHighContrastTheme, teamsLightTheme } from '@fluentui/react-components';
-import { app, authentication } from '@microsoft/teams-js';
+import { app } from '@microsoft/teams-js';
 import i18n from '../src/i18n';
-// import Configuration from './components/config';
-// import ErrorPage from './components/ErrorPage/errorPage';
-// import { HomePage } from './components/Home/homePage';
-// import { NewMessage } from './components/NewMessage/newMessage';
-// import { SendConfirmationTask } from './components/SendConfirmationTask/sendConfirmationTask';
-// import SignInPage from './components/SignInPage/signInPage';
-// import SignInSimpleEnd from './components/SignInPage/signInSimpleEnd';
-// import SignInSimpleStart from './components/SignInPage/signInSimpleStart';
-// import { ViewStatusTask } from './components/ViewStatusTask/viewStatusTask';
-// import { ROUTE_PARAMS, ROUTE_PARTS } from './routes';
-// import { DeleteMessages } from './components/DeleteMessages/deleteMessages';
-// import { DeleteConfirmationTask } from './components/DeleteMessages/deleteConfirmationTask';
+import Configuration from './components/config';
+import ErrorPage from './components/ErrorPage/errorPage';
+import { HomePage } from './components/Home/homePage';
+import { NewMessage } from './components/NewMessage/newMessage';
+import { SendConfirmationTask } from './components/SendConfirmationTask/sendConfirmationTask';
+import SignInPage from './components/SignInPage/signInPage';
+import SignInSimpleEnd from './components/SignInPage/signInSimpleEnd';
+import SignInSimpleStart from './components/SignInPage/signInSimpleStart';
+import { ViewStatusTask } from './components/ViewStatusTask/viewStatusTask';
+import { ROUTE_PARAMS, ROUTE_PARTS } from './routes';
+import { DeleteMessages } from './components/DeleteMessages/deleteMessages';
+import { DeleteConfirmationTask } from './components/DeleteMessages/deleteConfirmationTask';
 
 export const App = () => {
   const [fluentUITheme, setFluentUITheme] = React.useState(teamsLightTheme);
@@ -27,7 +27,6 @@ export const App = () => {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment, @typescript-eslint/prefer-ts-expect-error
   // @ts-ignore
   const dir = i18n.dir(locale);
-  const [token, setToken] = React.useState('No token found');
 
   React.useEffect(() => {
     app
@@ -49,10 +48,6 @@ export const App = () => {
         // @ts-ignore
         void i18n.changeLanguage(context.app.locale);
         updateTheme(theme);
-      });
-
-      void authentication.getAuthToken().then(x => {
-        setToken(x);
       });
 
       app.registerOnThemeChangeHandler((theme: string) => {
@@ -79,8 +74,7 @@ export const App = () => {
     <>
       {isAppReady && (
         <FluentProvider theme={fluentUITheme} dir={dir}>
-          {token}
-          {/* <Suspense fallback={<div></div>}>
+          <Suspense fallback={<div></div>}>
             <BrowserRouter>
               <Routes>
                 <Route path={`/${ROUTE_PARTS.CONFIG_TAB}`} element={<Configuration />} />
@@ -101,7 +95,7 @@ export const App = () => {
                 <Route path={`/${ROUTE_PARTS.ERROR_PAGE}/:${ROUTE_PARAMS.ID}`} element={<ErrorPage />} />
               </Routes>
             </BrowserRouter>
-          </Suspense> */}
+          </Suspense>
         </FluentProvider>
       )}
     </>

@@ -58,8 +58,8 @@ export class AxiosJWTDecorator {
               config = axios.defaults;
             }
             // eslint-disable-next-line @typescript-eslint/dot-notation
-            config.headers['Authorization'] = `Bearer ${token}`;
-            config.headers['Accept-Language'] = lang;
+            config.headers.common['Authorization'] = `Bearer ${token}`;
+            config.headers.common['Accept-Language'] = lang;
             resolve(config);
           })
           .catch((error) => {
