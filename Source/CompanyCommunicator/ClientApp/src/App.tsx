@@ -64,7 +64,7 @@ export const App = () => {
         setPf('step 4');
         axios.interceptors.request.use(request => {
           request.headers.Authorization = 'Bearer ' + tkn;
-          request.data = {};
+          request.headers['Content-Type'] = 'application/json';
           setAxiosRq(JSON.stringify(request, null, 2));
           return request;
         });
