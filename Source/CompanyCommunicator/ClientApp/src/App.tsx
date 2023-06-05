@@ -27,6 +27,7 @@ export const App = () => {
   const [locale, setLocale] = React.useState('en-US');
   const [isAppReady, setIsAppReady] = React.useState(false);
   const [isTokenReady, setIsTokenReady] = React.useState(false);
+  const [re, setResult] = React.useState('');
   const token = useAppSelector((state: RootState) => state.auth).authToken.payload;
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment, @typescript-eslint/prefer-ts-expect-error
   // @ts-ignore
@@ -47,6 +48,13 @@ export const App = () => {
   React.useEffect(() => {
     if (token) {
       setIsTokenReady(true);
+
+      void fetch('https://rajtest2.azurefd.net/api/draftnotifications', {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + token
+        },
+      }).then(async res1 => await res1.json()).then(re1 => { setResult(re1); });
     }
   }, [token]);
 
@@ -89,6 +97,8 @@ export const App = () => {
       {isAppReady && isTokenReady && (
         <>
           {`token: ${token}`}
+          <br />
+          {`result: ${re}`}
           <FluentProvider theme={fluentUITheme} dir={dir}>
             <Suspense fallback={<div></div>}>
               <BrowserRouter>
