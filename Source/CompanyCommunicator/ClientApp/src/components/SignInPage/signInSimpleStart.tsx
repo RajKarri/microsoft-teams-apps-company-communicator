@@ -12,7 +12,7 @@ const SignInSimpleStart: React.FunctionComponent = () => {
         const windowLocationOriginDomain = window.location.origin.replace('https://', '');
         const loginHint = context.user?.userPrincipalName ? context.user.userPrincipalName : '';
         void getAuthenticationConsentMetadata(windowLocationOriginDomain, loginHint).then((result) => {
-          window.location.assign(result.json());
+          window.location.assign(result);
         });
       });
     });

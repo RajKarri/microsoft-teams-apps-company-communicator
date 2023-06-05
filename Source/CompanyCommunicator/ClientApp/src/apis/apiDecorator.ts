@@ -7,19 +7,19 @@ import { store } from '../store';
 
 export class AuthDecorator {
   public async get(url: string): Promise<any> {
-    return await this.handleAxiosCall('get', url);
+    return await this.handleAxiosCall('get', url).then((resp) => resp.json());
   }
 
   public async delete(url: string): Promise<any> {
-    return await this.handleAxiosCall('delete', url);
+    return await this.handleAxiosCall('delete', url).then((resp) => resp.json());
   }
 
   public async post(url: string, data?: any): Promise<any> {
-    return await this.handleAxiosCall('post', url, data);
+    return await this.handleAxiosCall('post', url, data).then((resp) => resp.json());
   }
 
   public async put(url: string, data?: any): Promise<any> {
-    return await this.handleAxiosCall('put', url, data);
+    return await this.handleAxiosCall('put', url, data).then((resp) => resp.json());
   }
 
   private async handleAxiosCall(verb: string, url: string, data: any = {}): Promise<any> {

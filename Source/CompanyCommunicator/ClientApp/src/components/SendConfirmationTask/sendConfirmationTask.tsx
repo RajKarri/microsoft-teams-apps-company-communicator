@@ -102,8 +102,8 @@ export const SendConfirmationTask = () => {
   const getDraftMessage = async (id: number) => {
     try {
       await getDraftNotification(id).then((response) => {
-        updateCardData(response.json());
-        setMessageState({ ...response.json(), isDraftMsgUpdated: true });
+        updateCardData(response);
+        setMessageState({ ...response, isDraftMsgUpdated: true });
       });
     } catch (error) {
       return error;
@@ -115,10 +115,10 @@ export const SendConfirmationTask = () => {
       await getConsentSummaries(id).then((response) => {
         setConsentState({
           ...consentState,
-          teamNames: response.json().teamNames.sort(),
-          rosterNames: response.json().rosterNames.sort(),
-          groupNames: response.json().groupNames.sort(),
-          allUsers: response.json().allUsers,
+          teamNames: response.teamNames.sort(),
+          rosterNames: response.rosterNames.sort(),
+          groupNames: response.groupNames.sort(),
+          allUsers: response.allUsers,
           messageId: id,
           isConsentsUpdated: true,
         });

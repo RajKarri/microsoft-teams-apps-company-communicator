@@ -182,7 +182,7 @@ export const NewMessage = () => {
   const getDraftNotificationItem = async (id: number) => {
     try {
       await getDraftNotification(id).then((response) => {
-        const draftMessageDetail = response.json();
+        const draftMessageDetail = response;
 
         if (draftMessageDetail.teams.length > 0) {
           setSelectedRadioButton(AudienceSelection.Teams);
