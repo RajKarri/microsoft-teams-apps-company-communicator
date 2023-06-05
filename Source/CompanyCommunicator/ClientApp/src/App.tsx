@@ -38,42 +38,58 @@ export const App = () => {
   const [groupAccessCall, setGroupAccessCall] = React.useState('NA');
   const [axiosRq, setAxiosRq] = React.useState('');
   const [tkn, setTkn] = React.useState<string>('');
+  const [pf, setPf] = React.useState<string>('');
 
   React.useEffect(() => {
-    app
-      .initialize()
-      .then(() => {
-        setIsAppReady(true);
-      })
-      .catch(() => {
-        setIsAppReady(false);
-      });
+    try {
+      app
+        .initialize()
+        .then(() => {
+          setIsAppReady(true);
+          setPf('step 1');
+        })
+        .catch(() => {
+          setIsAppReady(false);
+          setPf('step 2');
+        });
+    } catch {
+      setPf('step 3');
+    }
   }, []);
 
   React.useEffect(() => {
     if (isAppReady && isTokenReady) {
-      const url = baseAxiosUrl + '/groupdata/verifyaccess';
+      try {
+        const url = baseAxiosUrl + '/groupdata/verifyaccess';
+        setPf('step 4');
+        axios.interceptors.request.use(request => {
+          request.headers.Authorization = 'Bearer ' + tkn;
+          setAxiosRq(JSON.stringify(request, null, 2));
+          return request;
+        });
 
-      axios.interceptors.request.use(request => {
-        setAxiosRq(JSON.stringify(request, null, 2));
-        request.headers.Authorization = 'Bearer ' + tkn;
-        return request;
-      });
-
-      void axios.get(url).then(() => {
-        setGroupAccessCall('Call success');
-      }).catch(er => {
-        setGroupAccessCall(er);
-      });
+        void axios.get(url).then(() => {
+          setPf('step 5');
+          setGroupAccessCall('Call success');
+          setPf('step 6');
+        }).catch(er => {
+          setPf('step 7');
+          setGroupAccessCall(er);
+        });
+      } catch {
+        setPf('step 10');
+      }
     }
   }, [isAppReady, isTokenReady]);
 
   React.useEffect(() => {
     if (isAppReady) {
+      setPf('step 8');
       void authentication.getAuthToken().then(token => {
         dispatch(authToken({ type: 'ACCESS_TOKEN', payload: token }));
         setTkn(token);
         setIsTokenReady(true);
+        setPf('step 9');
       });
       // void app.getContext().then((context: app.Context) => {
       //   const theme = context.app.theme || 'default';
@@ -110,6 +126,10 @@ export const App = () => {
         <>
           <span>
             {axiosRq}
+          </span>
+          <br />
+          <span>
+            {pf}
           </span>
           <br />
           <span>
