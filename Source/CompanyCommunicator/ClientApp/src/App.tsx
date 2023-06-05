@@ -5,7 +5,7 @@ import './App.scss';
 import React, { Suspense } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { FluentProvider, teamsDarkTheme, teamsHighContrastTheme, teamsLightTheme } from '@fluentui/react-components';
-import { app } from '@microsoft/teams-js';
+import { app, authentication } from '@microsoft/teams-js';
 import i18n from '../src/i18n';
 import Configuration from './components/config';
 import ErrorPage from './components/ErrorPage/errorPage';
@@ -19,7 +19,8 @@ import { ViewStatusTask } from './components/ViewStatusTask/viewStatusTask';
 import { ROUTE_PARAMS, ROUTE_PARTS } from './routes';
 import { DeleteMessages } from './components/DeleteMessages/deleteMessages';
 import { DeleteConfirmationTask } from './components/DeleteMessages/deleteConfirmationTask';
-import axios from 'axios';
+import { useAppDispatch } from './store';
+import { authToken } from './authSlice';
 
 export const App = () => {
   const [fluentUITheme, setFluentUITheme] = React.useState(teamsLightTheme);
@@ -28,7 +29,7 @@ export const App = () => {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment, @typescript-eslint/prefer-ts-expect-error
   // @ts-ignore
   const dir = i18n.dir(locale);
-  const config: any = axios.defaults;
+  const dispatch = useAppDispatch();
 
   React.useEffect(() => {
     app
@@ -43,6 +44,9 @@ export const App = () => {
 
   React.useEffect(() => {
     if (isAppReady) {
+      void authentication.getAuthToken().then(token => {
+        dispatch(authToken({ type: 'ACCESS_TOKEN', payload: token }));
+      });
       void app.getContext().then((context: app.Context) => {
         const theme = context.app.theme || 'default';
         setLocale(context.app.locale);
@@ -76,7 +80,6 @@ export const App = () => {
     <>
       {isAppReady && (
         <>
-          {JSON.stringify(config)}
           <FluentProvider theme={fluentUITheme} dir={dir}>
             <Suspense fallback={<div></div>}>
               <BrowserRouter>

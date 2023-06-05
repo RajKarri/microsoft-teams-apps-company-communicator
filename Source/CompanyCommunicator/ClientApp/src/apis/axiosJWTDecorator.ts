@@ -2,9 +2,10 @@
 // Licensed under the MIT License.
 
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { app, authentication } from '@microsoft/teams-js';
+// import { app, authentication } from '@microsoft/teams-js';
 import { ROUTE_PARTS } from '../routes';
 import i18n from '../i18n';
+import { store } from '../store';
 
 export class AxiosJWTDecorator {
   public async get<T = any, R = AxiosResponse<T>>(url: string): Promise<R> {
@@ -45,33 +46,19 @@ export class AxiosJWTDecorator {
   }
 
   private async setupAuthorizationHeader(): Promise<AxiosRequestConfig> {
+    const token = store.getState().auth.authToken.payload;
+
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment, @typescript-eslint/prefer-ts-expect-error
     // @ts-ignore
     const lang: string = i18n.language;
-    let config: any = axios.defaults;
-    if (app.isInitialized()) {
-      return await new Promise<AxiosRequestConfig>((resolve, reject) => {
-        authentication
-          .getAuthToken()
-          .then((token) => {
-            if (!config) {
-              config = axios.defaults;
-            }
-            // eslint-disable-next-line @typescript-eslint/dot-notation
-            config.headers.common['Authorization'] = `Bearer ${token}`;
-            config.headers.common['Accept-Language'] = lang;
-            resolve(config);
-          })
-          .catch((error) => {
-            console.error('Error from getAuthToken: ', error);
-            window.location.href = `/signin?locale=${lang}`;
-          });
-      });
-    } else {
-      return await new Promise<AxiosRequestConfig>((resolve, reject) => {
-        resolve(config);
-      });
-    }
+    const config: any = axios.defaults;
+
+    return await new Promise<AxiosRequestConfig>((resolve, reject) => {
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      config.headers.common['Authorization'] = `Bearer ${token}`;
+      config.headers.common['Accept-Language'] = lang;
+      resolve(config);
+    });
   }
 
   private handleError(error: any): void {
