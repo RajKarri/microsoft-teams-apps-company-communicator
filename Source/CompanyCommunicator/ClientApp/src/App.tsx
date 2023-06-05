@@ -23,7 +23,7 @@ import { useAppDispatch } from './store';
 import { authToken } from './authSlice';
 
 import axios from 'axios';
-//  import { getBaseUrl } from './configVariables';
+// import { getBaseUrl } from './configVariables';
 
 export const App = () => {
   // const [fluentUITheme, setFluentUITheme] = React.useState(teamsLightTheme);
@@ -69,14 +69,14 @@ export const App = () => {
         });
 
         setGroupAccessCall('test');
-        // void axios.get(url).then(() => {
-        //   setPf('step 5');
-        //   setGroupAccessCall('Call success');
-        //   setPf('step 6');
-        // }).catch(er => {
-        //   setPf('step 7');
-        //   setGroupAccessCall(er);
-        // });
+        void axios.get('https://rajtest2.azurefd.net/groupdata/verifyaccess').then(() => {
+          setPf('step 5');
+          setGroupAccessCall('Call success');
+          setPf('step 6');
+        }).catch(er => {
+          setPf('step 7');
+          setGroupAccessCall(er);
+        });
       } catch {
         setPf('step 10');
       }
