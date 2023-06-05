@@ -23,7 +23,7 @@ import { useAppDispatch } from './store';
 import { authToken } from './authSlice';
 
 import axios from 'axios';
-import { getBaseUrl } from './configVariables';
+//  import { getBaseUrl } from './configVariables';
 
 export const App = () => {
   // const [fluentUITheme, setFluentUITheme] = React.useState(teamsLightTheme);
@@ -34,7 +34,7 @@ export const App = () => {
   // @ts-ignore
   // const dir = i18n.dir(locale);
   const dispatch = useAppDispatch();
-  const baseAxiosUrl = getBaseUrl() + '/api';
+  // const baseAxiosUrl = getBaseUrl() + '/api';
   const [groupAccessCall, setGroupAccessCall] = React.useState('NA');
   const [axiosRq, setAxiosRq] = React.useState('');
   const [tkn, setTkn] = React.useState<string>('');
@@ -60,7 +60,7 @@ export const App = () => {
   React.useEffect(() => {
     if (isAppReady && isTokenReady) {
       try {
-        const url = baseAxiosUrl + '/groupdata/verifyaccess';
+        // const url = baseAxiosUrl + '/groupdata/verifyaccess';
         setPf('step 4');
         axios.interceptors.request.use(request => {
           request.headers.Authorization = 'Bearer ' + tkn;
@@ -68,14 +68,15 @@ export const App = () => {
           return request;
         });
 
-        void axios.get(url).then(() => {
-          setPf('step 5');
-          setGroupAccessCall('Call success');
-          setPf('step 6');
-        }).catch(er => {
-          setPf('step 7');
-          setGroupAccessCall(er);
-        });
+        setGroupAccessCall('test');
+        // void axios.get(url).then(() => {
+        //   setPf('step 5');
+        //   setGroupAccessCall('Call success');
+        //   setPf('step 6');
+        // }).catch(er => {
+        //   setPf('step 7');
+        //   setGroupAccessCall(er);
+        // });
       } catch {
         setPf('step 10');
       }
@@ -124,6 +125,10 @@ export const App = () => {
     <>
       {isAppReady && isTokenReady && (
         <>
+          <span>
+            {tkn}
+          </span>
+          <br />
           <span>
             {axiosRq}
           </span>
