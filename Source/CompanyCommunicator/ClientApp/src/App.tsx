@@ -26,6 +26,7 @@ export const App = () => {
   const [fluentUITheme, setFluentUITheme] = React.useState(teamsLightTheme);
   const [locale, setLocale] = React.useState('en-US');
   const [isAppReady, setIsAppReady] = React.useState(false);
+  const [isTokenReady, setIsTokenReady] = React.useState(false);
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment, @typescript-eslint/prefer-ts-expect-error
   // @ts-ignore
   const dir = i18n.dir(locale);
@@ -46,6 +47,7 @@ export const App = () => {
     if (isAppReady) {
       void authentication.getAuthToken().then(token => {
         dispatch(authToken({ type: 'ACCESS_TOKEN', payload: token }));
+        setIsTokenReady(true);
       });
       void app.getContext().then((context: app.Context) => {
         const theme = context.app.theme || 'default';
@@ -78,7 +80,7 @@ export const App = () => {
 
   return (
     <>
-      {isAppReady && (
+      {isAppReady && isTokenReady && (
         <FluentProvider theme={fluentUITheme} dir={dir}>
           <Suspense fallback={<div></div>}>
             <BrowserRouter>
