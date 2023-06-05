@@ -28,7 +28,7 @@ export class AuthDecorator {
 
       switch (verb) {
         case 'get':
-          return await fetch(url, { method: 'GET', headers: { Authorization: 'Bearer ' + token }, body: JSON.stringify(data) });
+          return await fetch(url, { method: 'GET', headers: { Authorization: 'Bearer ' + token } });
         case 'post':
           return await fetch(url, { method: 'POST', headers: { Authorization: 'Bearer ' + token }, body: JSON.stringify(data) });
         case 'put':
@@ -36,7 +36,7 @@ export class AuthDecorator {
         case 'delete':
           return await fetch(url, { method: 'DELETE', headers: { Authorization: 'Bearer ' + token }, body: JSON.stringify(data) });
         default:
-          return await fetch(url, { method: 'GET', headers: { Authorization: 'Bearer ' + token }, body: JSON.stringify(data) });
+          return await fetch(url, { method: 'GET', headers: { Authorization: 'Bearer ' + token } });
       }
     } catch (error) {
       this.handleError(error);
