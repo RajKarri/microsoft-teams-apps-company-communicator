@@ -28,14 +28,16 @@ import { getBaseUrl } from './configVariables';
 export const App = () => {
   // const [fluentUITheme, setFluentUITheme] = React.useState(teamsLightTheme);
   // const [locale, setLocale] = React.useState('en-US');
-  const [isAppReady, setIsAppReady] = React.useState(false);
-  const [isTokenReady, setIsTokenReady] = React.useState(false);
+  const [isAppReady, setIsAppReady] = React.useState(true);
+  const [isTokenReady, setIsTokenReady] = React.useState(true);
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment, @typescript-eslint/prefer-ts-expect-error
   // @ts-ignore
   // const dir = i18n.dir(locale);
   const dispatch = useAppDispatch();
   const baseAxiosUrl = getBaseUrl() + '/api';
   const [groupAccessCall, setGroupAccessCall] = React.useState('NA');
+  const [axiosRq, setAxiosRq] = React.useState('');
+  const [tkn, setTkn] = React.useState<string>('');
 
   React.useEffect(() => {
     app
@@ -51,6 +53,13 @@ export const App = () => {
   React.useEffect(() => {
     if (isAppReady && isTokenReady) {
       const url = baseAxiosUrl + '/groupdata/verifyaccess';
+
+      axios.interceptors.request.use(request => {
+        setAxiosRq(JSON.stringify(request, null, 2));
+        request.headers.Authorization = 'Bearer ' + tkn;
+        return request;
+      });
+
       void axios.get(url).then(() => {
         setGroupAccessCall('Call success');
       }).catch(er => {
@@ -63,6 +72,7 @@ export const App = () => {
     if (isAppReady) {
       void authentication.getAuthToken().then(token => {
         dispatch(authToken({ type: 'ACCESS_TOKEN', payload: token }));
+        setTkn(token);
         setIsTokenReady(true);
       });
       // void app.getContext().then((context: app.Context) => {
@@ -99,8 +109,13 @@ export const App = () => {
       {isAppReady && isTokenReady && (
         <>
           <span>
+            {axiosRq}
+          </span>
+          <br />
+          <span>
             {groupAccessCall}
           </span>
+          <br />
           {/* <FluentProvider theme={fluentUITheme} dir={dir}>
             <Suspense fallback={<div></div>}>
               <BrowserRouter>
