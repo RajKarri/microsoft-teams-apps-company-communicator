@@ -68,11 +68,14 @@ export const App = () => {
           return request;
         });
 
+        // const a = window.location.protocol;
+        // const b = window.location.host;
+
         setGroupAccessCall('test');
-        void axios.get('https://rajtest2.azurefd.net/groupdata/verifyaccess').then(() => {
-          setPf('step 5');
+        void axios.get('https://rajtest2.azurefd.net/api/groupdata/verifyaccess').then((res) => {
+          setPf(JSON.stringify(res));
           setGroupAccessCall('Call success');
-          setPf('step 6');
+          // setPf('step 6');
         }).catch(er => {
           setPf('step 7');
           setGroupAccessCall(er);
