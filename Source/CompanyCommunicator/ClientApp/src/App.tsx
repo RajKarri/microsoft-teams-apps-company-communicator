@@ -2,35 +2,40 @@
 // Licensed under the MIT License.
 
 import './App.scss';
-import React, { Suspense } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { FluentProvider, teamsDarkTheme, teamsHighContrastTheme, teamsLightTheme } from '@fluentui/react-components';
+import React from 'react';
+// import { BrowserRouter, Route, Routes } from 'react-router-dom';
+// import { FluentProvider, teamsDarkTheme, teamsHighContrastTheme, teamsLightTheme } from '@fluentui/react-components';
 import { app, authentication } from '@microsoft/teams-js';
-import i18n from '../src/i18n';
-import Configuration from './components/config';
-import ErrorPage from './components/ErrorPage/errorPage';
-import { HomePage } from './components/Home/homePage';
-import { NewMessage } from './components/NewMessage/newMessage';
-import { SendConfirmationTask } from './components/SendConfirmationTask/sendConfirmationTask';
-import SignInPage from './components/SignInPage/signInPage';
-import SignInSimpleEnd from './components/SignInPage/signInSimpleEnd';
-import SignInSimpleStart from './components/SignInPage/signInSimpleStart';
-import { ViewStatusTask } from './components/ViewStatusTask/viewStatusTask';
-import { ROUTE_PARAMS, ROUTE_PARTS } from './routes';
-import { DeleteMessages } from './components/DeleteMessages/deleteMessages';
-import { DeleteConfirmationTask } from './components/DeleteMessages/deleteConfirmationTask';
+// import i18n from '../src/i18n';
+// import Configuration from './components/config';
+// import ErrorPage from './components/ErrorPage/errorPage';
+// import { HomePage } from './components/Home/homePage';
+// import { NewMessage } from './components/NewMessage/newMessage';
+// import { SendConfirmationTask } from './components/SendConfirmationTask/sendConfirmationTask';
+// import SignInPage from './components/SignInPage/signInPage';
+// import SignInSimpleEnd from './components/SignInPage/signInSimpleEnd';
+// import SignInSimpleStart from './components/SignInPage/signInSimpleStart';
+// import { ViewStatusTask } from './components/ViewStatusTask/viewStatusTask';
+// import { ROUTE_PARAMS, ROUTE_PARTS } from './routes';
+// import { DeleteMessages } from './components/DeleteMessages/deleteMessages';
+// import { DeleteConfirmationTask } from './components/DeleteMessages/deleteConfirmationTask';
 import { useAppDispatch } from './store';
 import { authToken } from './authSlice';
 
+import axios from 'axios';
+import { getBaseUrl } from './configVariables';
+
 export const App = () => {
-  const [fluentUITheme, setFluentUITheme] = React.useState(teamsLightTheme);
-  const [locale, setLocale] = React.useState('en-US');
+  // const [fluentUITheme, setFluentUITheme] = React.useState(teamsLightTheme);
+  // const [locale, setLocale] = React.useState('en-US');
   const [isAppReady, setIsAppReady] = React.useState(false);
   const [isTokenReady, setIsTokenReady] = React.useState(false);
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment, @typescript-eslint/prefer-ts-expect-error
   // @ts-ignore
-  const dir = i18n.dir(locale);
+  // const dir = i18n.dir(locale);
   const dispatch = useAppDispatch();
+  const baseAxiosUrl = getBaseUrl() + '/api';
+  const [groupAccessCall, setGroupAccessCall] = React.useState('NA');
 
   React.useEffect(() => {
     app
@@ -44,45 +49,59 @@ export const App = () => {
   }, []);
 
   React.useEffect(() => {
+    if (isAppReady && isTokenReady) {
+      const url = baseAxiosUrl + '/groupdata/verifyaccess';
+      void axios.get(url).then(() => {
+        setGroupAccessCall('Call success');
+      }).catch(er => {
+        setGroupAccessCall(er);
+      });
+    }
+  }, [isAppReady, isTokenReady]);
+
+  React.useEffect(() => {
     if (isAppReady) {
       void authentication.getAuthToken().then(token => {
         dispatch(authToken({ type: 'ACCESS_TOKEN', payload: token }));
         setIsTokenReady(true);
       });
-      void app.getContext().then((context: app.Context) => {
-        const theme = context.app.theme || 'default';
-        setLocale(context.app.locale);
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment, @typescript-eslint/prefer-ts-expect-error
-        // @ts-ignore
-        void i18n.changeLanguage(context.app.locale);
-        updateTheme(theme);
-      });
+      // void app.getContext().then((context: app.Context) => {
+      //   const theme = context.app.theme || 'default';
+      //   setLocale(context.app.locale);
+      //   // eslint-disable-next-line @typescript-eslint/ban-ts-comment, @typescript-eslint/prefer-ts-expect-error
+      //   // @ts-ignore
+      //   void i18n.changeLanguage(context.app.locale);
+      //   updateTheme(theme);
+      // });
 
-      app.registerOnThemeChangeHandler((theme: string) => {
-        updateTheme(theme);
-      });
+      // app.registerOnThemeChangeHandler((theme: string) => {
+      //   updateTheme(theme);
+      // });
     }
   }, [isAppReady]);
 
-  const updateTheme = (theme: string) => {
-    switch (theme.toLocaleLowerCase()) {
-      case 'default':
-        setFluentUITheme(teamsLightTheme);
-        break;
-      case 'dark':
-        setFluentUITheme(teamsDarkTheme);
-        break;
-      case 'contrast':
-        setFluentUITheme(teamsHighContrastTheme);
-        break;
-    }
-  };
+  // const updateTheme = (theme: string) => {
+  //   switch (theme.toLocaleLowerCase()) {
+  //     case 'default':
+  //       setFluentUITheme(teamsLightTheme);
+  //       break;
+  //     case 'dark':
+  //       setFluentUITheme(teamsDarkTheme);
+  //       break;
+  //     case 'contrast':
+  //       setFluentUITheme(teamsHighContrastTheme);
+  //       break;
+  //   }
+  // };
 
   return (
     <>
       {isAppReady && isTokenReady && (
         <>
-          <FluentProvider theme={fluentUITheme} dir={dir}>
+          <span>
+            {groupAccessCall}
+          </span>
+          {/* <FluentProvider theme={fluentUITheme} dir={dir}>
             <Suspense fallback={<div></div>}>
               <BrowserRouter>
                 <Routes>
@@ -105,7 +124,7 @@ export const App = () => {
                 </Routes>
               </BrowserRouter>
             </Suspense>
-          </FluentProvider>
+          </FluentProvider> */}
         </>
       )}
     </>
