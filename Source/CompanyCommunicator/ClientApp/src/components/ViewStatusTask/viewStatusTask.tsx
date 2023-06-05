@@ -105,15 +105,15 @@ export const ViewStatusTask = () => {
   const getMessage = async (id: number) => {
     try {
       await getSentNotification(id).then((response) => {
-        updateCardData(response.data);
-        response.data.sendingDuration = formatDuration(response.data.sendingStartedDate, response.data.sentDate);
-        response.data.sendingStartedDate = formatDate(response.data.sendingStartedDate);
-        response.data.sentDate = formatDate(response.data.sentDate);
-        response.data.succeeded = formatNumber(response.data.succeeded);
-        response.data.failed = formatNumber(response.data.failed);
-        response.data.unknown = response.data.unknown && formatNumber(response.data.unknown);
-        response.data.canceled = response.data.canceled && formatNumber(response.data.canceled);
-        setMessageState({ ...response.data, isMsgDataUpdated: true });
+        updateCardData(response.json());
+        response.json().sendingDuration = formatDuration(response.json().sendingStartedDate, response.json().sentDate);
+        response.json().sendingStartedDate = formatDate(response.json().sendingStartedDate);
+        response.json().sentDate = formatDate(response.json().sentDate);
+        response.json().succeeded = formatNumber(response.json().succeeded);
+        response.json().failed = formatNumber(response.json().failed);
+        response.json().unknown = response.json().unknown && formatNumber(response.json().unknown);
+        response.json().canceled = response.json().canceled && formatNumber(response.json().canceled);
+        setMessageState({ ...response.json(), isMsgDataUpdated: true });
       });
     } catch (error) {
       return error;

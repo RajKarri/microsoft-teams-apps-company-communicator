@@ -49,7 +49,7 @@ export const GetSentMessagesAction = (dispatch: typeof store.dispatch) => {
   SentMessageFetchStatusAction(dispatch, true);
   getSentNotifications()
     .then((response) => {
-      const notificationList: Notification[] = response?.data || [];
+      const notificationList: Notification[] = response?.json() || [];
       notificationList.forEach((notification) => {
         notification.sendingStartedDate = formatDate(notification.sendingStartedDate);
         notification.sentDate = formatDate(notification.sentDate);
@@ -63,7 +63,7 @@ export const GetSentMessagesAction = (dispatch: typeof store.dispatch) => {
 
 export const GetSentMessagesSilentAction = (dispatch: typeof store.dispatch) => {
   void getSentNotifications().then((response) => {
-    const notificationList: Notification[] = response?.data || [];
+    const notificationList: Notification[] = response?.json() || [];
     notificationList.forEach((notification) => {
       notification.sendingStartedDate = formatDate(notification.sendingStartedDate);
       notification.sentDate = formatDate(notification.sentDate);
@@ -76,7 +76,7 @@ export const GetDraftMessagesAction = (dispatch: typeof store.dispatch) => {
   DraftMessageFetchStatusAction(dispatch, true);
   getDraftNotifications()
     .then((response) => {
-      dispatch(draftMessages({ type: 'FETCH_DRAFT_MESSAGES', payload: response?.data || [] }));
+      dispatch(draftMessages({ type: 'FETCH_DRAFT_MESSAGES', payload: response?.json() || [] }));
     })
     .finally(() => {
       DraftMessageFetchStatusAction(dispatch, false);
@@ -85,7 +85,7 @@ export const GetDraftMessagesAction = (dispatch: typeof store.dispatch) => {
 
 export const GetDraftMessagesSilentAction = (dispatch: typeof store.dispatch) => {
   void getDraftNotifications().then((response) => {
-    dispatch(draftMessages({ type: 'FETCH_DRAFT_MESSAGES', payload: response?.data || [] }));
+    dispatch(draftMessages({ type: 'FETCH_DRAFT_MESSAGES', payload: response?.json() || [] }));
   });
 };
 
@@ -93,7 +93,7 @@ export const GetDeletedMessagesAction = (dispatch: typeof store.dispatch) => {
   DeletedMessageFetchStatusAction(dispatch, true);
   getDeletedMessages()
     .then((response) => {
-      dispatch(deletedMessages({ type: 'FETCH_DELETED_MESSAGES', payload: response?.data || [] }));
+      dispatch(deletedMessages({ type: 'FETCH_DELETED_MESSAGES', payload: response?.json() || [] }));
     })
     .finally(() => {
       DeletedMessageFetchStatusAction(dispatch, false);
@@ -102,25 +102,25 @@ export const GetDeletedMessagesAction = (dispatch: typeof store.dispatch) => {
 
 export const GetDeletedMessagesSilentAction = (dispatch: typeof store.dispatch) => {
   void getDeletedMessages().then((response) => {
-    dispatch(deletedMessages({ type: 'FETCH_DELETED_MESSAGES', payload: response?.data || [] }));
+    dispatch(deletedMessages({ type: 'FETCH_DELETED_MESSAGES', payload: response?.json() || [] }));
   });
 };
 
 export const GetTeamsDataAction = (dispatch: typeof store.dispatch) => {
   void getTeams().then((response) => {
-    dispatch(teamsData({ type: 'GET_TEAMS_DATA', payload: response?.data || [] }));
+    dispatch(teamsData({ type: 'GET_TEAMS_DATA', payload: response?.json() || [] }));
   });
 };
 
 export const GetGroupsAction = (dispatch: typeof store.dispatch, payload: { id: number }) => {
   void getGroups(payload.id).then((response) => {
-    dispatch(groups({ type: 'GET_GROUPS', payload: response?.data || [] }));
+    dispatch(groups({ type: 'GET_GROUPS', payload: response?.json() || [] }));
   });
 };
 
 export const SearchGroupsAction = (dispatch: typeof store.dispatch, payload: { query: string }) => {
   void searchGroups(payload.query).then((response) => {
-    dispatch(queryGroups({ type: 'SEARCH_GROUPS', payload: response?.data || [] }));
+    dispatch(queryGroups({ type: 'SEARCH_GROUPS', payload: response?.json() || [] }));
   });
 };
 
