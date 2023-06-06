@@ -21,7 +21,6 @@ import { DeleteMessages } from './components/DeleteMessages/deleteMessages';
 import { DeleteConfirmationTask } from './components/DeleteMessages/deleteConfirmationTask';
 import { RootState, useAppDispatch, useAppSelector } from './store';
 import { authToken } from './authSlice';
-import { hostname } from 'os';
 
 export const App = () => {
   const [fluentUITheme, setFluentUITheme] = React.useState(teamsLightTheme);
@@ -117,8 +116,6 @@ export const App = () => {
             `result: ${re}`}
           <br />
           {`stage: ${st}`}
-          <br />
-          <span>{hostname()}</span>
           <br />
           <br />
           <span>{hostInfo}</span>
