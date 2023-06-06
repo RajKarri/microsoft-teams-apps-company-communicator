@@ -57,11 +57,13 @@ export const App = () => {
           Authorization: 'Bearer ' + token,
           'Content-Type': 'application/json'
         }
-      // eslint-disable-next-line @typescript-eslint/promise-function-async
+        // eslint-disable-next-line @typescript-eslint/promise-function-async
       }).then(async res1 => {
         setSt('stage3');
-        setResult(await res1.json());
-        setSt('stage4');
+        res1.json().then(x => {
+          setResult(x);
+          setSt('stage4');
+        });
       });
     }
   }, [token]);
