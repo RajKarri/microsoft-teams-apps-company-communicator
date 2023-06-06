@@ -52,8 +52,10 @@ export const App = () => {
       void fetch('https://rajtest2.azurefd.net/api/draftnotifications', {
         method: 'GET',
         headers: {
-          Authorization: 'Bearer ' + token
-        },
+          Accept: 'application/json',
+          Authorization: 'Bearer ' + token,
+          'Content-Type': 'application/json'
+        }
       }).then(async res1 => await res1.json()).then(re1 => { setResult(re1); });
     }
   }, [token]);
