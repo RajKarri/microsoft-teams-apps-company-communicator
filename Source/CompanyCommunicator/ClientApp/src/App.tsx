@@ -27,7 +27,7 @@ export const App = () => {
   const [locale, setLocale] = React.useState('en-US');
   const [isAppReady, setIsAppReady] = React.useState(false);
   const [isTokenReady, setIsTokenReady] = React.useState(false);
-  const [re, setResult] = React.useState('');
+  const [re, setResult] = React.useState<any>('');
   const [st, setSt] = React.useState('stage1');
   const token = useAppSelector((state: RootState) => state.auth).authToken.payload;
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment, @typescript-eslint/prefer-ts-expect-error
@@ -58,12 +58,9 @@ export const App = () => {
           'Content-Type': 'application/json'
         }
         // eslint-disable-next-line @typescript-eslint/promise-function-async
-      }).then(async res1 => {
-        setSt('stage3');
-        res1.json().then(x => {
-          setResult(x);
-          setSt('stage4');
-        });
+      }).then(res1 => res1.json()).then(re => {
+        setResult(re);
+        setSt('stage4');
       });
     }
   }, [token]);
