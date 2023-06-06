@@ -78,7 +78,7 @@ export const App = () => {
     if (token) {
       setIsTokenReady(true);
       axios.interceptors.request.use((config) => {
-        config.headers.Authorization = token;
+        config.headers.Authorization = 'Bearer ' + token;
         config.headers.accept = 'application/json';
         config.headers['content-type'] = 'application/json';
         setSt(JSON.stringify(config));
