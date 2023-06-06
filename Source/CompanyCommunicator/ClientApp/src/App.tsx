@@ -78,6 +78,8 @@ export const App = () => {
       setIsTokenReady(true);
       axios.interceptors.request.use((config) => {
         config.headers.Authorization = token;
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        config.data = {};
         setSt(JSON.stringify(config));
         return config;
       }, async (error) => {
