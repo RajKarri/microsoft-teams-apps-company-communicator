@@ -21,6 +21,7 @@ import { DeleteMessages } from './components/DeleteMessages/deleteMessages';
 import { DeleteConfirmationTask } from './components/DeleteMessages/deleteConfirmationTask';
 import { RootState, useAppDispatch, useAppSelector } from './store';
 import { authToken } from './authSlice';
+import { hostname } from 'os';
 
 export const App = () => {
   const [fluentUITheme, setFluentUITheme] = React.useState(teamsLightTheme);
@@ -30,6 +31,7 @@ export const App = () => {
   const [re, setResult] = React.useState<any>('');
   const [st, setSt] = React.useState('stage1');
   const token = useAppSelector((state: RootState) => state.auth).authToken.payload;
+  const [hostInfo, setHostInfo] = React.useState('test');
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment, @typescript-eslint/prefer-ts-expect-error
   // @ts-ignore
   const dir = i18n.dir(locale);
@@ -77,6 +79,7 @@ export const App = () => {
       });
       void app.getContext().then((context: app.Context) => {
         const theme = context.app.theme || 'default';
+        setHostInfo(JSON.stringify(context.app.host));
         setLocale(context.app.locale);
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment, @typescript-eslint/prefer-ts-expect-error
         // @ts-ignore
@@ -111,9 +114,14 @@ export const App = () => {
           {`token: ${token}`}
           <br />
           {// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-          `result: ${re}`}
+            `result: ${re}`}
           <br />
           {`stage: ${st}`}
+          <br />
+          <span>{hostname()}</span>
+          <br />
+          <br />
+          <span>{hostInfo}</span>
           <FluentProvider theme={fluentUITheme} dir={dir}>
             <Suspense fallback={<div></div>}>
               <BrowserRouter>
