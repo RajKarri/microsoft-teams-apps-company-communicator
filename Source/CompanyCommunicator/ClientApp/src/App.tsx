@@ -80,7 +80,6 @@ export const App = () => {
       void fetch('https://rajtest2.azurefd.net/api/draftnotifications', {
         method: 'GET',
         headers: { Accept: 'application/json', 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
-        redirect: 'follow'
       }).then(async r1 => { setResult5(r1?.status); return await r1.json(); }).then(r2 => { setResult(r2); });
       // axios.interceptors.request.use((config) => {
       //   config.headers.Authorization = 'Bearer ' + token;
