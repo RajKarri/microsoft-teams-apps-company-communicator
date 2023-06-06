@@ -28,6 +28,7 @@ export const App = () => {
   const [isAppReady, setIsAppReady] = React.useState(false);
   const [isTokenReady, setIsTokenReady] = React.useState(false);
   const [re, setResult] = React.useState('');
+  const [st, setSt] = React.useState('stage1');
   const token = useAppSelector((state: RootState) => state.auth).authToken.payload;
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment, @typescript-eslint/prefer-ts-expect-error
   // @ts-ignore
@@ -48,7 +49,7 @@ export const App = () => {
   React.useEffect(() => {
     if (token) {
       setIsTokenReady(true);
-
+      setSt('stage2');
       void fetch('https://rajtest2.azurefd.net/api/draftnotifications', {
         method: 'GET',
         headers: {
@@ -56,7 +57,10 @@ export const App = () => {
           Authorization: 'Bearer ' + token,
           'Content-Type': 'application/json'
         }
-      }).then(async res1 => await res1.json()).then(re1 => { setResult(re1); });
+      }).then(async res1 => {
+        setSt('stage3');
+        return await res1.json();
+      }).then(re1 => { setSt('stage4'); setResult(re1); });
     }
   }, [token]);
 
@@ -101,6 +105,8 @@ export const App = () => {
           {`token: ${token}`}
           <br />
           {`result: ${re}`}
+          <br />
+          {`stage: ${st}`}
           <FluentProvider theme={fluentUITheme} dir={dir}>
             <Suspense fallback={<div></div>}>
               <BrowserRouter>
