@@ -21,6 +21,7 @@ import { DeleteMessages } from './components/DeleteMessages/deleteMessages';
 import { DeleteConfirmationTask } from './components/DeleteMessages/deleteConfirmationTask';
 import { RootState, useAppDispatch, useAppSelector } from './store';
 import { authToken } from './authSlice';
+import axios from 'axios';
 
 export const App = () => {
   const [fluentUITheme, setFluentUITheme] = React.useState(teamsLightTheme);
@@ -47,26 +48,50 @@ export const App = () => {
       });
   }, []);
 
+  // React.useEffect(() => {
+  //   if (token) {
+  //     setIsTokenReady(true);
+  //     setSt('stage2');
+  //     try {
+  //       void fetch('https://rajtest2.azurewebsites.net/api/draftnotifications', {
+  //         method: 'GET',
+  //         headers: {
+  //           Accept: 'application/json',
+  //           Authorization: 'Bearer ' + token,
+  //           'Content-Type': 'application/json'
+  //         }
+  //         // eslint-disable-next-line @typescript-eslint/promise-function-async
+  //       }).then(res1 => res1.json()).then(re => {
+  //         setResult(re);
+  //         setSt('stage4');
+  //       });
+  //     } catch (error) {
+  //       setSt('error');
+  //       setResult(error);
+  //     }
+  //   }
+  // }, [token]);
+
   React.useEffect(() => {
+    // const config1 = axios.defaults;
     if (token) {
       setIsTokenReady(true);
-      setSt('stage2');
+      axios.interceptors.request.use((config) => {
+        config.headers.Authorization = token;
+        setSt(JSON.stringify(config));
+        return config;
+      }, async (error) => {
+        return await Promise.reject(error);
+      });
+
       try {
-        void fetch('https://rajtest2.azurewebsites.net/api/draftnotifications', {
-          method: 'GET',
-          headers: {
-            Accept: 'application/json',
-            Authorization: 'Bearer ' + token,
-            'Content-Type': 'application/json'
-          }
-          // eslint-disable-next-line @typescript-eslint/promise-function-async
-        }).then(res1 => res1.json()).then(re => {
-          setResult(re);
-          setSt('stage4');
+        axios.get('https://rajtest2.azurewebsites.net/api/draftnotifications').then(resp => {
+          setResult(resp?.data);
+        }).catch(er => {
+          setResult(er?.response || '');
         });
-      } catch (error) {
-        setSt('error');
-        setResult(error);
+      } catch {
+        setResult('went to catch block');
       }
     }
   }, [token]);
@@ -115,7 +140,7 @@ export const App = () => {
           {// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
             `result: ${re}`}
           <br />
-          {`stage: ${st}`}
+          {`headers: ${st}`}
           <br />
           <br />
           <span>{hostInfo}</span>
