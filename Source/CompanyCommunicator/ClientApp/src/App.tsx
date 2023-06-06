@@ -21,7 +21,6 @@ import { DeleteMessages } from './components/DeleteMessages/deleteMessages';
 import { DeleteConfirmationTask } from './components/DeleteMessages/deleteConfirmationTask';
 import { RootState, useAppDispatch, useAppSelector } from './store';
 import { authToken } from './authSlice';
-import axios from 'axios';
 
 export const App = () => {
   const [fluentUITheme, setFluentUITheme] = React.useState(teamsLightTheme);
@@ -30,7 +29,7 @@ export const App = () => {
   const [isTokenReady, setIsTokenReady] = React.useState(false);
   const [re, setResult] = React.useState<any>('');
   const [re5, setResult5] = React.useState<any>('');
-  const [st, setSt] = React.useState('stage1');
+  // const [st, setSt] = React.useState('stage1');
   const token = useAppSelector((state: RootState) => state.auth).authToken.payload;
   const [hostInfo, setHostInfo] = React.useState('test');
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment, @typescript-eslint/prefer-ts-expect-error
@@ -77,32 +76,38 @@ export const App = () => {
     // const config1 = axios.defaults;
     if (token) {
       setIsTokenReady(true);
-      axios.interceptors.request.use((config) => {
-        config.headers.Authorization = 'Bearer ' + token;
-        config.headers.accept = 'application/json';
-        config.headers['content-type'] = 'application/json';
-        setSt(JSON.stringify(config));
-        return config;
-      }, async (error) => {
-        return await Promise.reject(error);
-      });
 
-      axios.interceptors.response.use((re7) => {
-        setResult5(JSON.stringify(re7));
-        return re7;
-      }, async (error) => {
-        return await Promise.reject(error);
-      });
+      void fetch('https://rajtest2.azurefd.net/api/draftnotifications', {
+        method: 'DELETE',
+        headers: { Accept: 'application/json', 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+        redirect: 'follow'
+      }).then(async r1 => { setResult5(r1?.status); return await r1.json(); }).then(r2 => { setResult(r2); });
+      // axios.interceptors.request.use((config) => {
+      //   config.headers.Authorization = 'Bearer ' + token;
+      //   config.headers.accept = 'application/json';
+      //   config.headers['content-type'] = 'application/json';
+      //   setSt(JSON.stringify(config));
+      //   return config;
+      // }, async (error) => {
+      //   return await Promise.reject(error);
+      // });
 
-      try {
-        axios.get('https://rajtest2.azurefd.net/api/draftnotifications').then(resp => {
-          setResult(resp?.status);
-        }).catch(er => {
-          setResult(er?.response?.status || '');
-        });
-      } catch {
-        setResult('went to catch block');
-      }
+      // axios.interceptors.response.use((re7) => {
+      //   setResult5(JSON.stringify(re7));
+      //   return re7;
+      // }, async (error) => {
+      //   return await Promise.reject(error);
+      // });
+
+      // try {
+      //   axios.get('https://rajtest2.azurefd.net/api/draftnotifications').then(resp => {
+      //     setResult(resp?.status);
+      //   }).catch(er => {
+      //     setResult(er?.response?.status || '');
+      //   });
+      // } catch {
+      //   setResult('went to catch block');
+      // }
     }
   }, [token]);
 
@@ -150,7 +155,7 @@ export const App = () => {
           {// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
             `result: ${re}`}
           <br />
-          {`headers: ${st}`}
+          {/* {`headers: ${st}`} */}
           <br />
           <br />
           {// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
