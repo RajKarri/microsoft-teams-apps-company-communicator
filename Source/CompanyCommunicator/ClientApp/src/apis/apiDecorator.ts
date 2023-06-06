@@ -31,29 +31,34 @@ export class AuthDecorator {
           return await fetch(url, {
             method: 'GET',
             headers: { Accept: 'application/json', 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+            redirect: 'follow',
           });
         case 'post':
           return await fetch(url, {
             method: 'POST',
             headers: { Accept: 'application/json', 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+            redirect: 'follow',
             body: JSON.stringify(data),
           });
         case 'put':
           return await fetch(url, {
             method: 'PUT',
             headers: { Accept: 'application/json', 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+            redirect: 'follow',
             body: JSON.stringify(data),
           });
         case 'delete':
           return await fetch(url, {
             method: 'DELETE',
             headers: { Accept: 'application/json', 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+            redirect: 'follow',
             body: JSON.stringify(data),
           });
         default:
           return await fetch(url, {
             method: 'GET',
             headers: { Accept: 'application/json', 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+            redirect: 'follow',
           });
       }
     } catch (error) {
