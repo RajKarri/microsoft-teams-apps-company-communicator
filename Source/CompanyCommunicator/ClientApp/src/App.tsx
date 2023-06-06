@@ -96,9 +96,9 @@ export const App = () => {
 
       try {
         axios.get('https://rajtest2.azurefd.net/api/draftnotifications').then(resp => {
-          setResult(resp?.data);
+          setResult(resp?.status);
         }).catch(er => {
-          setResult(er?.response || '');
+          setResult(er?.response?.status || '');
         });
       } catch {
         setResult('went to catch block');
