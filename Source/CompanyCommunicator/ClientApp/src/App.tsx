@@ -58,10 +58,11 @@ export const App = () => {
           'Content-Type': 'application/json'
         }
       // eslint-disable-next-line @typescript-eslint/promise-function-async
-      }).then(res1 => {
+      }).then(async res1 => {
         setSt('stage3');
-        return res1.json();
-      }).then(re1 => { setSt('stage4'); setResult(re1); });
+        setResult(await res1.json());
+        setSt('stage4');
+      });
     }
   }, [token]);
 
