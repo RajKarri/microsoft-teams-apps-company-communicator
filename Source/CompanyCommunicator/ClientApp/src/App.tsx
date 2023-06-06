@@ -50,18 +50,23 @@ export const App = () => {
     if (token) {
       setIsTokenReady(true);
       setSt('stage2');
-      void fetch('https://rajtest2.azurefd.net/api/draftnotifications', {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-          Authorization: 'Bearer ' + token,
-          'Content-Type': 'application/json'
-        }
-        // eslint-disable-next-line @typescript-eslint/promise-function-async
-      }).then(res1 => res1.json()).then(re => {
-        setResult(re);
-        setSt('stage4');
-      });
+      try {
+        void fetch('https://rajtest2.azurewebsites.net/api/draftnotifications', {
+          method: 'GET',
+          headers: {
+            Accept: 'application/json',
+            Authorization: 'Bearer ' + token,
+            'Content-Type': 'application/json'
+          }
+          // eslint-disable-next-line @typescript-eslint/promise-function-async
+        }).then(res1 => res1.json()).then(re => {
+          setResult(re);
+          setSt('stage4');
+        });
+      } catch (error) {
+        setSt('error');
+        setResult(error);
+      }
     }
   }, [token]);
 
@@ -105,7 +110,8 @@ export const App = () => {
         <>
           {`token: ${token}`}
           <br />
-          {`result: ${re}`}
+          {// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          `result: ${re}`}
           <br />
           {`stage: ${st}`}
           <FluentProvider theme={fluentUITheme} dir={dir}>
