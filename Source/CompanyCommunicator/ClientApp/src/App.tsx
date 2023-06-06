@@ -29,6 +29,7 @@ export const App = () => {
   const [isAppReady, setIsAppReady] = React.useState(false);
   const [isTokenReady, setIsTokenReady] = React.useState(false);
   const [re, setResult] = React.useState<any>('');
+  const [re5, setResult5] = React.useState<any>('');
   const [st, setSt] = React.useState('stage1');
   const token = useAppSelector((state: RootState) => state.auth).authToken.payload;
   const [hostInfo, setHostInfo] = React.useState('test');
@@ -86,8 +87,15 @@ export const App = () => {
         return await Promise.reject(error);
       });
 
+      axios.interceptors.response.use((re7) => {
+        setResult5(JSON.stringify(re7));
+        return re7;
+      }, async (error) => {
+        return await Promise.reject(error);
+      });
+
       try {
-        axios.get('https://rajtest2.azurewebsites.net/api/draftnotifications').then(resp => {
+        axios.get('https://rajtest2.azurefd.net/api/draftnotifications').then(resp => {
           setResult(resp?.data);
         }).catch(er => {
           setResult(er?.response || '');
@@ -143,6 +151,10 @@ export const App = () => {
             `result: ${re}`}
           <br />
           {`headers: ${st}`}
+          <br />
+          <br />
+          {// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            `response: ${re5}`}
           <br />
           <br />
           <span>{hostInfo}</span>
