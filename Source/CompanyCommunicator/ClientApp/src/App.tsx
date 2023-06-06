@@ -81,7 +81,11 @@ export const App = () => {
         method: 'GET',
         headers: { Accept: 'application/json', 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
         redirect: 'manual'
-      }).then(async r1 => { setResult5(r1?.status); return await r1.json(); }).then(r2 => { setResult(r2); });
+      }).then(r1 => {
+        setResult5(r1?.status);
+      }).catch(() => {
+        setResult('catch block');
+      });
       // axios.interceptors.request.use((config) => {
       //   config.headers.Authorization = 'Bearer ' + token;
       //   config.headers.accept = 'application/json';
