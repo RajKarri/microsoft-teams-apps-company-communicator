@@ -91,8 +91,8 @@ export const App = () => {
       axios.interceptors.request.use((config) => {
         config.headers.Authorization = 'Bearer ' + token;
         config.headers.accept = 'application/json';
-        config.headers['content-type'] = 'application/json';
-        config.maxRedirects = 0;
+        // config.headers['content-type'] = 'application/json';
+        // config.maxRedirects = 0;
         return config;
       }, async (error) => {
         return await Promise.reject(error);
@@ -109,7 +109,7 @@ export const App = () => {
         axios.get('https://rajtest2.azurefd.net/api/draftnotifications').then(resp => {
           setResult5(`status:${resp?.status}-${JSON.stringify(resp?.headers)}`);
         }).catch(er => {
-          setResult(JSON.stringify(er));
+          setResult(`${JSON.stringify(er?.request)}=============${JSON.stringify(er?.response)}=====================${JSON.stringify(er)}`);
         });
       } catch {
         setResult('went to catch block');
