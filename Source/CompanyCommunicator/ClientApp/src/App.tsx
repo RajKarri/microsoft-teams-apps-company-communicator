@@ -109,7 +109,7 @@ export const App = () => {
         axios.get('https://rajtest2.azurefd.net/api/draftnotifications').then(resp => {
           setResult5(`status:${resp?.status}-${JSON.stringify(resp?.headers)}`);
         }).catch(er => {
-          setResult(er?.response?.responseURL || '');
+          setResult(JSON.stringify(er));
         });
       } catch {
         setResult('went to catch block');
