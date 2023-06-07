@@ -3,64 +3,84 @@
 
 import { ROUTE_PARTS } from '../routes';
 import i18n from '../i18n';
-import { store } from '../store';
+// import { store } from '../store';
+import { authentication } from '@microsoft/teams-js';
 
 export class AuthDecorator {
   public async get(url: string): Promise<any> {
-    return await this.handleAxiosCall('get', url).then((resp) => resp.json());
+    return await this.handleAxiosCall('get', url).then((resp1) => {
+      if (resp1.type === 'cors' && resp1.status === '401') {
+        return this.handleAxiosCall('get', resp1.url).then((resp2) => resp2.json());
+      } else {
+        return resp1.json();
+      }
+    });
   }
 
   public async delete(url: string): Promise<any> {
-    return await this.handleAxiosCall('delete', url).then((resp) => resp.json());
+    return await this.handleAxiosCall('delete', url).then((resp1) => {
+      if (resp1.type === 'cors' && resp1.status === '401') {
+        return this.handleAxiosCall('delete', resp1.url).then((resp2) => resp2.json());
+      } else {
+        return resp1.json();
+      }
+    });
   }
 
   public async post(url: string, data?: any): Promise<any> {
-    return await this.handleAxiosCall('post', url, data).then((resp) => resp.json());
+    return await this.handleAxiosCall('post', url, data).then((resp1) => {
+      if (resp1.type === 'cors' && resp1.status === '401') {
+        return this.handleAxiosCall('post', resp1.url, data).then((resp2) => resp2.json());
+      } else {
+        return resp1.json();
+      }
+    });
   }
 
   public async put(url: string, data?: any): Promise<any> {
-    return await this.handleAxiosCall('put', url, data).then((resp) => resp.json());
+    return await this.handleAxiosCall('put', url, data).then((resp1) => {
+      if (resp1.type === 'cors' && resp1.status === '401') {
+        return this.handleAxiosCall('put', resp1.url, data).then((resp2) => resp2.json());
+      } else {
+        return resp1.json();
+      }
+    });
   }
 
   private async handleAxiosCall(verb: string, url: string, data: any = {}): Promise<any> {
     try {
-      const token = store.getState().auth.authToken.payload;
-
-      switch (verb) {
-        case 'get':
-          return await fetch(url, {
-            method: 'GET',
-            headers: { Accept: 'application/json', 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
-            redirect: 'follow',
-          });
-        case 'post':
-          return await fetch(url, {
-            method: 'POST',
-            headers: { Accept: 'application/json', 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
-            redirect: 'follow',
-            body: JSON.stringify(data),
-          });
-        case 'put':
-          return await fetch(url, {
-            method: 'PUT',
-            headers: { Accept: 'application/json', 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
-            redirect: 'follow',
-            body: JSON.stringify(data),
-          });
-        case 'delete':
-          return await fetch(url, {
-            method: 'DELETE',
-            headers: { Accept: 'application/json', 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
-            redirect: 'follow',
-            body: JSON.stringify(data),
-          });
-        default:
-          return await fetch(url, {
-            method: 'GET',
-            headers: { Accept: 'application/json', 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
-            redirect: 'follow',
-          });
-      }
+      void authentication.getAuthToken().then(async (token) => {
+        switch (verb) {
+          case 'get':
+            return await fetch(url, {
+              method: 'GET',
+              headers: { Accept: 'application/json', 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+            });
+          case 'post':
+            return await fetch(url, {
+              method: 'POST',
+              headers: { Accept: 'application/json', 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+              body: JSON.stringify(data),
+            });
+          case 'put':
+            return await fetch(url, {
+              method: 'PUT',
+              headers: { Accept: 'application/json', 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+              body: JSON.stringify(data),
+            });
+          case 'delete':
+            return await fetch(url, {
+              method: 'DELETE',
+              headers: { Accept: 'application/json', 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+              body: JSON.stringify(data),
+            });
+          default:
+            return await fetch(url, {
+              method: 'GET',
+              headers: { Accept: 'application/json', 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+            });
+        }
+      });
     } catch (error) {
       this.handleError(error);
       throw error;
