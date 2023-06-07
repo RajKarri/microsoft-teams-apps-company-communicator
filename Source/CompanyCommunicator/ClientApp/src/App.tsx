@@ -33,7 +33,7 @@ export const App = () => {
   const [re, setResult] = React.useState<any>('');
   const [re5, setResult5] = React.useState<any>('');
   // const [st, setSt] = React.useState('stage1');
-  const token = useAppSelector((state: RootState) => state.auth).authToken.payload;
+  const token = useAppSelector((state: RootState) => state.auth).authToken.payload || 'fdsafdas';
   const [hostInfo, setHostInfo] = React.useState('test');
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment, @typescript-eslint/prefer-ts-expect-error
   // @ts-ignore
@@ -47,7 +47,7 @@ export const App = () => {
         setIsAppReady(true);
       })
       .catch(() => {
-        setIsAppReady(false);
+        setIsAppReady(true);
       });
   }, []);
 
@@ -105,14 +105,17 @@ export const App = () => {
     if (token) {
       setIsTokenReady(true);
 
-      void fetch('https://rajtest2.azurefd.net/api/draftnotifications', {
+      void fetch('https://httpbin.org/status/308', {
         method: 'GET',
         // eslint-disable-next-line quote-props
         headers: { 'accept': 'application/json', 'content-type': 'application/json', 'authorization': 'Bearer ' + token },
+        redirect: 'follow'
       }).then(r1 => {
-        setResult5(JSON.stringify(r1));
+        setResult5(`Success: ${r1.type}====${r1.status}====${r1.url}`);
       }).catch(err => {
-        setResult(JSON.stringify(err));
+        setResult5(JSON.stringify(err));
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+        setResult(`Failure: ${err?.type}====${err?.status}====${err?.url}`);
       });
 
       // void fetch('https://rajtest2.azurefd.net/api/draftnotifications', {
