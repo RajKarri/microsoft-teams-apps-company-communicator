@@ -82,7 +82,7 @@ export const App = () => {
         headers: { Accept: 'application/json', 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
         redirect: 'manual'
       }).then(r1 => {
-        setResult5(`${r1?.type}-${r1?.redirected ? 'Yes' : 'No'}-${r1?.url}`);
+        setResult5(`${r1?.type}-${r1?.redirected ? 'Yes' : 'No'}-${r1?.url}-${window.location.origin}-${window.location.host}-${window.location.hostname}-${window.location.pathname}-${window.location.protocol}`);
       }).catch(() => {
         setResult('catch block');
       });
