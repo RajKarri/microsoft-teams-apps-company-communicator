@@ -79,10 +79,10 @@ export const App = () => {
 
       void fetch('https://rajtest2.azurefd.net/api/draftnotifications', {
         method: 'GET',
-        headers: { Accept: 'application/json', 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
-        redirect: 'manual'
+        // eslint-disable-next-line quote-props
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
       }).then(r1 => {
-        setResult5(`${r1?.type}-${r1?.redirected ? 'Yes' : 'No'}-${r1?.url}-${window.location.origin}-${window.location.host}-${window.location.hostname}-${window.location.pathname}-${window.location.protocol}`);
+        setResult5(r1?.status);
       }).catch(() => {
         setResult('catch block');
       });
