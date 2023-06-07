@@ -80,7 +80,7 @@ export const App = () => {
       void fetch('https://rajtest2.azurefd.net/api/draftnotifications', {
         method: 'GET',
         // eslint-disable-next-line quote-props
-        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        headers: { 'accept': 'application/json', 'content-type': 'application/json', 'authorization': 'Bearer ' + token },
       }).then(r1 => {
         setResult5(r1?.status);
       }).catch(() => {
