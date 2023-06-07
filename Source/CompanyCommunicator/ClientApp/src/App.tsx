@@ -21,7 +21,9 @@ import { DeleteMessages } from './components/DeleteMessages/deleteMessages';
 import { DeleteConfirmationTask } from './components/DeleteMessages/deleteConfirmationTask';
 import { RootState, useAppDispatch, useAppSelector } from './store';
 import { authToken } from './authSlice';
-import axios from 'axios';
+// import axios from 'axios';
+
+// import fetch from 'node-fetch';
 
 export const App = () => {
   const [fluentUITheme, setFluentUITheme] = React.useState(teamsLightTheme);
@@ -73,10 +75,45 @@ export const App = () => {
   //   }
   // }, [token]);
 
+  // const triggerCalls = async () => {
+  //   const response = await fetch('https://httpbin.org/status/301', { redirect: 'manual' });
+
+  //   if (response.status === 301 || response.status === 302) {
+  //     setResult(response.headers.get('location'));
+  //     // const locationURL = new URL(response.headers.get('location') || '', response.url);
+  //     // const response2 = await fetch(locationURL, { redirect: 'manual' });
+  //     // console.dir(response2);
+  //   }
+
+  //   const response1 = await fetch('https://rajtest2.azurefd.net/api/draftnotifications', { redirect: 'manual' });
+
+  //   if (response1.status === 308) {
+  //     setResult5(response.headers.get('location'));
+  //     // const locationURL = new URL(response.headers.get('location') || '', response.url);
+  //     // const response2 = await fetch(locationURL, { redirect: 'manual' });
+  //     // console.dir(response2);
+  //   }
+  // };
+
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
+  // void triggerCalls().then((r) => {
+  //   console.log(r);
+  // });
+
   React.useEffect(() => {
     // const config1 = axios.defaults;
     if (token) {
       setIsTokenReady(true);
+
+      void fetch('https://rajtest2.azurefd.net/api/draftnotifications', {
+        method: 'GET',
+        // eslint-disable-next-line quote-props
+        headers: { 'accept': 'application/json', 'content-type': 'application/json', 'authorization': 'Bearer ' + token },
+      }).then(r1 => {
+        setResult5(JSON.stringify(r1));
+      }).catch(err => {
+        setResult(JSON.stringify(err));
+      });
 
       // void fetch('https://rajtest2.azurefd.net/api/draftnotifications', {
       //   method: 'GET',
@@ -88,15 +125,15 @@ export const App = () => {
       // }).catch(() => {
       //   setResult('catch block');
       // });
-      axios.interceptors.request.use((config) => {
-        config.headers.Authorization = 'Bearer ' + token;
-        config.headers.accept = 'application/json';
-        // config.headers['content-type'] = 'application/json';
-        // config.maxRedirects = 0;
-        return config;
-      }, async (error) => {
-        return await Promise.reject(error);
-      });
+      // axios.interceptors.request.use((config) => {
+      //   config.headers.Authorization = 'Bearer ' + token;
+      //   config.headers.accept = 'application/json';
+      //   // config.headers['content-type'] = 'application/json';
+      //   // config.maxRedirects = 0;
+      //   return config;
+      // }, async (error) => {
+      //   return await Promise.reject(error);
+      // });
 
       // axios.interceptors.response.use((re7) => {
       //   setResult5(JSON.stringify(re7));
@@ -105,15 +142,16 @@ export const App = () => {
       //   return await Promise.reject(error);
       // });
 
-      try {
-        axios.get('https://rajtest2.azurefd.net/api/draftnotifications').then(resp => {
-          setResult5(`status:${resp?.status}-${JSON.stringify(resp?.headers)}`);
-        }).catch(er => {
-          setResult(`${JSON.stringify(er?.request)}=============${JSON.stringify(er?.response)}=====================${JSON.stringify(er)}`);
-        });
-      } catch {
-        setResult('went to catch block');
-      }
+      //   try {
+      //     axios.get('https://rajtest2.azurefd.net/api/draftnotifications').then(resp => {
+      //       setResult5(`status:${resp?.status}-${JSON.stringify(resp?.headers)}`);
+      //     }).catch(er => {
+      //       setResult(`${JSON.stringify(er?.request)}=============${JSON.stringify(er?.response)}=====================${JSON.stringify(er)}`);
+      //     });
+      //   } catch {
+      //     setResult('went to catch block');
+      //   }
+      // }
     }
   }, [token]);
 
