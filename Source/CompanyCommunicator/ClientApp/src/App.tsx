@@ -33,8 +33,7 @@ export const App = () => {
   const [re, setResult] = React.useState<any>('');
   const [re5, setResult5] = React.useState<any>('');
   // const [st, setSt] = React.useState('stage1');
-  const token = useAppSelector((state: RootState) => state.auth).authToken.payload || 'fdsafdas';
-  const [hostInfo, setHostInfo] = React.useState('test');
+  const token = useAppSelector((state: RootState) => state.auth).authToken.payload;
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment, @typescript-eslint/prefer-ts-expect-error
   // @ts-ignore
   const dir = i18n.dir(locale);
@@ -105,11 +104,10 @@ export const App = () => {
     if (token) {
       setIsTokenReady(true);
 
-      void fetch('https://httpbin.org/status/308', {
+      void fetch('https://rajtest2.azurefd.net/api/draftnotifications', {
         method: 'GET',
         // eslint-disable-next-line quote-props
-        headers: { 'accept': 'application/json', 'content-type': 'application/json', 'authorization': 'Bearer ' + token },
-        redirect: 'follow'
+        headers: { 'accept': 'application/json', 'content-type': 'application/json', 'authorization': 'Bearer ' + token }
       }).then(r1 => {
         setResult5(`Success: ${r1.type}====${r1.status}====${r1.url}`);
       }).catch(err => {
@@ -165,7 +163,6 @@ export const App = () => {
       });
       void app.getContext().then((context: app.Context) => {
         const theme = context.app.theme || 'default';
-        setHostInfo(JSON.stringify(context.app.host));
         setLocale(context.app.locale);
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment, @typescript-eslint/prefer-ts-expect-error
         // @ts-ignore
@@ -209,7 +206,6 @@ export const App = () => {
             `response: ${re5}`}
           <br />
           <br />
-          <span>{hostInfo}</span>
           <FluentProvider theme={fluentUITheme} dir={dir}>
             <Suspense fallback={<div></div>}>
               <BrowserRouter>
