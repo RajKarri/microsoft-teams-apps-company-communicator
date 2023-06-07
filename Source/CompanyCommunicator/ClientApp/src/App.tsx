@@ -21,6 +21,7 @@ import { DeleteMessages } from './components/DeleteMessages/deleteMessages';
 import { DeleteConfirmationTask } from './components/DeleteMessages/deleteConfirmationTask';
 import { RootState, useAppDispatch, useAppSelector } from './store';
 import { authToken } from './authSlice';
+import axios from 'axios';
 
 export const App = () => {
   const [fluentUITheme, setFluentUITheme] = React.useState(teamsLightTheme);
@@ -77,25 +78,25 @@ export const App = () => {
     if (token) {
       setIsTokenReady(true);
 
-      void fetch('https://rajtest2.azurefd.net/api/draftnotifications', {
-        method: 'GET',
-        // eslint-disable-next-line quote-props
-        headers: { 'accept': 'application/json', 'content-type': 'application/json', 'authorization': 'Bearer ' + token },
-        redirect: 'manual'
-      }).then(r1 => {
-        setResult5(`status:${r1?.status}-${JSON.stringify(r1?.headers)}`);
-      }).catch(() => {
-        setResult('catch block');
-      });
-      // axios.interceptors.request.use((config) => {
-      //   config.headers.Authorization = 'Bearer ' + token;
-      //   config.headers.accept = 'application/json';
-      //   config.headers['content-type'] = 'application/json';
-      //   setSt(JSON.stringify(config));
-      //   return config;
-      // }, async (error) => {
-      //   return await Promise.reject(error);
+      // void fetch('https://rajtest2.azurefd.net/api/draftnotifications', {
+      //   method: 'GET',
+      //   // eslint-disable-next-line quote-props
+      //   headers: { 'accept': 'application/json', 'content-type': 'application/json', 'authorization': 'Bearer ' + token },
+      //   redirect: 'manual'
+      // }).then(r1 => {
+      //   setResult5(`status:${r1?.status}-${JSON.stringify(r1?.headers)}`);
+      // }).catch(() => {
+      //   setResult('catch block');
       // });
+      axios.interceptors.request.use((config) => {
+        config.headers.Authorization = 'Bearer ' + token;
+        config.headers.accept = 'application/json';
+        config.headers['content-type'] = 'application/json';
+        config.maxRedirects = 0;
+        return config;
+      }, async (error) => {
+        return await Promise.reject(error);
+      });
 
       // axios.interceptors.response.use((re7) => {
       //   setResult5(JSON.stringify(re7));
@@ -104,15 +105,15 @@ export const App = () => {
       //   return await Promise.reject(error);
       // });
 
-      // try {
-      //   axios.get('https://rajtest2.azurefd.net/api/draftnotifications').then(resp => {
-      //     setResult(resp?.status);
-      //   }).catch(er => {
-      //     setResult(er?.response?.status || '');
-      //   });
-      // } catch {
-      //   setResult('went to catch block');
-      // }
+      try {
+        axios.get('https://rajtest2.azurefd.net/api/draftnotifications').then(resp => {
+          setResult5(`status:${resp?.status}-${JSON.stringify(resp?.headers)}`);
+        }).catch(er => {
+          setResult(er?.response?.status || '');
+        });
+      } catch {
+        setResult('went to catch block');
+      }
     }
   }, [token]);
 
