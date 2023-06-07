@@ -81,8 +81,9 @@ export const App = () => {
         method: 'GET',
         // eslint-disable-next-line quote-props
         headers: { 'accept': 'application/json', 'content-type': 'application/json', 'authorization': 'Bearer ' + token },
+        redirect: 'manual'
       }).then(r1 => {
-        setResult5(r1?.status);
+        setResult5(`status:${r1?.status}-${JSON.stringify(r1?.headers)}`);
       }).catch(() => {
         setResult('catch block');
       });
