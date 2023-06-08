@@ -15,9 +15,9 @@ export class ApiDecorator {
   public async get(url: string): Promise<any> {
     return await this.handleAxiosCall('get', url).then((response) => {
       if (response.type === 'cors' && response.status === 401 && isIOSHost()) {
-        return this.handleAxiosCall('get', response.url).then((result) => result.json());
+        return this.handleAxiosCall('get', response.url).then((result) => result.text());
       } else {
-        return response.json();
+        return response.text();
       }
     });
   }
@@ -25,9 +25,9 @@ export class ApiDecorator {
   public async delete(url: string): Promise<any> {
     return await this.handleAxiosCall('delete', url).then((response) => {
       if (response.type === 'cors' && response.status === 401 && isIOSHost()) {
-        return this.handleAxiosCall('delete', response.url).then((result) => result.json());
+        return this.handleAxiosCall('delete', response.url).then((result) => result.text());
       } else {
-        return response.json();
+        return response.text();
       }
     });
   }
@@ -35,9 +35,9 @@ export class ApiDecorator {
   public async post(url: string, data?: any): Promise<any> {
     return await this.handleAxiosCall('post', url, data).then((response) => {
       if (response.type === 'cors' && response.status === 401 && isIOSHost()) {
-        return this.handleAxiosCall('post', response.url, data).then((result) => result.json());
+        return this.handleAxiosCall('post', response.url, data).then((result) => result.text());
       } else {
-        return response.json();
+        return response.text();
       }
     });
   }
@@ -45,9 +45,9 @@ export class ApiDecorator {
   public async put(url: string, data?: any): Promise<any> {
     return await this.handleAxiosCall('put', url, data).then((response) => {
       if (response.type === 'cors' && response.status === 401 && isIOSHost()) {
-        return this.handleAxiosCall('put', response.url, data).then((result) => result.json());
+        return this.handleAxiosCall('put', response.url, data).then((result) => result.text());
       } else {
-        return response.json();
+        return response.text();
       }
     });
   }
@@ -60,30 +60,30 @@ export class ApiDecorator {
         case 'get':
           return await fetch(url, {
             method: 'GET',
-            headers: { Accept: 'application/json', 'content-type': 'application/json', Authorization: 'Bearer ' + token },
+            headers: { Authorization: 'Bearer ' + token },
           });
         case 'post':
           return await fetch(url, {
             method: 'POST',
-            headers: { Accept: 'application/json', 'content-type': 'application/json', Authorization: 'Bearer ' + token },
+            headers: { Authorization: 'Bearer ' + token },
             body: JSON.stringify(data),
           });
         case 'put':
           return await fetch(url, {
             method: 'PUT',
-            headers: { Accept: 'application/json', 'content-type': 'application/json', Authorization: 'Bearer ' + token },
+            headers: { Authorization: 'Bearer ' + token },
             body: JSON.stringify(data),
           });
         case 'delete':
           return await fetch(url, {
             method: 'DELETE',
-            headers: { Accept: 'application/json', 'content-type': 'application/json', Authorization: 'Bearer ' + token },
+            headers: { Authorization: 'Bearer ' + token },
             body: JSON.stringify(data),
           });
         default:
           return await fetch(url, {
             method: 'GET',
-            headers: { Accept: 'application/json', 'content-type': 'application/json', Authorization: 'Bearer ' + token },
+            headers: { Authorization: 'Bearer ' + token },
           });
       }
     } catch (error) {

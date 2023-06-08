@@ -134,7 +134,7 @@ export const SendConfirmationTask = () => {
       .then(() => {
         dialog.url.submit();
       })
-      .finally(() => {
+      .catch(() => {
         setDisableSendButton(false);
       });
   };
