@@ -9,7 +9,7 @@ import { authentication } from '@microsoft/teams-js';
 export class AuthDecorator {
   public async get(url: string): Promise<any> {
     return await this.handleAxiosCall('get', url).then((resp1) => {
-      if (resp1.type === 'cors' && resp1.status === '401') {
+      if (resp1.type === 'cors' && resp1.status === 401) {
         return this.handleAxiosCall('get', resp1.url).then((resp2) => resp2.json());
       } else {
         return resp1.json();
@@ -19,7 +19,7 @@ export class AuthDecorator {
 
   public async delete(url: string): Promise<any> {
     return await this.handleAxiosCall('delete', url).then((resp1) => {
-      if (resp1.type === 'cors' && resp1.status === '401') {
+      if (resp1.type === 'cors' && resp1.status === 401) {
         return this.handleAxiosCall('delete', resp1.url).then((resp2) => resp2.json());
       } else {
         return resp1.json();
@@ -29,7 +29,7 @@ export class AuthDecorator {
 
   public async post(url: string, data?: any): Promise<any> {
     return await this.handleAxiosCall('post', url, data).then((resp1) => {
-      if (resp1.type === 'cors' && resp1.status === '401') {
+      if (resp1.type === 'cors' && resp1.status === 401) {
         return this.handleAxiosCall('post', resp1.url, data).then((resp2) => resp2.json());
       } else {
         return resp1.json();
@@ -39,7 +39,7 @@ export class AuthDecorator {
 
   public async put(url: string, data?: any): Promise<any> {
     return await this.handleAxiosCall('put', url, data).then((resp1) => {
-      if (resp1.type === 'cors' && resp1.status === '401') {
+      if (resp1.type === 'cors' && resp1.status === 401) {
         return this.handleAxiosCall('put', resp1.url, data).then((resp2) => resp2.json());
       } else {
         return resp1.json();
@@ -54,30 +54,30 @@ export class AuthDecorator {
         case 'get':
           return await fetch(url, {
             method: 'GET',
-            headers: { Accept: 'application/json', 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+            headers: { Accept: 'application/json', 'content-type': 'application/json', Authorization: 'Bearer ' + token },
           });
         case 'post':
           return await fetch(url, {
             method: 'POST',
-            headers: { Accept: 'application/json', 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+            headers: { Accept: 'application/json', 'content-type': 'application/json', Authorization: 'Bearer ' + token },
             body: JSON.stringify(data),
           });
         case 'put':
           return await fetch(url, {
             method: 'PUT',
-            headers: { Accept: 'application/json', 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+            headers: { Accept: 'application/json', 'content-type': 'application/json', Authorization: 'Bearer ' + token },
             body: JSON.stringify(data),
           });
         case 'delete':
           return await fetch(url, {
             method: 'DELETE',
-            headers: { Accept: 'application/json', 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+            headers: { Accept: 'application/json', 'content-type': 'application/json', Authorization: 'Bearer ' + token },
             body: JSON.stringify(data),
           });
         default:
           return await fetch(url, {
             method: 'GET',
-            headers: { Accept: 'application/json', 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+            headers: { Accept: 'application/json', 'content-type': 'application/json', Authorization: 'Bearer ' + token },
           });
       }
     } catch (error) {
