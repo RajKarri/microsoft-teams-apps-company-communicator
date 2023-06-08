@@ -13,63 +13,43 @@ import { authentication } from '@microsoft/teams-js';
 
 export class ApiDecorator {
   public async get(url: string): Promise<any> {
-    try {
-      return await this.handleAxiosCall('get', url).then((response) => {
-        if (response.type === 'cors' && response.status === 401) {
-          return this.handleAxiosCall('get', response.url).then((result) => result.json());
-        } else {
-          return response.json();
-        }
-      });
-    } catch (ex) {
-      this.handleError(ex);
-      throw ex;
-    }
+    return await this.handleAxiosCall('get', url).then((response) => {
+      if (response.type === 'cors' && response.status === 401) {
+        return this.handleAxiosCall('get', response.url).then((result) => result.json());
+      } else {
+        return response.json();
+      }
+    });
   }
 
   public async delete(url: string): Promise<any> {
-    try {
-      return await this.handleAxiosCall('delete', url).then((response) => {
-        if (response.type === 'cors' && response.status === 401) {
-          return this.handleAxiosCall('delete', response.url).then((result) => result.json());
-        } else {
-          return response.json();
-        }
-      });
-    } catch (ex) {
-      this.handleError(ex);
-      throw ex;
-    }
+    return await this.handleAxiosCall('delete', url).then((response) => {
+      if (response.type === 'cors' && response.status === 401) {
+        return this.handleAxiosCall('delete', response.url).then((result) => result.json());
+      } else {
+        return response.json();
+      }
+    });
   }
 
   public async post(url: string, data?: any): Promise<any> {
-    try {
-      return await this.handleAxiosCall('post', url, data).then((response) => {
-        if (response.type === 'cors' && response.status === 401) {
-          return this.handleAxiosCall('post', response.url, data).then((result) => result.json());
-        } else {
-          return response.json();
-        }
-      });
-    } catch (ex) {
-      this.handleError(ex);
-      throw ex;
-    }
+    return await this.handleAxiosCall('post', url, data).then((response) => {
+      if (response.type === 'cors' && response.status === 401) {
+        return this.handleAxiosCall('post', response.url, data).then((result) => result.json());
+      } else {
+        return response.json();
+      }
+    });
   }
 
   public async put(url: string, data?: any): Promise<any> {
-    try {
-      return await this.handleAxiosCall('put', url, data).then((response) => {
-        if (response.type === 'cors' && response.status === 401) {
-          return this.handleAxiosCall('put', response.url, data).then((result) => result.json());
-        } else {
-          return response.json();
-        }
-      });
-    } catch (ex) {
-      this.handleError(ex);
-      throw ex;
-    }
+    return await this.handleAxiosCall('put', url, data).then((response) => {
+      if (response.type === 'cors' && response.status === 401) {
+        return this.handleAxiosCall('put', response.url, data).then((result) => result.json());
+      } else {
+        return response.json();
+      }
+    });
   }
 
   private async handleAxiosCall(verb: string, url: string, data: any = {}): Promise<any> {

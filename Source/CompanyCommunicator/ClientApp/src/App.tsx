@@ -19,14 +19,14 @@ import { ViewStatusTask } from './components/ViewStatusTask/viewStatusTask';
 import { ROUTE_PARAMS, ROUTE_PARTS } from './routes';
 import { DeleteMessages } from './components/DeleteMessages/deleteMessages';
 import { DeleteConfirmationTask } from './components/DeleteMessages/deleteConfirmationTask';
-import { RootState, useAppDispatch, useAppSelector } from './store';
+import { useAppDispatch } from './store';
 import { hostClientType } from './messagesSlice';
 
 export const App = () => {
   const [fluentUITheme, setFluentUITheme] = React.useState(teamsLightTheme);
   const [locale, setLocale] = React.useState('en-US');
   const [isAppReady, setIsAppReady] = React.useState(false);
-  const hostType = useAppSelector((state: RootState) => state.messages).hostClientType.payload;
+  // const hostType = useAppSelector((state: RootState) => state.messages).hostClientType.payload;
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment, @typescript-eslint/prefer-ts-expect-error
   // @ts-ignore
   const dir = i18n.dir(locale);
@@ -77,7 +77,7 @@ export const App = () => {
 
   return (
     <>
-      {isAppReady && hostType && (
+      {isAppReady && (
         <FluentProvider theme={fluentUITheme} dir={dir}>
           <Suspense fallback={<div></div>}>
             <BrowserRouter>
