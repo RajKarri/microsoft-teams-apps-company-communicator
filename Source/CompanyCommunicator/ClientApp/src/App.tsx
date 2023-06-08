@@ -19,33 +19,36 @@ import { ViewStatusTask } from './components/ViewStatusTask/viewStatusTask';
 import { ROUTE_PARAMS, ROUTE_PARTS } from './routes';
 import { DeleteMessages } from './components/DeleteMessages/deleteMessages';
 import { DeleteConfirmationTask } from './components/DeleteMessages/deleteConfirmationTask';
+import { RootState, useAppDispatch, useAppSelector } from './store';
+import { hostClientType } from './messagesSlice';
 
 export const App = () => {
   const [fluentUITheme, setFluentUITheme] = React.useState(teamsLightTheme);
   const [locale, setLocale] = React.useState('en-US');
+  const [appInitializationComplete, setAppInitializationComplete] = React.useState(false);
   const [isAppReady, setIsAppReady] = React.useState(false);
-  // const hostType = useAppSelector((state: RootState) => state.messages).hostClientType.payload;
+  const hostType = useAppSelector((state: RootState) => state.messages).hostClientType.payload;
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment, @typescript-eslint/prefer-ts-expect-error
   // @ts-ignore
   const dir = i18n.dir(locale);
-  // const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
 
   React.useEffect(() => {
     app
       .initialize()
       .then(() => {
-        setIsAppReady(true);
+        setAppInitializationComplete(true);
       })
       .catch(() => {
-        setIsAppReady(false);
+        setAppInitializationComplete(false);
       });
   }, []);
 
   React.useEffect(() => {
-    if (isAppReady) {
+    if (appInitializationComplete) {
       void app.getContext().then((context: app.Context) => {
         const theme = context.app.theme || 'default';
-        // dispatch(hostClientType({ type: 'HOST_CLIENT_TYPE', payload: context.app.host.clientType }));
+        dispatch(hostClientType({ type: 'HOST_CLIENT_TYPE', payload: context.app.host.clientType }));
         setLocale(context.app.locale);
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment, @typescript-eslint/prefer-ts-expect-error
         // @ts-ignore
@@ -57,7 +60,13 @@ export const App = () => {
         updateTheme(theme);
       });
     }
-  }, [isAppReady]);
+  }, [appInitializationComplete]);
+
+  React.useEffect(() => {
+    if (hostType) {
+      setIsAppReady(true);
+    }
+  }, [hostType]);
 
   const updateTheme = (theme: string) => {
     switch (theme.toLocaleLowerCase()) {

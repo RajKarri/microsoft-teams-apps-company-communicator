@@ -3,18 +3,18 @@
 
 import { ROUTE_PARTS } from '../routes';
 import i18n from '../i18n';
-// import { store } from '../store';
-import { authentication } from '@microsoft/teams-js';
+import { store } from '../store';
+import { HostClientType, authentication } from '@microsoft/teams-js';
 
-// const isIOSHost = () => {
-//   const clientType = store.getState().messages.hostClientType.payload;
-//   return clientType === HostClientType.ios || clientType === HostClientType.ipados;
-// };
+const isIOSHost = () => {
+  const clientType = store.getState().messages.hostClientType.payload;
+  return clientType === HostClientType.ios || clientType === HostClientType.ipados;
+};
 
 export class ApiDecorator {
   public async get(url: string): Promise<any> {
     return await this.handleAxiosCall('get', url).then((response) => {
-      if (response.type === 'cors' && response.status === 401) {
+      if (response.type === 'cors' && response.status === 401 && isIOSHost()) {
         return this.handleAxiosCall('get', response.url).then((result) => result.json());
       } else {
         return response.json();
@@ -24,7 +24,7 @@ export class ApiDecorator {
 
   public async delete(url: string): Promise<any> {
     return await this.handleAxiosCall('delete', url).then((response) => {
-      if (response.type === 'cors' && response.status === 401) {
+      if (response.type === 'cors' && response.status === 401 && isIOSHost()) {
         return this.handleAxiosCall('delete', response.url).then((result) => result.json());
       } else {
         return response.json();
@@ -34,7 +34,7 @@ export class ApiDecorator {
 
   public async post(url: string, data?: any): Promise<any> {
     return await this.handleAxiosCall('post', url, data).then((response) => {
-      if (response.type === 'cors' && response.status === 401) {
+      if (response.type === 'cors' && response.status === 401 && isIOSHost()) {
         return this.handleAxiosCall('post', response.url, data).then((result) => result.json());
       } else {
         return response.json();
@@ -44,7 +44,7 @@ export class ApiDecorator {
 
   public async put(url: string, data?: any): Promise<any> {
     return await this.handleAxiosCall('put', url, data).then((response) => {
-      if (response.type === 'cors' && response.status === 401) {
+      if (response.type === 'cors' && response.status === 401 && isIOSHost()) {
         return this.handleAxiosCall('put', response.url, data).then((result) => result.json());
       } else {
         return response.json();
