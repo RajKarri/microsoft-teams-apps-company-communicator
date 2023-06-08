@@ -60,30 +60,30 @@ export class ApiDecorator {
         case 'get':
           return await fetch(url, {
             method: 'GET',
-            headers: { Authorization: 'Bearer ' + token },
+            headers: { Accept: 'application/json', 'content-type': 'application/json', Authorization: 'Bearer ' + token },
           });
         case 'post':
           return await fetch(url, {
             method: 'POST',
-            headers: { Authorization: 'Bearer ' + token },
+            headers: { Accept: 'application/json', 'content-type': 'application/json', Authorization: 'Bearer ' + token },
             body: JSON.stringify(data),
           });
         case 'put':
           return await fetch(url, {
             method: 'PUT',
-            headers: { Authorization: 'Bearer ' + token },
+            headers: { Accept: 'application/json', 'content-type': 'application/json', Authorization: 'Bearer ' + token },
             body: JSON.stringify(data),
           });
         case 'delete':
           return await fetch(url, {
             method: 'DELETE',
-            headers: { Authorization: 'Bearer ' + token },
+            headers: { Accept: 'application/json', 'content-type': 'application/json', Authorization: 'Bearer ' + token },
             body: JSON.stringify(data),
           });
         default:
           return await fetch(url, {
             method: 'GET',
-            headers: { Authorization: 'Bearer ' + token },
+            headers: { Accept: 'application/json', 'content-type': 'application/json', Authorization: 'Bearer ' + token },
           });
       }
     } catch (error) {
