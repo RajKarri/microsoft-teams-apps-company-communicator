@@ -15,7 +15,7 @@ export class ApiDecorator {
   public async get(url: string): Promise<any> {
     try {
       return await this.handleAxiosCall('get', url).then((response) => {
-        if (isIOSHost() && response.type === 'cors' && response.status === 401) {
+        if (response.type === 'cors' && response.status === 401 && isIOSHost()) {
           return this.handleAxiosCall('get', response.url).then((result) => result.json());
         } else {
           return response.json();
@@ -30,7 +30,7 @@ export class ApiDecorator {
   public async delete(url: string): Promise<any> {
     try {
       return await this.handleAxiosCall('delete', url).then((response) => {
-        if (isIOSHost() && response.type === 'cors' && response.status === 401) {
+        if (response.type === 'cors' && response.status === 401 && isIOSHost()) {
           return this.handleAxiosCall('delete', response.url).then((result) => result.json());
         } else {
           return response.json();
@@ -45,7 +45,7 @@ export class ApiDecorator {
   public async post(url: string, data?: any): Promise<any> {
     try {
       return await this.handleAxiosCall('post', url, data).then((response) => {
-        if (isIOSHost() && response.type === 'cors' && response.status === 401) {
+        if (response.type === 'cors' && response.status === 401 && isIOSHost()) {
           return this.handleAxiosCall('post', response.url, data).then((result) => result.json());
         } else {
           return response.json();
@@ -60,7 +60,7 @@ export class ApiDecorator {
   public async put(url: string, data?: any): Promise<any> {
     try {
       return await this.handleAxiosCall('put', url, data).then((response) => {
-        if (isIOSHost() && response.type === 'cors' && response.status === 401) {
+        if (response.type === 'cors' && response.status === 401 && isIOSHost()) {
           return this.handleAxiosCall('put', response.url, data).then((result) => result.json());
         } else {
           return response.json();
