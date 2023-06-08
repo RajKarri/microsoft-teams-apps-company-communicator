@@ -19,8 +19,6 @@ import { ViewStatusTask } from './components/ViewStatusTask/viewStatusTask';
 import { ROUTE_PARAMS, ROUTE_PARTS } from './routes';
 import { DeleteMessages } from './components/DeleteMessages/deleteMessages';
 import { DeleteConfirmationTask } from './components/DeleteMessages/deleteConfirmationTask';
-import { useAppDispatch } from './store';
-import { hostClientType } from './messagesSlice';
 
 export const App = () => {
   const [fluentUITheme, setFluentUITheme] = React.useState(teamsLightTheme);
@@ -30,7 +28,7 @@ export const App = () => {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment, @typescript-eslint/prefer-ts-expect-error
   // @ts-ignore
   const dir = i18n.dir(locale);
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
 
   React.useEffect(() => {
     app
@@ -47,7 +45,7 @@ export const App = () => {
     if (isAppReady) {
       void app.getContext().then((context: app.Context) => {
         const theme = context.app.theme || 'default';
-        dispatch(hostClientType({ type: 'HOST_CLIENT_TYPE', payload: context.app.host.clientType }));
+        // dispatch(hostClientType({ type: 'HOST_CLIENT_TYPE', payload: context.app.host.clientType }));
         setLocale(context.app.locale);
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment, @typescript-eslint/prefer-ts-expect-error
         // @ts-ignore
