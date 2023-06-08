@@ -924,16 +924,20 @@ export const NewMessage = () => {
           </div>
           <div>
             <div className='fixed-footer'>
-              <div className='footer-action-left'>
-                <Button id='backBtn' onClick={onBack} disabled={showMsgDraftingSpinner} appearance='secondary'>
-                  {t('Back')}
-                </Button>
-              </div>
               <div className='footer-action-right'>
                 <div className='footer-actions-flex'>
                   {showMsgDraftingSpinner && (
-                    <Spinner role='alert' id='draftingLoader' size='small' label={t('DraftingMessageLabel')} labelPosition='after' />
+                    <Spinner
+                      role='alert'
+                      id='draftingLoader'
+                      size='small'
+                      label={t('DraftingMessageLabel')}
+                      labelPosition='after'
+                    />
                   )}
+                  <Button id='backBtn' style={{ marginLeft: '16px' }} onClick={onBack} disabled={showMsgDraftingSpinner} appearance='secondary'>
+                    {t('Back')}
+                  </Button>
                   <Button
                     style={{ marginLeft: '16px' }}
                     disabled={isSaveBtnDisabled() || showMsgDraftingSpinner}

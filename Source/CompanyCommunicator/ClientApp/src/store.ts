@@ -4,10 +4,9 @@
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import messagesReducer from './messagesSlice';
-import authReducer from './authSlice';
 
 export const store = configureStore({
-  reducer: { messages: messagesReducer, auth: authReducer },
+  reducer: { messages: messagesReducer },
   devTools: process.env.NODE_ENV !== 'production',
 });
 

@@ -1,6 +1,6 @@
 {
   "name": "company-communicator",
-  "version": "5.4.0",
+  "version": "5.4.1",
   "private": true,
   "dependencies": {
     "@fluentui/react-components": "^9.20.2",
@@ -12,7 +12,6 @@
     "@types/react-router-dom": "^5.3.3",
     "@types/validator": "^13.7.17",
     "adaptivecards": "^1.2.0",
-    "axios": "^1.4.0",
     "color-hash": "^2.0.2",
     "faker": "^5.5.3",
     "font-awesome": "^4.7.0",

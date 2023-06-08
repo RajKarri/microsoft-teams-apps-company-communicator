@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import { HostClientType } from '@microsoft/teams-js';
 import { createSlice } from '@reduxjs/toolkit';
 
 export interface MessagesState {
@@ -15,6 +16,7 @@ export interface MessagesState {
   isDraftMessagesFetchOn: { action: string; payload: boolean };
   isSentMessagesFetchOn: { action: string; payload: boolean };
   isDeletedMessagesFetchOn: { action: string; payload: boolean };
+  hostClientType: { action: string; payload?: HostClientType };
 }
 
 const initialState: MessagesState = {
@@ -29,6 +31,7 @@ const initialState: MessagesState = {
   isDraftMessagesFetchOn: { action: 'DRAFT_MESSAGES_FETCH_STATUS', payload: false },
   isSentMessagesFetchOn: { action: 'SENT_MESSAGES_FETCH_STATUS', payload: false },
   isDeletedMessagesFetchOn: { action: 'DELETED_MESSAGES_FETCH_STATUS', payload: false },
+  hostClientType: { action: 'HOST_CLIENT_TYPE' },
 };
 
 export const messagesSlice = createSlice({
@@ -68,6 +71,9 @@ export const messagesSlice = createSlice({
     isDeletedMessagesFetchOn: (state, action) => {
       state.isDeletedMessagesFetchOn = action.payload;
     },
+    hostClientType: (state, action) => {
+      state.hostClientType = action.payload;
+    },
   },
 });
 
@@ -83,6 +89,7 @@ export const {
   isDraftMessagesFetchOn,
   isSentMessagesFetchOn,
   isDeletedMessagesFetchOn,
+  hostClientType,
 } = messagesSlice.actions;
 
 export default messagesSlice.reducer;

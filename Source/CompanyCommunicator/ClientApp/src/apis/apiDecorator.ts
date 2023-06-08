@@ -3,53 +3,78 @@
 
 import { ROUTE_PARTS } from '../routes';
 import i18n from '../i18n';
-// import { store } from '../store';
-import { authentication } from '@microsoft/teams-js';
+import { store } from '../store';
+import { authentication, HostClientType } from '@microsoft/teams-js';
 
-export class AuthDecorator {
+const isIOSHost = () => {
+  const clientType = store.getState().messages.hostClientType.payload;
+  return clientType === HostClientType.ios || clientType === HostClientType.ipados;
+};
+
+export class ApiDecorator {
   public async get(url: string): Promise<any> {
-    return await this.handleAxiosCall('get', url).then((resp1) => {
-      if (resp1.type === 'cors' && resp1.status === 401) {
-        return this.handleAxiosCall('get', resp1.url).then((resp2) => resp2.json());
-      } else {
-        return resp1.json();
-      }
-    });
+    try {
+      return await this.handleAxiosCall('get', url).then((response) => {
+        if (isIOSHost() && response.type === 'cors' && response.status === 401) {
+          return this.handleAxiosCall('get', response.url).then((result) => result.json());
+        } else {
+          return response.json();
+        }
+      });
+    } catch (ex) {
+      this.handleError(ex);
+      throw ex;
+    }
   }
 
   public async delete(url: string): Promise<any> {
-    return await this.handleAxiosCall('delete', url).then((resp1) => {
-      if (resp1.type === 'cors' && resp1.status === 401) {
-        return this.handleAxiosCall('delete', resp1.url).then((resp2) => resp2.json());
-      } else {
-        return resp1.json();
-      }
-    });
+    try {
+      return await this.handleAxiosCall('delete', url).then((response) => {
+        if (isIOSHost() && response.type === 'cors' && response.status === 401) {
+          return this.handleAxiosCall('delete', response.url).then((result) => result.json());
+        } else {
+          return response.json();
+        }
+      });
+    } catch (ex) {
+      this.handleError(ex);
+      throw ex;
+    }
   }
 
   public async post(url: string, data?: any): Promise<any> {
-    return await this.handleAxiosCall('post', url, data).then((resp1) => {
-      if (resp1.type === 'cors' && resp1.status === 401) {
-        return this.handleAxiosCall('post', resp1.url, data).then((resp2) => resp2.json());
-      } else {
-        return resp1.json();
-      }
-    });
+    try {
+      return await this.handleAxiosCall('post', url, data).then((response) => {
+        if (isIOSHost() && response.type === 'cors' && response.status === 401) {
+          return this.handleAxiosCall('post', response.url, data).then((result) => result.json());
+        } else {
+          return response.json();
+        }
+      });
+    } catch (ex) {
+      this.handleError(ex);
+      throw ex;
+    }
   }
 
   public async put(url: string, data?: any): Promise<any> {
-    return await this.handleAxiosCall('put', url, data).then((resp1) => {
-      if (resp1.type === 'cors' && resp1.status === 401) {
-        return this.handleAxiosCall('put', resp1.url, data).then((resp2) => resp2.json());
-      } else {
-        return resp1.json();
-      }
-    });
+    try {
+      return await this.handleAxiosCall('put', url, data).then((response) => {
+        if (isIOSHost() && response.type === 'cors' && response.status === 401) {
+          return this.handleAxiosCall('put', response.url, data).then((result) => result.json());
+        } else {
+          return response.json();
+        }
+      });
+    } catch (ex) {
+      this.handleError(ex);
+      throw ex;
+    }
   }
 
   private async handleAxiosCall(verb: string, url: string, data: any = {}): Promise<any> {
-    const token = await authentication.getAuthToken();
     try {
+      const token = await authentication.getAuthToken();
       switch (verb) {
         case 'get':
           return await fetch(url, {
@@ -105,5 +130,5 @@ export class AuthDecorator {
   }
 }
 
-const apiCallDecoratorInstance = new AuthDecorator();
+const apiCallDecoratorInstance = new ApiDecorator();
 export default apiCallDecoratorInstance;
