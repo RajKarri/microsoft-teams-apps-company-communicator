@@ -3,7 +3,7 @@
 
 import { getBaseUrl } from '../configVariables';
 import { IDeleteMessageRequest } from '../models/deletedMessages';
-import apiCall from './apiTestDecorator';
+import apiCall from './apiDecorator';
 
 const baseAxiosUrl = getBaseUrl() + '/api';
 
