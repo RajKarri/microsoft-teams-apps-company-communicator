@@ -119,17 +119,13 @@ export const GetGroupsAction = (dispatch: typeof store.dispatch, payload: { id: 
 };
 
 export const SearchGroupsAction = (dispatch: typeof store.dispatch, payload: { query: string }) => {
-  try {
-    void searchGroups(payload.query)
-      .then((response) => {
-        dispatch(queryGroups({ type: 'SEARCH_GROUPS', payload: response || [] }));
-      })
-      .catch(() => {
-        dispatch(queryGroups({ type: 'SEARCH_GROUPS', payload: [] }));
-      });
-  } catch {
-    dispatch(queryGroups({ type: 'SEARCH_GROUPS', payload: [] }));
-  }
+  void searchGroups(payload.query)
+    .then((response) => {
+      dispatch(queryGroups({ type: 'SEARCH_GROUPS', payload: response || [] }));
+    })
+    .catch(() => {
+      dispatch(queryGroups({ type: 'SEARCH_GROUPS', payload: [] }));
+    });
 };
 
 export const VerifyGroupAccessAction = (dispatch: typeof store.dispatch) => {

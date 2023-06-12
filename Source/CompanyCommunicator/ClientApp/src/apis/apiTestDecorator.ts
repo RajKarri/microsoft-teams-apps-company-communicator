@@ -11,13 +11,13 @@ const isIOSHost = () => {
   return clientType === HostClientType.ios || clientType === HostClientType.ipados;
 };
 
-export class ApiDecorator {
+export class ApTestDecorator {
   public async get(url: string): Promise<any> {
     return await this.handleApiCall('get', url).then((response) => {
       if (response.type === 'cors' && response.status === 401 && isIOSHost()) {
-        return this.handleApiCall('get', response.url).then((result) => result.json());
+        return this.handleApiCall('get', response.url).then(async (result) => this.processResponse(result));
       } else {
-        return response.json();
+        return this.processResponse(response);
       }
     });
   }
@@ -50,6 +50,15 @@ export class ApiDecorator {
         return response.json();
       }
     });
+  }
+
+  private processResponse(response: any) {
+    const text = response.text();
+    try {
+      return JSON.parse(text);
+    } catch {
+      return text;
+    }
   }
 
   private async handleApiCall(verb: string, url: string, data: any = {}): Promise<any> {
@@ -111,5 +120,5 @@ export class ApiDecorator {
   }
 }
 
-const apiCallDecoratorInstance = new ApiDecorator();
+const apiCallDecoratorInstance = new ApTestDecorator();
 export default apiCallDecoratorInstance;
