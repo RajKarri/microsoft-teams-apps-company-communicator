@@ -15,9 +15,19 @@ export class ApTestDecorator {
   public async get(url: string): Promise<any> {
     return await this.handleApiCall('get', url).then((response) => {
       if (response.type === 'cors' && response.status === 401 && isIOSHost()) {
-        return this.handleApiCall('get', response.url).then(async (result) => this.processResponse(result));
+        return this.handleApiCall('get', response.url).then((result) => result.json());
       } else {
-        return this.processResponse(response);
+        return response.json();
+      }
+    });
+  }
+
+  public async getText(url: string): Promise<any> {
+    return await this.handleApiCall('get', url).then((response) => {
+      if (response.type === 'cors' && response.status === 401 && isIOSHost()) {
+        return this.handleApiCall('get', response.url).then((result) => result.text());
+      } else {
+        return response.text();
       }
     });
   }
@@ -32,12 +42,32 @@ export class ApTestDecorator {
     });
   }
 
+  public async postText(url: string, data?: any): Promise<any> {
+    return await this.handleApiCall('post', url, data).then((response) => {
+      if (response.type === 'cors' && response.status === 401 && isIOSHost()) {
+        return this.handleApiCall('post', response.url, data).then((result) => result.text());
+      } else {
+        return response.text();
+      }
+    });
+  }
+
   public async put(url: string, data?: any): Promise<any> {
     return await this.handleApiCall('put', url, data).then((response) => {
       if (response.type === 'cors' && response.status === 401 && isIOSHost()) {
         return this.handleApiCall('put', response.url, data).then((result) => result.json());
       } else {
         return response.json();
+      }
+    });
+  }
+
+  public async putText(url: string, data?: any): Promise<any> {
+    return await this.handleApiCall('put', url, data).then((response) => {
+      if (response.type === 'cors' && response.status === 401 && isIOSHost()) {
+        return this.handleApiCall('put', response.url, data).then((result) => result.text());
+      } else {
+        return response.text();
       }
     });
   }
@@ -52,14 +82,24 @@ export class ApTestDecorator {
     });
   }
 
-  private processResponse(response: any) {
-    const text = response.text();
-    try {
-      return JSON.parse(text);
-    } catch {
-      return text;
-    }
+  public async deleteText(url: string): Promise<any> {
+    return await this.handleApiCall('delete', url).then((response) => {
+      if (response.type === 'cors' && response.status === 401 && isIOSHost()) {
+        return this.handleApiCall('delete', response.url).then((result) => result.text());
+      } else {
+        return response.text();
+      }
+    });
   }
+
+  //   private processResponse(response: any) {
+  //     const text = response.text();
+  //     try {
+  //       return JSON.parse(text);
+  //     } catch {
+  //       return text;
+  //     }
+  //   }
 
   private async handleApiCall(verb: string, url: string, data: any = {}): Promise<any> {
     const token = await authentication.getAuthToken();

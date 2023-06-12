@@ -3,7 +3,7 @@
 
 import { getBaseUrl } from '../configVariables';
 import { IDeleteMessageRequest } from '../models/deletedMessages';
-import apiCall from './apiDecorator';
+import apiCall from './apiTestDecorator';
 
 const baseAxiosUrl = getBaseUrl() + '/api';
 
@@ -19,7 +19,7 @@ export const getDraftNotifications = async (): Promise<any> => {
 
 export const verifyGroupAccess = async (): Promise<any> => {
   const url = baseAxiosUrl + '/groupdata/verifyaccess';
-  return await apiCall.get(url);
+  return await apiCall.getText(url);
 };
 
 export const getGroups = async (id: number): Promise<any> => {
@@ -64,7 +64,7 @@ export const duplicateDraftNotification = async (id: number): Promise<any> => {
 
 export const sendDraftNotification = async (payload: any): Promise<any> => {
   const url = baseAxiosUrl + '/sentnotifications';
-  return await apiCall.post(url, payload);
+  return await apiCall.postText(url, payload);
 };
 
 export const updateDraftNotification = async (payload: any): Promise<any> => {
