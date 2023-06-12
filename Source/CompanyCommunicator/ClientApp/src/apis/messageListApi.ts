@@ -29,7 +29,7 @@ export const getGroups = async (id: number): Promise<any> => {
 
 export const searchGroups = async (query: string): Promise<any> => {
   const url = `${baseAxiosUrl}/groupdata/search/${query}`;
-  return await apiCall.get(url);
+  return await apiCall.getText(url);
 };
 
 export const getTeams = async (): Promise<any> => {
