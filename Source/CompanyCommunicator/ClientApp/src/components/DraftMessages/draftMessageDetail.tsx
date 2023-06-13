@@ -18,8 +18,7 @@ import {
   TableHeaderCell,
   TableRow,
   useArrowNavigationGroup,
-  Body1Strong,
-  Body1
+  Body1Strong
 } from '@fluentui/react-components';
 import {
   DeleteRegular,
@@ -130,7 +129,7 @@ export const DraftMessageDetail = (draftMessages: any) => {
                   onOpenTaskModule(null, editUrl(item.id), t('EditMessage'));
                 }}
               >
-                <Body1>{item.title}</Body1>
+                <Body1Strong>{item.title}</Body1Strong>
               </TableCellLayout>
             </TableCell>
             <TableCell role='gridcell' style={{ width: '50px' }}>
