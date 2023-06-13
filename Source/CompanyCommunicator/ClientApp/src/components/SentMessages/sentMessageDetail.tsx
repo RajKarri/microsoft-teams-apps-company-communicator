@@ -158,7 +158,7 @@ export const SentMessageDetail = (sentMessages: any) => {
               >
                 <Body1>{item.title} </Body1>
                 {renderSendingText(item) && <Badge appearance="outline" color="warning">{renderSendingText(item)}</Badge>}
-                {item.sentDate && <Badge appearance="outline" color="brand">{`${t('Sent')}: ${item.sentDate}`}</Badge>}
+                {item.sentDate && <Badge appearance="outline" color="important">{`${t('Sent')}: ${item.sentDate}`}</Badge>}
                 <br />
                 <Caption1>{`${t('CreatedBy')}: ${item.createdBy}`}</Caption1>
               </TableCellLayout>
@@ -168,13 +168,13 @@ export const SentMessageDetail = (sentMessages: any) => {
                 <Tooltip content={t('TooltipSuccess') ?? ''} relationship='label'>
                   <Badge appearance="tint" icon={<CheckmarkCircle16Regular />} color="success">{formatNumber(item.succeeded)}</Badge>
                 </Tooltip>
-                <br />
+                &nbsp;
                 <Tooltip content={t('TooltipFailure') ?? ''} relationship='label'>
                   <Badge appearance="tint" icon={<DismissCircle16Regular />} color="severe">{formatNumber(item.failed)}</Badge>
                 </Tooltip>
                 {item.canceled && (
                   <>
-                    <br />
+                    &nbsp;
                     <Tooltip content='Canceled' relationship='label'>
                       <Badge appearance="tint" icon={<CalendarCancel16Regular />} color="danger">{formatNumber(item.canceled)}</Badge>
                     </Tooltip>
@@ -182,7 +182,7 @@ export const SentMessageDetail = (sentMessages: any) => {
                 )}
                 {item.unknown && (
                   <>
-                    <br />
+                    &nbsp;
                     <Tooltip content='Unknown' relationship='label'>
                       <Badge appearance="tint" icon={<Warning16Regular />} color="warning">{formatNumber(item.unknown)}</Badge>
                     </Tooltip>

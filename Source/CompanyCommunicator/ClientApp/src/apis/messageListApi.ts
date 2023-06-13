@@ -44,7 +44,7 @@ export const getDraftNotification = async (id: number): Promise<any> => {
 
 export const exportNotification = async (payload: any): Promise<any> => {
   const url = baseAxiosUrl + '/exportnotification/export';
-  return await apiCall.putAndGetJsonResponse(url, payload);
+  return await apiCall.putAndGetTextResponse(url, payload);
 };
 
 export const getSentNotification = async (id: number): Promise<any> => {
