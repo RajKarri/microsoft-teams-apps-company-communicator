@@ -18,6 +18,8 @@ import {
   TableHeaderCell,
   TableRow,
   useArrowNavigationGroup,
+  Body1Strong,
+  Body1
 } from '@fluentui/react-components';
 import {
   DeleteRegular,
@@ -108,10 +110,10 @@ export const DraftMessageDetail = (draftMessages: any) => {
       <TableHeader>
         <TableRow>
           <TableHeaderCell key='title'>
-            <b>{t('TitleText')}</b>
+            <Body1Strong>{t('TitleText')}</Body1Strong>
           </TableHeaderCell>
           <TableHeaderCell key='actions' style={{ width: '50px' }}>
-            <b>{t('actions')}</b>
+            <Body1Strong>{t('actions')}</Body1Strong>
           </TableHeaderCell>
         </TableRow>
       </TableHeader>
@@ -128,11 +130,11 @@ export const DraftMessageDetail = (draftMessages: any) => {
                   onOpenTaskModule(null, editUrl(item.id), t('EditMessage'));
                 }}
               >
-                {item.title}
+                <Body1>{item.title}</Body1>
               </TableCellLayout>
             </TableCell>
             <TableCell role='gridcell' style={{ width: '50px' }}>
-              <TableCellLayout>
+              <TableCellLayout style={{ float: 'right' }}>
                 <Menu>
                   <MenuTrigger disableButtonEnhancement>
                     <Button aria-label='Actions menu' icon={<MoreHorizontal24Filled />} />

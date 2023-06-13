@@ -1,36 +1,40 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  Badge,
   Button,
   Menu,
   MenuItem,
   MenuList,
   MenuPopover,
   MenuTrigger,
-  Persona,
   Table,
   TableBody,
   TableCell,
   TableCellLayout,
   TableHeader,
   TableHeaderCell,
+  Caption1,
   TableRow,
   Tooltip,
   useArrowNavigationGroup,
+  Body1Strong,
+  Body1
 } from '@fluentui/react-components';
 import {
-  BookExclamationMark24Regular,
+  CalendarCancel16Regular,
   CalendarCancel24Regular,
   Chat20Regular,
   ChatMultiple24Regular,
-  CheckmarkSquare24Regular,
   DocumentCopyRegular,
   MoreHorizontal24Filled,
-  ShareScreenStop24Regular,
-  Warning24Regular,
+  DismissCircle16Regular,
+  Warning16Regular,
+  CheckmarkCircle16Regular,
 } from '@fluentui/react-icons';
 import { dialog, DialogDimension, UrlDialogInfo } from '@microsoft/teams-js';
 import { GetDraftMessagesSilentAction, GetSentMessagesSilentAction } from '../../actions';
@@ -80,9 +84,9 @@ export const SentMessageDetail = (sentMessages: any) => {
     return text;
   };
 
-  const countStatusMsg = () => {
-    return sentMessages?.sentMessages?.filter((x: any) => x.status && x.status !== 'Canceled' && x.status !== 'Sent' && x.status !== 'Failed').length;
-  };
+  // const countStatusMsg = () => {
+  //   return sentMessages?.sentMessages?.filter((x: any) => x.status && x.status !== 'Canceled' && x.status !== 'Sent' && x.status !== 'Failed').length;
+  // };
 
   const shouldNotShowCancel = (msg: any) => {
     let cancelState = false;
@@ -127,21 +131,14 @@ export const SentMessageDetail = (sentMessages: any) => {
     <Table {...keyboardNavAttr} role='grid' className='sent-messages' aria-label={t('sentMessagesGridNavigation') ?? ''}>
       <TableHeader>
         <TableRow>
-          <TableHeaderCell key='title' style={{ width: '45%' }}>
-            <b>{t('TitleText')}</b>
+          <TableHeaderCell key='title' style={{ width: '55%' }}>
+            <Body1Strong>{t('TitleText')}</Body1Strong>
           </TableHeaderCell>
-          {countStatusMsg() > 0 && <TableHeaderCell key='status' aria-hidden='true' />}
           <TableHeaderCell key='recipients'>
-            <b>{t('Recipients')}</b>
-          </TableHeaderCell>
-          <TableHeaderCell key='sent'>
-            <b>{t('Sent')}</b>
-          </TableHeaderCell>
-          <TableHeaderCell key='createdBy'>
-            <b className='big-screen-visible'>{t('CreatedBy')}</b>
+            <Body1Strong>{t('Recipients')}</Body1Strong>
           </TableHeaderCell>
           <TableHeaderCell key='actions' style={{ width: '50px' }}>
-            <b>{t('actions')}</b>
+            <Body1Strong>{t('actions')}</Body1Strong>
           </TableHeaderCell>
         </TableRow>
       </TableHeader>
@@ -159,76 +156,42 @@ export const SentMessageDetail = (sentMessages: any) => {
                   onOpenTaskModule(null, statusUrl(item.id), t('ViewStatus'));
                 }}
               >
-                {item.title}
+                <Body1>{item.title} </Body1>
+                {renderSendingText(item) && <Badge appearance="outline" color="warning">{renderSendingText(item)}</Badge>}
+                {item.sentDate && <Badge appearance="outline" color="brand">{`${t('Sent')}: ${item.sentDate}`}</Badge>}
+                <br />
+                <Caption1>{`${t('CreatedBy')}: ${item.createdBy}`}</Caption1>
               </TableCellLayout>
             </TableCell>
-            {countStatusMsg() > 0 && (
-              <TableCell tabIndex={0} role='gridcell'>
-                <TableCellLayout truncate>
-                  <span className='big-screen-visible'>{renderSendingText(item)}</span>
-                </TableCellLayout>
-              </TableCell>
-            )}
             <TableCell tabIndex={0} role='gridcell'>
               <TableCellLayout>
-                <div style={{ display: 'inline-block' }}>
-                  <Tooltip content={t('TooltipSuccess') ?? ''} relationship='label'>
-                    <Button
-                      appearance='subtle'
-                      icon={<CheckmarkSquare24Regular style={{ color: '#22bb33', verticalAlign: 'middle' }} />}
-                      size='small'
-                    ></Button>
-                  </Tooltip>
-                  <span className='recipient-text'>{formatNumber(item.succeeded)}</span>
-                </div>
-                <div style={{ display: 'inline-block' }}>
-                  <Tooltip content={t('TooltipFailure') ?? ''} relationship='label'>
-                    <Button
-                      appearance='subtle'
-                      icon={<ShareScreenStop24Regular style={{ color: '#bb2124', verticalAlign: 'middle' }} />}
-                      size='small'
-                    ></Button>
-                  </Tooltip>
-                  <span className='recipient-text'>{formatNumber(item.failed)}</span>
-                </div>
+                <Tooltip content={t('TooltipSuccess') ?? ''} relationship='label'>
+                  <Badge appearance="tint" icon={<CheckmarkCircle16Regular />} color="success">{formatNumber(item.succeeded)}</Badge>
+                </Tooltip>
+                <br />
+                <Tooltip content={t('TooltipFailure') ?? ''} relationship='label'>
+                  <Badge appearance="tint" icon={<DismissCircle16Regular />} color="severe">{formatNumber(item.failed)}</Badge>
+                </Tooltip>
                 {item.canceled && (
-                  <div style={{ display: 'inline-block' }}>
+                  <>
+                    <br />
                     <Tooltip content='Canceled' relationship='label'>
-                      <Button
-                        appearance='subtle'
-                        icon={<BookExclamationMark24Regular style={{ color: '#f0ad4e', verticalAlign: 'middle' }} />}
-                        size='small'
-                      ></Button>
+                      <Badge appearance="tint" icon={<CalendarCancel16Regular />} color="danger">{formatNumber(item.canceled)}</Badge>
                     </Tooltip>
-                    <span className='recipient-text'>{formatNumber(item.canceled)}</span>
-                  </div>
+                  </>
                 )}
                 {item.unknown && (
-                  <div style={{ display: 'inline-block' }}>
+                  <>
+                    <br />
                     <Tooltip content='Unknown' relationship='label'>
-                      <Button
-                        appearance='subtle'
-                        icon={<Warning24Regular style={{ color: '#e9835e', verticalAlign: 'middle' }} />}
-                        size='small'
-                      ></Button>
+                      <Badge appearance="tint" icon={<Warning16Regular />} color="warning">{formatNumber(item.unknown)}</Badge>
                     </Tooltip>
-                    <span className='recipient-text'>{formatNumber(item.unknown)}</span>
-                  </div>
+                  </>
                 )}
-              </TableCellLayout>
-            </TableCell>
-            <TableCell tabIndex={0} role='gridcell'>
-              <TableCellLayout truncate>{item.sentDate}</TableCellLayout>
-            </TableCell>
-            <TableCell tabIndex={0} role='gridcell'>
-              <TableCellLayout truncate title={item.createdBy}>
-                <span className='big-screen-visible'>
-                  <Persona size='extra-small' textAlignment='center' name={item.createdBy} secondaryText={'Member'} avatar={{ color: 'colorful' }} />
-                </span>
               </TableCellLayout>
             </TableCell>
             <TableCell role='gridcell' style={{ width: '50px' }}>
-              <TableCellLayout>
+              <TableCellLayout style={{ float: 'right' }}>
                 <Menu>
                   <MenuTrigger disableButtonEnhancement>
                     <Button aria-label='Actions menu' icon={<MoreHorizontal24Filled />} />

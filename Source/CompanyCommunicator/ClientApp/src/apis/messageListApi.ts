@@ -3,106 +3,106 @@
 
 import { getBaseUrl } from '../configVariables';
 import { IDeleteMessageRequest } from '../models/deletedMessages';
-import apiCall from './apiTestDecorator';
+import apiCall from './apiDecorator';
 
 const baseAxiosUrl = getBaseUrl() + '/api';
 
 export const getSentNotifications = async (): Promise<any> => {
   const url = baseAxiosUrl + '/sentnotifications';
-  return await apiCall.get(url);
+  return await apiCall.getJsonResponse(url);
 };
 
 export const getDraftNotifications = async (): Promise<any> => {
   const url = baseAxiosUrl + '/draftnotifications';
-  return await apiCall.get(url);
+  return await apiCall.getJsonResponse(url);
 };
 
 export const verifyGroupAccess = async (): Promise<any> => {
   const url = baseAxiosUrl + '/groupdata/verifyaccess';
-  return await apiCall.getText(url);
+  return await apiCall.getTextResponse(url);
 };
 
 export const getGroups = async (id: number): Promise<any> => {
   const url = `${baseAxiosUrl}/groupdata/${id}`;
-  return await apiCall.get(url);
+  return await apiCall.getJsonResponse(url);
 };
 
 export const searchGroups = async (query: string): Promise<any> => {
   const url = `${baseAxiosUrl}/groupdata/search/${query}`;
-  return await apiCall.getText(url);
+  return await apiCall.getTextResponse(url);
 };
 
 export const getTeams = async (): Promise<any> => {
   const url = baseAxiosUrl + '/teamdata';
-  return await apiCall.get(url);
+  return await apiCall.getJsonResponse(url);
 };
 
 export const getDraftNotification = async (id: number): Promise<any> => {
   const url = `${baseAxiosUrl}/draftnotifications/${id}`;
-  return await apiCall.get(url);
+  return await apiCall.getJsonResponse(url);
 };
 
 export const exportNotification = async (payload: any): Promise<any> => {
   const url = baseAxiosUrl + '/exportnotification/export';
-  return await apiCall.put(url, payload);
+  return await apiCall.putAndGetJsonResponse(url, payload);
 };
 
 export const getSentNotification = async (id: number): Promise<any> => {
   const url = `${baseAxiosUrl}/sentnotifications/${id}`;
-  return await apiCall.get(url);
+  return await apiCall.getJsonResponse(url);
 };
 
 export const deleteDraftNotification = async (id: number): Promise<any> => {
   const url = `${baseAxiosUrl}/draftnotifications/${id}`;
-  return await apiCall.delete(url);
+  return await apiCall.deleteAndGetJsonResponse(url);
 };
 
 export const duplicateDraftNotification = async (id: number): Promise<any> => {
   const url = `${baseAxiosUrl}/draftnotifications/duplicates/${id}`;
-  return await apiCall.post(url);
+  return await apiCall.postAndGetJsonResponse(url);
 };
 
 export const sendDraftNotification = async (payload: any): Promise<any> => {
   const url = baseAxiosUrl + '/sentnotifications';
-  return await apiCall.postText(url, payload);
+  return await apiCall.postAndGetTextResponse(url, payload);
 };
 
 export const updateDraftNotification = async (payload: any): Promise<any> => {
   const url = baseAxiosUrl + '/draftnotifications';
-  return await apiCall.put(url, payload);
+  return await apiCall.putAndGetJsonResponse(url, payload);
 };
 
 export const createDraftNotification = async (payload: any): Promise<any> => {
   const url = baseAxiosUrl + '/draftnotifications';
-  return await apiCall.post(url, payload);
+  return await apiCall.postAndGetJsonResponse(url, payload);
 };
 
 export const cancelSentNotification = async (id: number): Promise<any> => {
   const url = `${baseAxiosUrl}/sentnotifications/cancel/${id}`;
-  return await apiCall.post(url);
+  return await apiCall.postAndGetJsonResponse(url);
 };
 
 export const getConsentSummaries = async (id: number): Promise<any> => {
   const url = `${baseAxiosUrl}/draftnotifications/consentSummaries/${id}`;
-  return await apiCall.get(url);
+  return await apiCall.getJsonResponse(url);
 };
 
 export const sendPreview = async (payload: any): Promise<any> => {
   const url = baseAxiosUrl + '/draftnotifications/previews';
-  return await apiCall.post(url, payload);
+  return await apiCall.postAndGetJsonResponse(url, payload);
 };
 
 export const getDeletedMessages = async (): Promise<any> => {
   const url = baseAxiosUrl + '/deletemessages';
-  return await apiCall.get(url);
+  return await apiCall.getJsonResponse(url);
 };
 
 export const deleteMessages = async (payload: IDeleteMessageRequest): Promise<any> => {
   const url = baseAxiosUrl + '/deletemessages';
-  return await apiCall.post(url, payload);
+  return await apiCall.postAndGetJsonResponse(url, payload);
 };
 
 export const getAuthenticationConsentMetadata = async (windowLocationOriginDomain: string, loginHint: string): Promise<any> => {
   const url = `${baseAxiosUrl}/authenticationMetadata/consentUrl?windowLocationOriginDomain=${windowLocationOriginDomain}&loginhint=${loginHint}`;
-  return await apiCall.get(url);
+  return await apiCall.getJsonResponse(url);
 };

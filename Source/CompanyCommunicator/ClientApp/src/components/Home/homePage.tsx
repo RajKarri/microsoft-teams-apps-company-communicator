@@ -5,7 +5,7 @@ import '../Shared/main.scss';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Accordion, AccordionHeader, AccordionItem, AccordionPanel, Button, Theme } from '@fluentui/react-components';
+import { Accordion, AccordionHeader, AccordionItem, AccordionPanel, Button, Theme, Body1Stronger } from '@fluentui/react-components';
 import { Delete24Regular, Status24Regular } from '@fluentui/react-icons';
 import { app, dialog, DialogDimension, UrlDialogInfo } from '@microsoft/teams-js';
 import { GetDraftMessagesSilentAction } from '../../actions';
@@ -74,13 +74,13 @@ export const HomePage = (props: IHomePage) => {
       }
       <Accordion defaultOpenItems={['1', '2']} multiple collapsible>
         <AccordionItem value='1' key='draftMessagesKey'>
-          <AccordionHeader>{t('DraftMessagesSectionTitle')}</AccordionHeader>
+          <AccordionHeader><Body1Stronger>{t('DraftMessagesSectionTitle')}</Body1Stronger></AccordionHeader>
           <AccordionPanel className='cc-accordion-panel'>
             <DraftMessages />
           </AccordionPanel>
         </AccordionItem>
         <AccordionItem value='2' key='sentMessagesKey'>
-          <AccordionHeader>{t('SentMessagesSectionTitle')}</AccordionHeader>
+          <AccordionHeader><Body1Stronger>{t('SentMessagesSectionTitle')}</Body1Stronger></AccordionHeader>
           <AccordionPanel className='cc-accordion-panel'>
             <SentMessages />
           </AccordionPanel>

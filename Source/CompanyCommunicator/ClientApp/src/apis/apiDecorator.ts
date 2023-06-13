@@ -12,7 +12,7 @@ const isIOSHost = () => {
 };
 
 export class ApiDecorator {
-  public async get(url: string): Promise<any> {
+  public async getJsonResponse(url: string): Promise<any> {
     return await this.handleApiCall('get', url).then((response) => {
       if (response.type === 'cors' && response.status === 401 && isIOSHost()) {
         return this.handleApiCall('get', response.url).then((result) => result.json());
@@ -22,7 +22,17 @@ export class ApiDecorator {
     });
   }
 
-  public async post(url: string, data?: any): Promise<any> {
+  public async getTextResponse(url: string): Promise<any> {
+    return await this.handleApiCall('get', url).then((response) => {
+      if (response.type === 'cors' && response.status === 401 && isIOSHost()) {
+        return this.handleApiCall('get', response.url).then((result) => result.text());
+      } else {
+        return response.text();
+      }
+    });
+  }
+
+  public async postAndGetJsonResponse(url: string, data?: any): Promise<any> {
     return await this.handleApiCall('post', url, data).then((response) => {
       if (response.type === 'cors' && response.status === 401 && isIOSHost()) {
         return this.handleApiCall('post', response.url, data).then((result) => result.json());
@@ -32,7 +42,17 @@ export class ApiDecorator {
     });
   }
 
-  public async put(url: string, data?: any): Promise<any> {
+  public async postAndGetTextResponse(url: string, data?: any): Promise<any> {
+    return await this.handleApiCall('post', url, data).then((response) => {
+      if (response.type === 'cors' && response.status === 401 && isIOSHost()) {
+        return this.handleApiCall('post', response.url, data).then((result) => result.text());
+      } else {
+        return response.text();
+      }
+    });
+  }
+
+  public async putAndGetJsonResponse(url: string, data?: any): Promise<any> {
     return await this.handleApiCall('put', url, data).then((response) => {
       if (response.type === 'cors' && response.status === 401 && isIOSHost()) {
         return this.handleApiCall('put', response.url, data).then((result) => result.json());
@@ -42,12 +62,32 @@ export class ApiDecorator {
     });
   }
 
-  public async delete(url: string): Promise<any> {
+  public async putAndGetTextResponse(url: string, data?: any): Promise<any> {
+    return await this.handleApiCall('put', url, data).then((response) => {
+      if (response.type === 'cors' && response.status === 401 && isIOSHost()) {
+        return this.handleApiCall('put', response.url, data).then((result) => result.text());
+      } else {
+        return response.text();
+      }
+    });
+  }
+
+  public async deleteAndGetJsonResponse(url: string): Promise<any> {
     return await this.handleApiCall('delete', url).then((response) => {
       if (response.type === 'cors' && response.status === 401 && isIOSHost()) {
         return this.handleApiCall('delete', response.url).then((result) => result.json());
       } else {
         return response.json();
+      }
+    });
+  }
+
+  public async deleteAndGetTextResponse(url: string): Promise<any> {
+    return await this.handleApiCall('delete', url).then((response) => {
+      if (response.type === 'cors' && response.status === 401 && isIOSHost()) {
+        return this.handleApiCall('delete', response.url).then((result) => result.text());
+      } else {
+        return response.text();
       }
     });
   }

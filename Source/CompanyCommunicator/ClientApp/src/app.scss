@@ -2,7 +2,7 @@
     .adaptive-task-grid {
         display: grid;
         min-height: 500px;
-        padding: 2rem 2rem 8rem 2rem;
+        // padding: 2rem 2rem 8rem 2rem;
         grid-template-columns: 50% 50%;
         grid-template-areas:
             'form-area card-area'
@@ -27,7 +27,7 @@
     .adaptive-task-grid {
         display: grid;
         min-height: 500px;
-        padding: 2rem 2rem 8rem 2rem;
+        // padding: 2rem 2rem 8rem 2rem;
         grid-template-rows: auto 1fr;
         grid-template-areas:
             'form-area card-area'
