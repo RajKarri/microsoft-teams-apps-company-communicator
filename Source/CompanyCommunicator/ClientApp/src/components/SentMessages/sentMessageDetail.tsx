@@ -157,8 +157,8 @@ export const SentMessageDetail = (sentMessages: any) => {
                 }}
               >
                 <Body1>{item.title} </Body1>
-                {renderSendingText(item) && <Badge appearance="outline" color="warning">{renderSendingText(item)}</Badge>}
-                {item.sentDate && <Badge appearance="outline" color="important">{`${t('Sent')}: ${item.sentDate}`}</Badge>}
+                {renderSendingText(item) && <Badge size='small' appearance="outline" color="warning">{renderSendingText(item)}</Badge>}
+                {item.sentDate && <Badge size='small' appearance="outline" color="important">{`${t('Sent')}: ${item.sentDate}`}</Badge>}
                 <br />
                 <Caption1>{`${t('CreatedBy')}: ${item.createdBy}`}</Caption1>
               </TableCellLayout>
