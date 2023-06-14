@@ -134,5 +134,6 @@
   "selectedDateRange": "Date Range",
   "status": "Status",
   "recordsDeleted": "Number of records deleted",
-  "deletedBy": "Deleted By"
+  "deletedBy": "Deleted By",
+  "message": "Message"
 }

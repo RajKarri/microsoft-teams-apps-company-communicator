@@ -130,8 +130,8 @@ export const SentMessageDetail = (sentMessages: any) => {
     <Table {...keyboardNavAttr} role='grid' className='sent-messages' aria-label={t('sentMessagesGridNavigation') ?? ''}>
       <TableHeader>
         <TableRow>
-          <TableHeaderCell key='title' style={{ width: '55%' }}>
-            <Body1Strong>{t('TitleText')}</Body1Strong>
+          <TableHeaderCell key='message' style={{ width: '55%' }}>
+            <Body1Strong>{t('message')}</Body1Strong>
           </TableHeaderCell>
           <TableHeaderCell key='recipients'>
             <Body1Strong>{t('Recipients')}</Body1Strong>
@@ -155,9 +155,9 @@ export const SentMessageDetail = (sentMessages: any) => {
                   onOpenTaskModule(null, statusUrl(item.id), t('ViewStatus'));
                 }}
               >
-                <Body1Strong>{item.title} </Body1Strong>
-                {renderSendingText(item) && <Badge size='small' appearance="outline" color="warning">{renderSendingText(item)}</Badge>}
-                {item.sentDate && <Badge size='small' appearance="ghost" color="informative">{item.sentDate}</Badge>}
+                <Body1Strong style={{ whiteSpace: 'nowrap' }}>{item.title}</Body1Strong>
+                {renderSendingText(item) && <><br /><Badge size='small' appearance="tint" color="warning">{renderSendingText(item)}</Badge></>}
+                {item.sentDate && <><br /><Badge size='small' appearance="tint" color="informative">{item.sentDate}</Badge></>}
                 <br />
                 <Caption1>{item.createdBy}</Caption1>
               </TableCellLayout>
@@ -165,25 +165,30 @@ export const SentMessageDetail = (sentMessages: any) => {
             <TableCell tabIndex={0} role='gridcell'>
               <TableCellLayout>
                 <Tooltip content={t('TooltipSuccess') ?? ''} relationship='label'>
-                  <Badge appearance="tint" icon={<CheckmarkCircle16Regular />} color="success">{formatNumber(item.succeeded)}</Badge>
+                  <span style={{ paddingLeft: '2px' }}>
+                    <Badge appearance="tint" icon={<CheckmarkCircle16Regular />} color="success">{formatNumber(item.succeeded)}</Badge>
+                  </span>
                 </Tooltip>
-                &nbsp;
                 <Tooltip content={t('TooltipFailure') ?? ''} relationship='label'>
-                  <Badge appearance="tint" icon={<DismissCircle16Regular />} color="severe">{formatNumber(item.failed)}</Badge>
+                  <span style={{ paddingLeft: '2px' }}>
+                    <Badge appearance="tint" icon={<DismissCircle16Regular />} color="severe">{formatNumber(item.failed)}</Badge>
+                  </span>
                 </Tooltip>
                 {item.canceled && (
                   <>
-                    &nbsp;
                     <Tooltip content='Canceled' relationship='label'>
-                      <Badge appearance="tint" icon={<CalendarCancel16Regular />} color="danger">{formatNumber(item.canceled)}</Badge>
+                      <span style={{ paddingLeft: '2px' }}>
+                        <Badge appearance="tint" icon={<CalendarCancel16Regular />} color="danger">{formatNumber(item.canceled)}</Badge>
+                      </span>
                     </Tooltip>
                   </>
                 )}
                 {item.unknown && (
                   <>
-                    &nbsp;
                     <Tooltip content='Unknown' relationship='label'>
-                      <Badge appearance="tint" icon={<Warning16Regular />} color="warning">{formatNumber(item.unknown)}</Badge>
+                      <span style={{ paddingLeft: '2px' }}>
+                        <Badge appearance="tint" icon={<Warning16Regular />} color="warning">{formatNumber(item.unknown)}</Badge>
+                      </span>
                     </Tooltip>
                   </>
                 )}
