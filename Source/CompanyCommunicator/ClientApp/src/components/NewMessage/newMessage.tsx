@@ -490,7 +490,7 @@ export const NewMessage = () => {
   };
 
   const onBtnLinkChanged = (event: any) => {
-    if (validator.isURL(event.target.value) || event.target.value === '') {
+    if (validator.isURL(event.target.value, { require_protocol: true, protocols: ['https'] }) || event.target.value === '') {
       setBtnLinkErrorMessage('');
     } else {
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
@@ -910,7 +910,6 @@ export const NewMessage = () => {
                         }
                         <Combobox
                           appearance='filled-darker'
-                          inlinePopup
                           size='large'
                           onOptionSelect={onSearchSelect}
                           onChange={onSearchChange}

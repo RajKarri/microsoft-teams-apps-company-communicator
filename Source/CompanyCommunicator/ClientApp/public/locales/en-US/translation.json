@@ -111,7 +111,7 @@
   "sentMessagesGridNavigation": "Sent messages table with grid keyboard navigation",
   "deletedMessagesGridNavigation": "Deleted messages table with grid keyboard navigation",
   "titleRequired": "Title is required",
-  "enterValidURL": "Please enter a valid URL",
+  "enterValidURL": "Please enter a valid https URL",
   "pickTeams": "Pick team(s)",
   "pickGroups": "Pick group(s)",
   "remove": "Remove",
