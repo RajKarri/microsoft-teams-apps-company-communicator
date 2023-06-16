@@ -110,9 +110,10 @@ export const DraftMessageDetail = (draftMessages: any) => {
       teamsTeamId,
       teamsChannelId,
     };
-    sendPreview(payload)
+    await sendPreview(payload)
       .then(() => {
         onPreviewMessageConfirmation(previewConfirmationUrl(), t('previewMessageTitle'));
+        return true;
       })
       .catch((error) => {
         return error;
