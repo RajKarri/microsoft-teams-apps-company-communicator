@@ -137,5 +137,5 @@
   "deletedBy": "Deleted By",
   "message": "Message",
   "previewMessageTitle": "Message preview",
-  "previewMessageConfirmation": "Preview message has sent successfully on this channel"
+  "previewMessageConfirmation": "Preview message has been sent successfully in this channel."
 }

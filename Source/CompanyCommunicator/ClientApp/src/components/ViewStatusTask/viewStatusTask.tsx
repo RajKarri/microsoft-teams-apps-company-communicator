@@ -312,7 +312,7 @@ export const ViewStatusTask = () => {
       {!loader && statusState.page === 'SuccessPage' && (
         <>
           <span role='alert' aria-label={t('ExportSuccessView') ?? ''} />
-          <div className='wizard-page'>
+          <div className='dialog-padding'>
             <h2>
               <CheckmarkSquare24Regular style={{ color: '#22bb33', verticalAlign: 'top', paddingRight: '4px' }} />
               {t('ExportQueueTitle')}
@@ -339,7 +339,7 @@ export const ViewStatusTask = () => {
       {!loader && statusState.page === 'ErrorPage' && (
         <>
           <span role='alert' aria-label={t('ExportFailureView') ?? ''} />
-          <div className='wizard-page'>
+          <div className='dialog-padding'>
             <h2>
               <ShareScreenStop24Regular style={{ color: '#bb2124', verticalAlign: 'top', paddingRight: '4px' }} />
               {t('ExportErrorTitle')}
