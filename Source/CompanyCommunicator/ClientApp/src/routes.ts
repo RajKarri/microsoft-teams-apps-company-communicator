@@ -13,7 +13,7 @@ export enum ROUTE_PARTS {
   SIGN_IN = 'signin',
   SIGN_IN_SIMPLE_START = 'signin-simple-start',
   SIGN_IN_SIMPLE_END = 'signin-simple-end',
-  PREVIEW_MESSAGE = 'previewMessage',
+  PREVIEW_MESSAGE_CONFIRMATION = 'previewMessageConfirmation',
 }
 
 export enum ROUTE_PARAMS {

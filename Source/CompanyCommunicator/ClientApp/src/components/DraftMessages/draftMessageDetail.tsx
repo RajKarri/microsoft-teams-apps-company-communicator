@@ -44,7 +44,7 @@ export const DraftMessageDetail = (draftMessages: any) => {
   const dispatch = useAppDispatch();
   const sendUrl = (id: string) => getBaseUrl() + `/${ROUTE_PARTS.SEND_CONFIRMATION}/${id}?${ROUTE_QUERY_PARAMS.LOCALE}={locale}`;
   const editUrl = (id: string) => getBaseUrl() + `/${ROUTE_PARTS.NEW_MESSAGE}/${id}?${ROUTE_QUERY_PARAMS.LOCALE}={locale}`;
-  const previewConfirmationUrl = () => getBaseUrl() + `/${ROUTE_PARTS.PREVIEW_MESSAGE}?${ROUTE_QUERY_PARAMS.LOCALE}={locale}`;
+  const previewConfirmationUrl = () => getBaseUrl() + `/${ROUTE_PARTS.PREVIEW_MESSAGE_CONFIRMATION}?${ROUTE_QUERY_PARAMS.LOCALE}={locale}`;
 
   React.useEffect(() => {
     if (app.isInitialized()) {
@@ -145,7 +145,7 @@ export const DraftMessageDetail = (draftMessages: any) => {
                   onOpenTaskModule(editUrl(item.id), t('EditMessage'));
                 }}
               >
-                <Body1Strong>{item.title}</Body1Strong>
+                <Body1Strong style={{ whiteSpace: 'nowrap' }}>{item.title}</Body1Strong>
               </TableCellLayout>
             </TableCell>
             <TableCell role='gridcell' style={{ width: '50px' }}>

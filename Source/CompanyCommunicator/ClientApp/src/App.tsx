@@ -91,7 +91,7 @@ export const App = () => {
             <BrowserRouter>
               <Routes>
                 <Route path={`/${ROUTE_PARTS.CONFIG_TAB}`} element={<Configuration />} />
-                <Route path={`/${ROUTE_PARTS.PREVIEW_MESSAGE}`} element={<PreviewMessageConfirmation />} />
+                <Route path={`/${ROUTE_PARTS.PREVIEW_MESSAGE_CONFIRMATION}`} element={<PreviewMessageConfirmation />} />
                 <Route path={`/${ROUTE_PARTS.MESSAGES}`} element={<HomePage theme={fluentUITheme} />} />
                 <Route path={`/${ROUTE_PARTS.NEW_MESSAGE}`} element={<NewMessage />} />
                 <Route path={`/${ROUTE_PARTS.DELETE_MESSAGES}`} element={<DeleteMessages theme={fluentUITheme} />} />
