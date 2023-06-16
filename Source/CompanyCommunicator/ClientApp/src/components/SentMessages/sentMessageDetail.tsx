@@ -83,10 +83,6 @@ export const SentMessageDetail = (sentMessages: any) => {
     return text;
   };
 
-  // const countStatusMsg = () => {
-  //   return sentMessages?.sentMessages?.filter((x: any) => x.status && x.status !== 'Canceled' && x.status !== 'Sent' && x.status !== 'Failed').length;
-  // };
-
   const shouldNotShowCancel = (msg: any) => {
     let cancelState = false;
     if (msg?.status !== undefined) {
@@ -110,8 +106,9 @@ export const SentMessageDetail = (sentMessages: any) => {
 
   const duplicateDraftMessage = async (id: number) => {
     try {
-      await duplicateDraftNotification(id);
-      GetDraftMessagesSilentAction(dispatch);
+      await duplicateDraftNotification(id).then(() => {
+        GetDraftMessagesSilentAction(dispatch);
+      });
     } catch (error) {
       return error;
     }
@@ -119,8 +116,9 @@ export const SentMessageDetail = (sentMessages: any) => {
 
   const cancelSentMessage = async (id: number) => {
     try {
-      await cancelSentNotification(id);
-      GetSentMessagesSilentAction(dispatch);
+      await cancelSentNotification(id).then(() => {
+        GetSentMessagesSilentAction(dispatch);
+      });
     } catch (error) {
       return error;
     }

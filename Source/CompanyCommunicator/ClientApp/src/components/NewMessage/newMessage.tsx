@@ -140,28 +140,21 @@ export const NewMessage = () => {
     VerifyGroupAccessAction(dispatch);
   }, []);
 
-  React.useEffect(() => {
-    if (t) {
-      card = getInitAdaptiveCard(t('TitleText') ?? '');
-      setDefaultCard(card);
-      updateAdaptiveCard();
-    }
-  }, [t]);
-
   React.useEffect(
     () => {
-      setCardTitle(card, messageState.title);
-      setCardImageLink(card, messageState.imageLink);
-      setCardSummary(card, messageState.summary);
-      setCardAuthor(card, messageState.author);
-      setCardBtn(card, messageState.buttonTitle, messageState.buttonLink);
       if (!messageState.title && !messageState.imageLink && !messageState.summary && !messageState.author && !messageState.buttonTitle && !messageState.buttonLink) {
         card = getInitAdaptiveCard(t('TitleText') ?? '');
         setDefaultCard(card);
+      } else {
+        setCardTitle(card, messageState.title);
+        setCardImageLink(card, messageState.imageLink);
+        setCardSummary(card, messageState.summary);
+        setCardAuthor(card, messageState.author);
+        setCardBtn(card, messageState.buttonTitle, messageState.buttonLink);
       }
       updateAdaptiveCard();
     },
-    [messageState]);
+    [t, pageSelection, messageState]);
 
   React.useEffect(() => {
     if (id) {
@@ -169,10 +162,6 @@ export const NewMessage = () => {
       void getDraftNotificationItem(id);
     }
   }, [id]);
-
-  React.useEffect(() => {
-    updateAdaptiveCard();
-  }, [pageSelection]);
 
   React.useEffect(() => {
     setTeamsSelectedOptions([]);
@@ -222,14 +211,6 @@ export const NewMessage = () => {
           groups: draftMessageDetail.groups,
           allUsers: draftMessageDetail.allUsers,
         });
-
-        setCardTitle(card, draftMessageDetail.title);
-        setCardImageLink(card, draftMessageDetail.imageLink);
-        setCardSummary(card, draftMessageDetail.summary);
-        setCardAuthor(card, draftMessageDetail.author);
-        setCardBtn(card, draftMessageDetail.buttonTitle, draftMessageDetail.buttonLink);
-
-        updateAdaptiveCard();
       });
     } catch (error) {
       return error;
@@ -325,10 +306,7 @@ export const NewMessage = () => {
           return;
         }
 
-        setCardImageLink(card, resizedImageAsBase64);
         setMessageState({ ...messageState, imageLink: resizedImageAsBase64 });
-
-        updateAdaptiveCard();
       };
     }
   };
@@ -438,9 +416,7 @@ export const NewMessage = () => {
     } else {
       setTitleErrorMessage('');
     }
-    setCardTitle(card, event.target.value);
     setMessageState({ ...messageState, title: event.target.value });
-    updateAdaptiveCard();
   };
 
   const onImageLinkChanged = (event: any) => {
@@ -466,27 +442,19 @@ export const NewMessage = () => {
 
     if (isGoodLink) {
       setMessageState({ ...messageState, imageLink: urlOrDataUrl });
-      setCardImageLink(card, event.target.value);
-      updateAdaptiveCard();
     }
   };
 
   const onSummaryChanged = (event: any) => {
-    setCardSummary(card, event.target.value);
     setMessageState({ ...messageState, summary: event.target.value });
-    updateAdaptiveCard();
   };
 
   const onAuthorChanged = (event: any) => {
-    setCardAuthor(card, event.target.value);
     setMessageState({ ...messageState, author: event.target.value });
-    updateAdaptiveCard();
   };
 
   const onBtnTitleChanged = (event: any) => {
-    setCardBtn(card, event.target.value, messageState.buttonLink);
     setMessageState({ ...messageState, buttonTitle: event.target.value });
-    updateAdaptiveCard();
   };
 
   const onBtnLinkChanged = (event: any) => {
@@ -496,9 +464,7 @@ export const NewMessage = () => {
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       setBtnLinkErrorMessage(`${event.target.value} is invalid. ${t('enterValidURL')}`);
     }
-    setCardBtn(card, messageState.buttonTitle, event.target.value);
     setMessageState({ ...messageState, buttonLink: event.target.value });
-    updateAdaptiveCard();
   };
 
   // generate ids for handling labelling
@@ -687,6 +653,7 @@ export const NewMessage = () => {
               <Field size='large' className={fieldStyles.styles} label={t('Summary')}>
                 <Textarea
                   size='large'
+                  resize='vertical'
                   appearance='filled-darker'
                   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                   placeholder={t('Summary')!}

@@ -135,5 +135,7 @@
   "status": "Status",
   "recordsDeleted": "Number of records deleted",
   "deletedBy": "Deleted By",
-  "message": "Message"
+  "message": "Message",
+  "previewMessageTitle": "Message preview",
+  "previewMessageConfirmation": "Preview message has sent successfully on this channel"
 }

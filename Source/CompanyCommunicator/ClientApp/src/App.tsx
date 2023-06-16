@@ -21,6 +21,7 @@ import { DeleteMessages } from './components/DeleteMessages/deleteMessages';
 import { DeleteConfirmationTask } from './components/DeleteMessages/deleteConfirmationTask';
 import { RootState, useAppDispatch, useAppSelector } from './store';
 import { hostClientType } from './messagesSlice';
+import { PreviewMessageConfirmation } from './components/PreviewMessageConfirmation/previewMessageConfirmation';
 
 export const App = () => {
   const [fluentUITheme, setFluentUITheme] = React.useState(teamsLightTheme);
@@ -90,6 +91,7 @@ export const App = () => {
             <BrowserRouter>
               <Routes>
                 <Route path={`/${ROUTE_PARTS.CONFIG_TAB}`} element={<Configuration />} />
+                <Route path={`/${ROUTE_PARTS.PREVIEW_MESSAGE}`} element={<PreviewMessageConfirmation />} />
                 <Route path={`/${ROUTE_PARTS.MESSAGES}`} element={<HomePage theme={fluentUITheme} />} />
                 <Route path={`/${ROUTE_PARTS.NEW_MESSAGE}`} element={<NewMessage />} />
                 <Route path={`/${ROUTE_PARTS.DELETE_MESSAGES}`} element={<DeleteMessages theme={fluentUITheme} />} />

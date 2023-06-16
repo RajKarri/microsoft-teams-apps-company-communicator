@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 import { getBaseUrl } from '../configVariables';
-import { IDeleteMessageRequest } from '../models/deletedMessages';
+import { IDeleteMessageRequest } from '../models/deleteMessages';
 import apiCall from './apiDecorator';
 
 const baseAxiosUrl = getBaseUrl() + '/api';
@@ -54,12 +54,12 @@ export const getSentNotification = async (id: number): Promise<any> => {
 
 export const deleteDraftNotification = async (id: number): Promise<any> => {
   const url = `${baseAxiosUrl}/draftnotifications/${id}`;
-  return await apiCall.deleteAndGetJsonResponse(url);
+  return await apiCall.deleteAndGetTextResponse(url);
 };
 
 export const duplicateDraftNotification = async (id: number): Promise<any> => {
   const url = `${baseAxiosUrl}/draftnotifications/duplicates/${id}`;
-  return await apiCall.postAndGetJsonResponse(url);
+  return await apiCall.postAndGetTextResponse(url);
 };
 
 export const sendDraftNotification = async (payload: any): Promise<any> => {
@@ -79,7 +79,7 @@ export const createDraftNotification = async (payload: any): Promise<any> => {
 
 export const cancelSentNotification = async (id: number): Promise<any> => {
   const url = `${baseAxiosUrl}/sentnotifications/cancel/${id}`;
-  return await apiCall.postAndGetJsonResponse(url);
+  return await apiCall.postAndGetTextResponse(url);
 };
 
 export const getConsentSummaries = async (id: number): Promise<any> => {
@@ -89,7 +89,7 @@ export const getConsentSummaries = async (id: number): Promise<any> => {
 
 export const sendPreview = async (payload: any): Promise<any> => {
   const url = baseAxiosUrl + '/draftnotifications/previews';
-  return await apiCall.postAndGetJsonResponse(url, payload);
+  return await apiCall.postAndGetTextResponse(url, payload);
 };
 
 export const getDeletedMessages = async (): Promise<any> => {

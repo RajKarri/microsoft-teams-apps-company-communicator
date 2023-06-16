@@ -44,6 +44,7 @@ export const DraftMessageDetail = (draftMessages: any) => {
   const dispatch = useAppDispatch();
   const sendUrl = (id: string) => getBaseUrl() + `/${ROUTE_PARTS.SEND_CONFIRMATION}/${id}?${ROUTE_QUERY_PARAMS.LOCALE}={locale}`;
   const editUrl = (id: string) => getBaseUrl() + `/${ROUTE_PARTS.NEW_MESSAGE}/${id}?${ROUTE_QUERY_PARAMS.LOCALE}={locale}`;
+  const previewConfirmationUrl = () => getBaseUrl() + `/${ROUTE_PARTS.PREVIEW_MESSAGE}?${ROUTE_QUERY_PARAMS.LOCALE}={locale}`;
 
   React.useEffect(() => {
     if (app.isInitialized()) {
@@ -54,7 +55,7 @@ export const DraftMessageDetail = (draftMessages: any) => {
     }
   }, []);
 
-  const onOpenTaskModule = (event: any, url: string, title: string) => {
+  const onOpenTaskModule = (url: string, title: string) => {
     const dialogInfo: UrlDialogInfo = {
       url,
       title,
@@ -71,10 +72,23 @@ export const DraftMessageDetail = (draftMessages: any) => {
     dialog.url.open(dialogInfo, submitHandler);
   };
 
+  const onPreviewMessageConfirmation = (url: string, title: string) => {
+    const dialogInfo: UrlDialogInfo = {
+      url,
+      title,
+      size: { height: DialogDimension.Small, width: DialogDimension.Small },
+      fallbackUrl: url,
+    };
+
+    // now open the dialog
+    dialog.url.open(dialogInfo);
+  };
+
   const duplicateDraftMessage = async (id: number) => {
     try {
-      await duplicateDraftNotification(id);
-      GetDraftMessagesSilentAction(dispatch);
+      await duplicateDraftNotification(id).then(() => {
+        GetDraftMessagesSilentAction(dispatch);
+      });
     } catch (error) {
       return error;
     }
@@ -82,8 +96,9 @@ export const DraftMessageDetail = (draftMessages: any) => {
 
   const deleteDraftMessage = async (id: number) => {
     try {
-      await deleteDraftNotification(id);
-      GetDraftMessagesSilentAction(dispatch);
+      await deleteDraftNotification(id).then(() => {
+        GetDraftMessagesSilentAction(dispatch);
+      });
     } catch (error) {
       return error;
     }
@@ -96,8 +111,8 @@ export const DraftMessageDetail = (draftMessages: any) => {
       teamsChannelId,
     };
     sendPreview(payload)
-      .then((response) => {
-        return response.status;
+      .then(() => {
+        onPreviewMessageConfirmation(previewConfirmationUrl(), t('previewMessageTitle'));
       })
       .catch((error) => {
         return error;
@@ -126,7 +141,7 @@ export const DraftMessageDetail = (draftMessages: any) => {
                 media={<Chat20Regular />}
                 style={{ cursor: 'pointer' }}
                 onClick={() => {
-                  onOpenTaskModule(null, editUrl(item.id), t('EditMessage'));
+                  onOpenTaskModule(editUrl(item.id), t('EditMessage'));
                 }}
               >
                 <Body1Strong>{item.title}</Body1Strong>
@@ -144,7 +159,7 @@ export const DraftMessageDetail = (draftMessages: any) => {
                         icon={<SendRegular />}
                         key={'sendConfirmationKey'}
                         onClick={() => {
-                          onOpenTaskModule(null, sendUrl(item.id), t('SendConfirmation'));
+                          onOpenTaskModule(sendUrl(item.id), t('SendConfirmation'));
                         }}
                       >
                         {t('Send')}
@@ -159,7 +174,7 @@ export const DraftMessageDetail = (draftMessages: any) => {
                         icon={<EditRegular />}
                         key={'editMessageKey'}
                         onClick={() => {
-                          onOpenTaskModule(null, editUrl(item.id), t('EditMessage'));
+                          onOpenTaskModule(editUrl(item.id), t('EditMessage'));
                         }}
                       >
                         {t('Edit')}

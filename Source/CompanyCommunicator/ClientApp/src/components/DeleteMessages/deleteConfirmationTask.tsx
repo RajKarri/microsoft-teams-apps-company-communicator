@@ -9,7 +9,7 @@ import { dialog } from '@microsoft/teams-js';
 import { deleteMessages } from '../../apis/messageListApi';
 import { useAppDispatch } from '../../store';
 import { GetDeletedMessagesSilentAction } from '../../actions';
-import { IDeleteMessageRequest } from '../../models/deletedMessages';
+import { IDeleteMessageRequest } from '../../models/deleteMessages';
 import moment from 'moment';
 
 export const DeleteConfirmationTask = () => {
